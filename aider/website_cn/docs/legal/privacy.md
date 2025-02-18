@@ -1,5 +1,5 @@
 ---
-parent: More info
+parent: 更多信息
 nav_order: 500
 ---
 

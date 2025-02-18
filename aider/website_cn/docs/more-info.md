@@ -3,6 +3,6 @@ has_children: true
 nav_order: 85
 ---
 
-# More info
+# 更多信息
 
-See below for more info about aider, including some advanced topics.
+以下提供有关aider的更多信息，包括一些高级主题。

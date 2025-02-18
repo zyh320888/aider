@@ -1,5 +1,5 @@
 ---
-parent: More info
+parent: 更多信息
 highlight_image: /assets/robot-ast.png
 nav_order: 300
 description: Aider uses a map of your git repository to provide code context to LLMs.

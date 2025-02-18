@@ -1,5 +1,5 @@
 ---
-parent: More info
+parent: 更多信息
 nav_order: 200
 description: Aider supports pretty much all popular coding languages.
 ---
