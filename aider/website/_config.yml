@@ -1,6 +1,15 @@
 theme: just-the-docs
 url: "https://aider.chat"
 
+lang: en
+languages: ["en", "zh-CN"]
+default_lang: en
+
+collections:
+  docs:
+    output: true
+    permalink: /:lang/:path/
+
 # Analytics configuration
 analytics:
   enabled: false  # Single switch to control analytics and cookie consent
@@ -41,6 +50,10 @@ nav_external_links:
     url: "https://github.com/Aider-AI/aider"
   - title: "Discord"
     url: "https://discord.gg/Tv2uQnR88V"
+  - title: "English"
+    url: /en/
+  - title: "中文"
+    url: /zh-CN/
 
 repository: Aider-AI/aider
 

@@ -1,0 +1,20 @@
+<div class="language-switcher">
+  {% for language in site.languages %}
+    {% if language == site.lang %}
+      <span class="btn">{{ language | upcase }}</span>
+    {% else %}
+      <a href="{% if language == site.default_lang %}/{% else %}/{{ language }}/{% endif %}" 
+         class="btn">{{ language | upcase }}</a>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<style>
+.language-switcher {
+  position: absolute;
+  right: 1rem;
+  top: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+}
+</style>
