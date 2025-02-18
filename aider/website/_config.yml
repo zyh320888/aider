@@ -4,6 +4,7 @@ url: "https://aider.chat"
 lang: en
 languages: ["en", "zh-CN"]
 default_lang: en
+exclude_from_localizations: ["assets", "images"]
 
 collections:
   docs:
@@ -20,6 +21,8 @@ plugins:
   - jekyll-redirect-from
   - jekyll-sitemap
   - jekyll-feed
+  - jekyll-multiple-languages-plugin
+
 
 defaults:
   - scope:
