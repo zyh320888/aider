@@ -1,29 +1,25 @@
 ---
 parent: 使用指南
 nav_order: 901
-description: Use aider to edit configuration files, documentation, and other text-based formats.
+description: 使用 aider 编辑配置文件、文档和其他基于文本的格式。
 ---
 
+# 编辑配置和文本文件
 
-# Editing config & text files
+Aider 不仅适用于代码编辑，在修改几乎任何文本文件时都能提供帮助。你可以用 aider 来修改 shell/ssh 配置、
+Dockerfile 或任何配置/文档文件。
 
-Aider isn't just for code, it can be very helpful when editing
-almost any text file.
-You can use aider to make changes to your shell & ssh settings, 
-Dockerfiles
-or pretty much any configuration or documentation file.
+以下是一些常见配置/文本文件修改的实用示例：
 
-Here are some practical examples of modifying common config/text files:
-
-## Shell Configuration
+## Shell 配置
 
 <div class="chat-transcript" markdown="1">
 $ aider .bashrc
 
-Added .bashrc to the chat.
+已将 .bashrc 添加到对话
 
 
-#### Add an alias 'll' that lists all files, with all details in human readable format. And update PATH to include uv installed tools.
+#### 添加显示全部文件详细信息的人类可读格式别名 'll'，并更新 PATH 包含 uv 安装工具
 
 ```
 + alias ll='ls -alh'
@@ -31,14 +27,14 @@ Added .bashrc to the chat.
 ```
 </div>
 
-## SSH Configurations
+## SSH 配置
 
 <div class="chat-transcript" markdown="1">
 $ aider ~/.ssh/config
 
-Added config to the chat.
+已将 config 添加到对话
 
-#### Create a Host entry 'my-server' using bastion.example.com as JumpHost
+#### 使用 bastion.example.com 作为跳板机创建 'my-server' 主机配置
 
 ```
 + Host my-server
@@ -50,14 +46,14 @@ Added config to the chat.
 ```
 </div>
 
-## Docker Setup
+## Docker 配置
 
 <div class="chat-transcript" markdown="1">
 $ aider Dockerfile docker-compose.yml
 
-Added Dockerfile and docker-compose.yml to the chat.
+已将 Dockerfile 和 docker-compose.yml 添加到对话
 
-#### Set non-root user and enable healthchecks
+#### 设置非 root 用户并启用健康检查
 
 ```
 + USER appuser
@@ -65,7 +61,7 @@ Added Dockerfile and docker-compose.yml to the chat.
 +   CMD curl -f http://localhost:8000/health || exit 1
 ```
 
-#### Expose port 5432 and add volume for postgres data
+#### 暴露 5432 端口并添加 postgres 数据卷
 
 ```
   services:
@@ -78,14 +74,14 @@ Added Dockerfile and docker-compose.yml to the chat.
 ```
 </div>
 
-## Git Configuration
+## Git 配置
 
 <div class="chat-transcript" markdown="1">
 $ aider .gitconfig
 
-Added .gitconfig to the chat.
+已将 .gitconfig 添加到对话
 
-#### Set default push behavior to current branch and enable color UI
+#### 设置默认推送当前分支并启用彩色界面
 
 ```
 + [push]
@@ -95,13 +91,13 @@ Added .gitconfig to the chat.
 ```
 </div>
 
-## System Configuration
+## 系统配置
 <div class="chat-transcript" markdown="1">
-$ aider /etc/hosts  # May need sudo
+$ aider /etc/hosts  # 可能需要 sudo
 
-Added hosts to the chat.
+已将 hosts 添加到对话
 
-#### Block tracking domains by pointing them to 127.0.0.1
+#### 通过指向 127.0.0.1 来屏蔽跟踪域名
 
 ```
 + 127.0.0.1   ads.example.com
@@ -110,13 +106,13 @@ Added hosts to the chat.
 </div>
 
 
-## Editor Configs
+## 编辑器配置
 <div class="chat-transcript" markdown="1">
 $ aider .vimrc
 
-Added .vimrc to the chat.
+已将 .vimrc 添加到对话
 
-#### Enable line numbers and set 4-space tabs for Python
+#### 启用行号并为 Python 设置 4 空格缩进
 
 ```
 + set number
@@ -124,13 +120,13 @@ Added .vimrc to the chat.
 ```
 </div>
 
-## VSCode Configuration
+## VSCode 配置
 <div class="chat-transcript" markdown="1">
 $ aider settings.json
 
-Added settings.json to the chat.
+已将 settings.json 添加到对话
 
-#### Enable auto-format on save and set default formatter
+#### 启用保存时自动格式化并设置默认格式化工具
 
 ```
 + "editor.formatOnSave": true,
@@ -138,17 +134,17 @@ Added settings.json to the chat.
 ```
 </div>
 
-## Markdown Documentation
+## Markdown 文档
 <div class="chat-transcript" markdown="1">
 $ aider README.md
 
-Added README.md to the chat.
+已将 README.md 添加到对话
 
 
-#### Add installation section with brew and pip options
+#### 添加包含 brew 和 pip 安装选项的安装章节
 
 ```
-+ ## Installation
++ ## 安装
 + ```
 + # Homebrew
 + brew install cool-app-10k
@@ -159,12 +155,13 @@ Added README.md to the chat.
 ```
 </div>
 
-## XML Configuration
+## XML 配置
 <div class="chat-transcript" markdown="1">
 $ aider pom.xml
 
-Added pom.xml to the chat.
-#### Add JUnit 5 dependency with test scope
+已将 pom.xml 添加到对话
+
+#### 添加测试范围的 JUnit 5 依赖
 
 ```
 + <dependency>
