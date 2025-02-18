@@ -4,121 +4,119 @@ nav_order: 50
 description: Control aider with in-chat commands like /add, /model, etc.
 ---
 
-# In-chat commands
+# 聊天命令
 {: .no_toc }
 
-- TOC
+- 目录
 {:toc}
 
-## Slash commands
+## 斜杠命令
 
-Aider supports commands from within the chat, which all start with `/`.
+Aider 支持在聊天中使用以 `/` 开头的命令。
 
 <!--[[[cog
 from aider.commands import get_help_md
 cog.out(get_help_md())
 ]]]-->
 
-|Command|Description|
+| 命令 | 描述 |
 |:------|:----------|
-| **/add** | Add files to the chat so aider can edit them or review them in detail |
-| **/architect** | Enter architect/editor mode using 2 different models. If no prompt provided, switches to architect/editor mode. |
-| **/ask** | Ask questions about the code base without editing any files. If no prompt provided, switches to ask mode. |
-| **/chat-mode** | Switch to a new chat mode |
-| **/clear** | Clear the chat history |
-| **/code** | Ask for changes to your code. If no prompt provided, switches to code mode. |
-| **/commit** | Commit edits to the repo made outside the chat (commit message optional) |
-| **/copy** | Copy the last assistant message to the clipboard |
-| **/copy-context** | Copy the current chat context as markdown, suitable to paste into a web UI |
-| **/diff** | Display the diff of changes since the last message |
-| **/drop** | Remove files from the chat session to free up context space |
-| **/editor** | Open an editor to write a prompt |
-| **/exit** | Exit the application |
-| **/git** | Run a git command (output excluded from chat) |
-| **/help** | Ask questions about aider |
-| **/lint** | Lint and fix in-chat files or all dirty files if none in chat |
-| **/load** | Load and execute commands from a file |
-| **/ls** | List all known files and indicate which are included in the chat session |
-| **/map** | Print out the current repository map |
-| **/map-refresh** | Force a refresh of the repository map |
-| **/model** | Switch to a new LLM |
-| **/models** | Search the list of available models |
-| **/multiline-mode** | Toggle multiline mode (swaps behavior of Enter and Meta+Enter) |
-| **/paste** | Paste image/text from the clipboard into the chat.        Optionally provide a name for the image. |
-| **/quit** | Exit the application |
-| **/read-only** | Add files to the chat that are for reference only, or turn added files to read-only |
-| **/report** | Report a problem by opening a GitHub Issue |
-| **/reset** | Drop all files and clear the chat history |
-| **/run** | Run a shell command and optionally add the output to the chat (alias: !) |
-| **/save** | Save commands to a file that can reconstruct the current chat session's files |
-| **/settings** | Print out the current settings |
-| **/test** | Run a shell command and add the output to the chat on non-zero exit code |
-| **/tokens** | Report on the number of tokens used by the current chat context |
-| **/undo** | Undo the last git commit if it was done by aider |
-| **/voice** | Record and transcribe voice input |
-| **/web** | Scrape a webpage, convert to markdown and send in a message |
+| **/add** | 将文件添加到聊天中以便aider编辑或详细审查 |
+| **/architect** | 进入架构师/编辑器模式（使用两个不同的模型）。若无提示则切换模式 |
+| **/ask** | 在不修改文件的前提下询问代码库问题。若无提示则切换询问模式 |
+| **/chat-mode** | 切换到新的聊天模式 |
+| **/clear** | 清空聊天历史 |
+| **/code** | 请求修改代码。若无提示则切换代码模式 |
+| **/commit** | 提交聊天外部的编辑到仓库（提交信息可选） |
+| **/copy** | 将最后一条助手消息复制到剪贴板 |
+| **/copy-context** | 以Markdown格式复制当前聊天上下文，适合粘贴到网页界面 |
+| **/diff** | 显示自上次消息以来的差异变化 |
+| **/drop** | 从聊天会话中移除文件以释放上下文空间 |
+| **/editor** | 打开编辑器编写提示 |
+| **/exit** | 退出应用程序 |
+| **/git** | 运行git命令（输出不显示在聊天中） |
+| **/help** | 获取关于aider的帮助 |
+| **/lint** | 对聊天中的文件或所有未提交文件进行代码检查修复 |
+| **/load** | 从文件加载并执行命令 |
+| **/ls** | 列出所有已知文件并标记哪些包含在聊天会话中 |
+| **/map** | 打印当前代码仓库地图 |
+| **/map-refresh** | 强制刷新代码仓库地图 |
+| **/model** | 切换新的LLM模型 |
+| **/models** | 搜索可用模型列表 |
+| **/multiline-mode** | 切换多行模式（交换Enter和Meta+Enter的行为） |
+| **/paste** | 将剪贴板的图像/文本粘贴到聊天。可为图像指定名称 |
+| **/quit** | 退出应用程序 |
+| **/read-only** | 添加仅供参考的只读文件或将已添加文件设为只读 |
+| **/report** | 通过GitHub Issue报告问题 |
+| **/reset** | 移除所有文件并清空聊天历史 |
+| **/run** | 运行shell命令并可选将输出添加到聊天（别名：!） |
+| **/save** | 保存可重建当前聊天会话文件的命令到文件 |
+| **/settings** | 打印当前设置 |
+| **/test** | 运行shell命令并在非零退出码时将输出添加到聊天 |
+| **/tokens** | 报告当前聊天上下文使用的token数量 |
+| **/undo** | 撤销由aider完成的最后一次git提交 |
+| **/voice** | 录制并转录语音输入 |
+| **/web** | 抓取网页并转换为Markdown格式发送 |
 
 <!--[[[end]]]-->
 
 {: .tip }
-You can easily re-send commands or messages.
-Use the up arrow ⬆ to scroll back
-or CONTROL-R to search your message history.
+使用上箭头 ⬆ 回滚或 CONTROL-R 搜索历史记录，可轻松重新发送命令/消息。
 
-## Entering multi-line chat messages
+## 输入多行消息
 
 {% include multi-line.md %}
 
-## Interrupting with CONTROL-C
+## 使用 CONTROL-C 中断
 
-It's always safe to use Control-C to interrupt aider if it isn't providing a useful response. The partial response remains in the conversation, so you can refer to it when you reply to the LLM with more information or direction.
+如果响应不理想，随时可用 Control-C 安全中断aider。未完成的响应会保留在对话中，您可以在后续回复中引用。
 
-## Keybindings
+## 快捷键绑定
 
-The interactive prompt is built with [prompt-toolkit](https://github.com/prompt-toolkit/python-prompt-toolkit) which provides emacs and vi keybindings. 
+交互式提示基于 [prompt-toolkit](https://github.com/prompt-toolkit/python-prompt-toolkit) 实现，支持 emacs 和 vi 快捷键。
 
-### Emacs
+### Emacs 模式
 
-- `Up Arrow` : Move up one line in the current message.
-- `Down Arrow` : Move down one line in the current message.
-- `Ctrl-Up` : Scroll back through previously sent messages.
-- `Ctrl-Down` : Scroll forward through previously sent messages.
-- `Ctrl-A` : Move cursor to the start of the line.
-- `Ctrl-B` : Move cursor back one character.
-- `Ctrl-D` : Delete the character under the cursor.
-- `Ctrl-E` : Move cursor to the end of the line.
-- `Ctrl-F` : Move cursor forward one character.
-- `Ctrl-K` : Delete from the cursor to the end of the line.
-- `Ctrl-L` : Clear the screen.
-- `Ctrl-N` : Move down to the next history entry.
-- `Ctrl-P` : Move up to the previous history entry.
-- `Ctrl-R` : Reverse search in command history.
+- `↑` : 在当前消息中上移一行
+- `↓` : 在当前消息中下移一行 
+- `Ctrl+↑` : 浏览发送历史（向后）
+- `Ctrl+↓` : 浏览发送历史（向前）
+- `Ctrl-A` : 跳至行首
+- `Ctrl-B` : 左移字符
+- `Ctrl-D` : 删除光标处字符
+- `Ctrl-E` : 跳至行尾
+- `Ctrl-F` : 右移字符
+- `Ctrl-K` : 删除至行尾
+- `Ctrl-L` : 清屏
+- `Ctrl-N` : 查看下一条历史
+- `Ctrl-P` : 查看上一条历史
+- `Ctrl-R` : 历史命令反向搜索
 
 
-### Vi
+### Vi 模式
 
-To use vi/vim keybindings, run aider with the `--vim` switch.
+使用 `--vim` 参数启动aider以启用vi键位
 
-- `Up Arrow` : Move up one line in the current message.
-- `Down Arrow` : Move down one line in the current message.
-- `Ctrl-Up` : Scroll back through previously sent messages.
-- `Ctrl-Down` : Scroll forward through previously sent messages.
-- `Esc` : Switch to command mode.
-- `i` : Switch to insert mode.
-- `a` : Move cursor one character to the right and switch to insert mode.
-- `A` : Move cursor to the end of the line and switch to insert mode.
-- `I` : Move cursor to the beginning of the line and switch to insert mode.
-- `h` : Move cursor one character to the left.
-- `j` : Move cursor down one line.
-- `k` : Move cursor up one line.
-- `l` : Move cursor one character to the right.
-- `w` : Move cursor forward one word.
-- `b` : Move cursor backward one word.
-- `0` : Move cursor to the beginning of the line.
-- `$` : Move cursor to the end of the line.
-- `x` : Delete the character under the cursor.
-- `dd` : Delete the current line.
-- `u` : Undo the last change.
-- `Ctrl-R` : Redo the last undone change.
+- `↑` : 在当前消息中上移一行
+- `↓` : 在当前消息中下移一行
+- `Ctrl+↑` : 浏览发送历史（向后）
+- `Ctrl+↓` : 浏览发送历史（向前）
+- `Esc` : 进入命令模式
+- `i` : 进入插入模式
+- `a` : 右移字符并进入插入模式
+- `A` : 跳至行尾并进入插入模式
+- `I` : 跳至行首并进入插入模式
+- `h` : 左移字符
+- `j` : 下移一行
+- `k` : 上移一行
+- `l` : 右移字符
+- `w` : 右移一词
+- `b` : 左移一词
+- `0` : 跳至行首
+- `$` : 跳至行尾
+- `x` : 删除光标处字符
+- `dd` : 删除当前行
+- `u` : 撤销操作
+- `Ctrl-R` : 重做操作
 
 
