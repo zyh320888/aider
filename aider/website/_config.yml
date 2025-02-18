@@ -54,10 +54,17 @@ nav_external_links:
     url: "https://github.com/Aider-AI/aider"
   - title: "Discord"
     url: "https://discord.gg/Tv2uQnR88V"
-  - title: "English"
-    url: /en/
-  - title: "中文"
-    url: /zh-CN/
+
+# Language settings
+language_settings:
+  default_lang: "en"
+  available_languages:
+    en:
+      name: "English"
+      url: "/en/"
+    zh-CN:
+      name: "中文"
+      url: "/zh-CN/"
 
 repository: Aider-AI/aider
 
