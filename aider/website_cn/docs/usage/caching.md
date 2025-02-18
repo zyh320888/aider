@@ -1,49 +1,45 @@
 ---
-title: Prompt caching
+title: 提示缓存
 highlight_image: /assets/prompt-caching.jpg
 parent: 使用指南
 nav_order: 750
-description: Aider supports prompt caching for cost savings and faster coding.
+description: Aider 支持提示缓存功能，可节省成本并加速编程流程。
 ---
 
-# Prompt caching
+# 提示缓存
 
-Aider supports prompt caching for cost savings and faster coding.
-Currently Anthropic provides caching for Sonnet and Haiku,
-and DeepSeek provides caching for Chat.
+Aider 支持提示缓存功能，可节省成本并加速编程流程。
+目前 Anthropic 为 Sonnet 和 Haiku 模型提供缓存支持，
+DeepSeek 则为 Chat 模型提供缓存功能。
 
-Aider organizes the chat history to try and cache:
+Aider 通过组织聊天历史记录来实现缓存，包括：
 
-- The system prompt.
-- Read only files added with `--read` or `/read-only`.
-- The repository map.
-- The editable files that have been added to the chat.
+- 系统提示词
+- 通过 `--read` 或 `/read-only` 添加的只读文件
+- 仓库地图（代码仓库结构）
+- 已加入聊天会话的可编辑文件
 
-![Prompt caching](/assets/prompt-caching.jpg)
+![提示缓存](/assets/prompt-caching.jpg)
 
+## 使用方法
 
-## Usage
+运行 aider 时添加 `--cache-prompts` 参数，或将该设置加入您的
+[配置文件](/docs/config.html)。
 
-Run aider with `--cache-prompts` or add that setting to your 
-[configuration files](/docs/config.html).
+由于供应商 API 的限制，当启用流式响应时无法获取缓存统计信息和成本数据。
+如需关闭流式传输，请使用 `--no-stream` 参数。
 
-Due to limitations in the provider APIs, caching statistics and costs
-are not available when streaming responses.
-To turn off streaming, use `--no-stream`.
-
-When caching is enabled, it will be noted for the main model when aider launches:
+启用缓存功能后，主模型启动时会显示缓存状态提示：
 
 ```
 Main model: claude-3-5-sonnet-20240620 with diff edit format, prompt cache, infinite output
 ```
 
-## Preventing cache expiration
+## 防止缓存过期
 
-Aider can ping the provider to keep your prompt cache warm and prevent
-it from expiring.
-By default, Anthropic keeps your cache for 5 minutes.
-Use `--cache-keepalive-pings N` to tell aider to ping
-every 5 minutes to keep the cache warm.
-Aider will ping up to `N` times over a period of `N*5` minutes
-after each message you send.
+Aider 可以通过定期 ping 供应商来保持提示缓存活跃，防止其过期。
+默认情况下，Anthropic 的缓存保留时间为 5 分钟。
+使用 `--cache-keepalive-pings N` 参数可让 aider 每 5 分钟发送一次 ping 
+以维持缓存活跃状态。在您发送每条消息后，aider 将在接下来的 `N*5` 分钟内
+最多发送 `N` 次 ping。
 
