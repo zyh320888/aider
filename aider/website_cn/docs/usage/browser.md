@@ -1,7 +1,7 @@
 ---
 title: Aider in your browser
 highlight_image: /assets/browser.jpg
-parent: Usage
+parent: 使用指南
 nav_order: 800
 description: Aider can run in your browser, not just on the command line.
 ---

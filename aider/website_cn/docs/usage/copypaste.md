@@ -1,7 +1,7 @@
 ---
 title: Copy/paste with web chat
 #highlight_image: /assets/browser.jpg
-parent: Usage
+parent: 使用指南
 nav_order: 850
 description: Aider works with LLM web chat UIs
 ---

@@ -1,5 +1,5 @@
 ---
-parent: Usage
+parent: 使用指南
 nav_order: 100
 description: Speak with aider about your code!
 ---

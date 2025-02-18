@@ -1,5 +1,5 @@
 ---
-parent: Usage
+parent: 使用指南
 nav_order: 60
 description: Using the code, architect, ask and help chat modes.
 ---

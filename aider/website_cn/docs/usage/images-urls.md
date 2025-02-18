@@ -1,5 +1,5 @@
 ---
-parent: Usage
+parent: 使用指南
 nav_order: 700
 description: Add images and web pages to the aider coding chat.
 ---

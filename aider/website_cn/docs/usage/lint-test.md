@@ -1,5 +1,5 @@
 ---
-parent: Usage
+parent: 使用指南
 nav_order: 900
 description: Automatically fix linting and testing errors.
 ---

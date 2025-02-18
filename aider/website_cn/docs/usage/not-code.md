@@ -1,5 +1,5 @@
 ---
-parent: Usage
+parent: 使用指南
 nav_order: 901
 description: Use aider to edit configuration files, documentation, and other text-based formats.
 ---

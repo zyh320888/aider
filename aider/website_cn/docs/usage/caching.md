@@ -1,7 +1,7 @@
 ---
 title: Prompt caching
 highlight_image: /assets/prompt-caching.jpg
-parent: Usage
+parent: 使用指南
 nav_order: 750
 description: Aider supports prompt caching for cost savings and faster coding.
 ---

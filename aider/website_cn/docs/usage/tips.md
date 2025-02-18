@@ -1,5 +1,5 @@
 ---
-parent: Usage
+parent: 使用指南
 nav_order: 25
 description: Tips for AI pair programming with aider.
 ---
