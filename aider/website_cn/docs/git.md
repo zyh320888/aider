@@ -1,73 +1,61 @@
 ---
 parent: 更多信息
 nav_order: 100
-description: Aider is tightly integrated with git.
+description: Aider与Git深度集成。
 ---
 
-# Git integration
+# Git集成
 
-Aider works best with code that is part of a git repo.
-Aider is tightly integrated with git, which makes it easy to:
+Aider在与Git仓库配合使用时效果最佳。Aider与Git深度集成，这使得您可以轻松：
 
-  - Use the `/undo` command to instantly undo any AI changes that you don't like.
-  - Go back in the git history to review the changes that aider made to your code
-  - Manage a series of aider's changes on a git branch
+- 使用`/undo`命令立即撤销任何不满意的AI更改
+- 回溯Git历史记录查看Aider对代码的修改
+- 在Git分支上管理Aider的系列更改
 
-Aider uses git in these ways:
+Aider通过以下方式使用Git：
 
-- It asks to create a git repo if you launch it in a directory without one.
-- Whenever aider edits a file, it commits those changes with a descriptive commit message. This makes it easy to undo or review aider's changes. 
-- Aider takes special care before editing files that already have uncommitted changes (dirty files). Aider will first commit any preexisting changes with a descriptive commit message. 
-This keeps your edits separate from aider's edits, and makes sure you never lose your work if aider makes an inappropriate change.
+- 如果在非Git目录启动，Aider会提示创建Git仓库
+- 每次编辑文件后，都会用描述性提交信息进行提交，便于撤销或审查更改
+- 在编辑已有未提交更改（脏文件）前，Aider会先提交现有更改。这可以将您的编辑与Aider的修改分开，确保不会因不当修改丢失工作
 
-## In-chat commands
+## 聊天命令
 
-Aider also allows you to use 
-[in-chat commands](/docs/usage/commands.html)
-to perform git operations:
+您可以使用[聊天命令](/docs/usage/commands.html)执行Git操作：
 
-- `/diff` will show all the file changes since the last message you sent.
-- `/undo` will undo and discard the last change.
-- `/commit` to commit all dirty changes with a sensible commit message.
-- `/git` will let you run raw git commands to do more complex management of your git history.
+- `/diff` 显示自上次消息以来的所有文件更改
+- `/undo` 撤销并丢弃最后一次更改
+- `/commit` 用合理的提交信息提交所有脏更改
+- `/git` 允许运行原始Git命令进行更复杂的历史管理
 
-You can also manage your git history outside of aider with your preferred git tools.
+您也可以使用其他Git工具管理历史记录。
 
-## Disabling git integration
+## 禁用Git集成
 
-While it is not recommended, you can disable aider's use of git in a few ways:
+虽然不推荐，但可以通过以下方式禁用Git集成：
 
-  - `--no-auto-commits` will stop aider from git committing each of its changes.
-  - `--no-dirty-commits` will stop aider from committing dirty files before applying its edits.
-  - `--no-git` will completely stop aider from using git on your files. You should ensure you are keeping sensible backups of the files you are working with.
+- `--no-auto-commits` 停止自动提交Aider的每次更改
+- `--no-dirty-commits` 停止在编辑前提交脏文件
+- `--no-git` 完全禁用Git功能（需自行做好文件备份）
 
-## Commit messages
+## 提交信息
 
-Aider sends the `--weak-model` a copy of the diffs and the chat history
-and asks it to produce a commit message.
-By default, aider creates commit messages which follow
-[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+Aider会向`--weak-model`发送差异和聊天记录来生成遵循[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)规范的提交信息。
 
-You can customize the
-[commit prompt](https://github.com/Aider-AI/aider/blob/main/aider/prompts.py#L5)
-with the `--commit-prompt` option.
-You can place that on the command line, or 
-[configure it via a config file or environment variables](https://aider.chat/docs/config.html).
+可通过`--commit-prompt`选项自定义[提交提示](https://github.com/Aider-AI/aider/blob/main/aider/prompts.py#L5)，支持命令行配置或[配置文件/环境变量](https://aider.chat/docs/config.html)。
 
+## 提交归属
 
-## Commit attribution
+Aider通过以下方式标记其参与的提交：
 
-Aider marks commits that it either authored or committed.
+- 当Aider创作提交时，Git作者和提交者元数据会附加"(aider)"
+- 当仅提交现有更改时，提交者元数据附加"(aider)"
 
-- If aider authored the changes in a commit, they will have "(aider)" appended to the git author and git committer name metadata.
-- If aider simply committed changes (found in dirty files), the commit will have "(aider)" appended to the git committer name metadata.
+可用选项控制元数据：
+- `--no-attribute-author` 禁用作者元数据标记
+- `--no-attribute-committer` 禁用提交者元数据标记
 
-You can use `--no-attribute-author` and `--no-attribute-committer` to disable
-modification of the git author and committer name fields.
+提交信息前缀选项：
+- `--attribute-commit-message-author` 在Aider创作的提交前加'aider: '前缀
+- `--attribute-commit-message-committer` 为所有提交添加'aider: '前缀
 
-Additionally, you can use the following options to prefix commit messages:
-
-- `--attribute-commit-message-author`: Prefix commit messages with 'aider: ' if aider authored the changes.
-- `--attribute-commit-message-committer`: Prefix all commit messages with 'aider: ', regardless of whether aider authored the changes or not.
-
-Both of these options are disabled by default, but can be useful for easily identifying changes made by aider.
+（默认关闭这些前缀选项，但有助于识别Aider的更改）
