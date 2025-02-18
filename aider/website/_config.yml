@@ -3,7 +3,8 @@ url: "https://aider.chat"
 
 lang: en
 languages: ["en", "zh-CN"]
-default_lang: en
+default_lang: "en"
+languages_folder: "_languages"
 exclude_from_localizations: ["assets", "images"]
 
 collections:
