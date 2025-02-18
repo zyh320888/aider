@@ -1,17 +1,6 @@
 theme: just-the-docs
 url: "https://aider.chat"
 
-lang: en
-languages: ["en", "zh-CN"]
-default_lang: "en"
-languages_folder: "_languages"
-exclude_from_localizations: ["assets", "images"]
-
-collections:
-  docs:
-    output: true
-    permalink: /:lang/:path/
-
 # Analytics configuration
 analytics:
   enabled: false  # Single switch to control analytics and cookie consent
@@ -22,8 +11,6 @@ plugins:
   - jekyll-redirect-from
   - jekyll-sitemap
   - jekyll-feed
-  - jekyll-multiple-languages-plugin
-
 
 defaults:
   - scope:
@@ -54,17 +41,6 @@ nav_external_links:
     url: "https://github.com/Aider-AI/aider"
   - title: "Discord"
     url: "https://discord.gg/Tv2uQnR88V"
-
-# Language settings
-language_settings:
-  default_lang: "en"
-  available_languages:
-    en:
-      name: "English"
-      url: "/en/"
-    zh-CN:
-      name: "中文"
-      url: "/zh-CN/"
 
 repository: Aider-AI/aider
 
