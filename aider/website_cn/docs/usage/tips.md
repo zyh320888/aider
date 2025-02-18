@@ -1,79 +1,65 @@
 ---
 parent: 使用指南
 nav_order: 25
-description: Tips for AI pair programming with aider.
+description: 使用 AI 结对编程时的实用技巧
 ---
 
-# Tips
+# 高效技巧
 
-## Just add the files that need to be changed to the chat
+## 仅添加需要修改的文件到对话
 
-Take a moment and think about which files will need to be changed.
-Aider can often figure out which files to edit all by itself, but the most efficient approach is for you to add the files to the chat.
+花时间仔细分析哪些文件需要修改。虽然 aider 通常能自行判断需要编辑的文件，但最高效的方式是主动将目标文件添加到对话中。
 
-## Don't add lots of files to the chat
+## 避免添加过多文件
 
-Just add the files you think need to be edited.
-Too much irrelevant code will distract and confuse the LLM.
-Aider uses a [map of your entire git repo](https://aider.chat/docs/repomap.html)
-so is usually aware of relevant classes/functions/methods elsewhere in your code base.
-It's ok to add 1-2 highly relevant files that don't need to be edited,
-but be selective.
+只添加你认为需要编辑的文件。过多无关代码会分散 LLM 的注意力。aider 通过[代码仓库地图](https://aider.chat/docs/repomap.html)了解整个代码库结构，通常能识别相关类/函数/方法。可以添加 1-2 个高度相关但不需要修改的文件，但请保持选择性。
 
-## Break your goal down into bite sized steps
+## 分解任务为可执行步骤
 
-Do them one at a time. 
-Adjust the files added to the chat as you go: `/drop` files that don't need any more changes, `/add` files that need changes for the next step.
+分步实施目标：
+1. 使用 `/drop` 移除已完成修改的文件
+2. 使用 `/add` 添加下一步需要修改的文件
+3. 逐步推进每个子任务
 
-## For complex changes, discuss a plan first
+## 复杂变更先规划后执行
 
-Use the [`/ask` command](modes.html) to make a plan with aider.
-Once you are happy with the approach, just say "go ahead" without the `/ask` prefix.
+对于复杂修改：
+1. 使用 [`/ask 命令](modes.html) 与 aider 制定实施方案
+2. 确认方案可行后，直接输入"开始执行"（无需加/ask前缀）
 
-## If aider gets stuck
+## 遇到卡顿时可尝试
 
-- Use `/clear` to discard the chat history and make a fresh start.
-- Can you `/drop` any extra files?
-- Use `/ask` to discuss a plan before aider starts editing code.
-- Use the [`/model` command](commands.html) to switch to a different model and try again. Switching between GPT-4o and Sonnet will often get past problems.
-- If aider is hopelessly stuck,
-just code the next step yourself and try having aider code some more after that.
-Take turns and pair program with aider.
+- 使用 `/clear` 清空对话历史重新开始
+- 检查是否可 `/drop` 多余文件
+- 切换不同模型（通过 [`/model 命令](commands.html)），GPT-4o 和 Claude Sonnet 交替使用常能突破瓶颈
+- 当 aider 完全卡住时，可手动完成当前步骤后再继续协作
 
-## Creating new files
+## 新建文件规范流程
 
-If you want aider to create a new file, add it to the repository first with `/add <file>`.
-This way aider knows this file exists and will write to it. 
-Otherwise, aider might write the changes to an existing file.
-This can happen even if you ask for a new file, as LLMs tend to focus a lot
-on the existing information in their contexts.
+可靠的新建文件步骤：
+1. 先用 `/add <文件名>` 声明文件存在
+2. 再指示 aider 编写内容
+❗ 注意：直接要求新建文件可能导致内容被写入现有文件，因为 LLM 会优先关注上下文中的已有文件
 
-## Fixing bugs and errors
+## 调试与错误处理
 
-If your code is throwing an error, 
-use the [`/run` command](commands.html)
-to share the error output with the aider.
-Or just paste the errors into the chat. Let the aider figure out how to fix the bug.
+高效排错方法：
+- 使用 [`/run 命令](commands.html) 直接执行并捕获错误输出
+- 将错误信息粘贴到对话中让 aider 分析
+- 测试失败时通过 [`/test 命令](lint-test.html) 运行测试并共享结果
 
-If test are failing, use the [`/test` command](lint-test.html)
-to run tests and
-share the error output with the aider.
+## 文档支持策略
 
-## Providing docs
+保持 API 准确性的方法：
+1. 直接粘贴相关文档片段到对话
+2. 在消息中包含文档 URL（例："添加类似此文档的提交按钮 https://ui.shadcn.com/docs/components/button"）
+3. 使用 [`/read 命令](commands.html) 读取本地文档文件
+4. 建立[编码规范文件](conventions.html) 保持长期一致性
 
-LLMs know about a lot of standard tools and libraries, but may get some of the fine details wrong about API versions and function arguments.
+## 交互控制技巧
 
-You can provide up-to-date documentation in a few ways:
-
-- Paste doc snippets into the chat.
-- Include a URL to docs in your chat message
-and aider will scrape and read it. For example: `Add a submit button like this https://ui.shadcn.com/docs/components/button`. 
-- Use the [`/read` command](commands.html) to read doc files into the chat from anywhere on your filesystem.
-- If you have coding conventions or standing instructions you want aider to follow, consider using a [conventions file](conventions.html).
-
-## Interrupting & inputting
-
-Use Control-C to interrupt aider if it isn't providing a useful response. The partial response remains in the conversation, so you can refer to it when you reply with more information or direction.
+- 使用 Control-C 中断非有效响应（部分响应保留在对话中便于参考）
+- 通过[多行输入模式](multi-line.md) 处理复杂指令
 
 {% include multi-line.md %}
 
