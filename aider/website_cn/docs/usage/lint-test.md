@@ -1,76 +1,41 @@
 ---
 parent: 使用指南
 nav_order: 900
-description: Automatically fix linting and testing errors.
+description: Aider 可以在每次代码修改后自动进行代码检查和测试，帮助识别并修复AI引入的问题。
 ---
 
-# Linting and testing
+# 代码检查与测试
 
-Aider can automatically lint and test your code
-every time it makes changes.
-This helps identify and repair any problems introduced
-by the AI edits.
+Aider 会在每次修改代码后自动进行代码检查和测试，帮助识别并修复由AI编辑引入的问题。
 
-## Linting
+## 代码检查
 
-Aider comes with built in linters for 
-[most popular languages](/docs/languages.html)
-and will automatically lint code in these languages.
+Aider 内置支持[大多数流行语言](/docs/languages.html)的代码检查，会自动检查这些语言的代码。
 
-Or you can specify your favorite linter
-with the `--lint-cmd <cmd>` switch.
-The lint command should accept the filenames
-of the files to lint. 
-If there are linting errors, aider expects the
-command to print them on stdout/stderr
-and return a non-zero exit code.
-This is how most linters normally operate.
+您也可以通过 `--lint-cmd <cmd>` 参数指定自定义的检查命令。该命令应接受要检查的文件名作为参数。如果存在检查错误，Aider 期望命令能在标准输出/错误中显示错误信息并以非零状态码退出（这是大多数检查工具的正常行为）。
 
-By default, aider will lint any files which it edits.
-You can disable this with the `--no-auto-lint` switch.
+默认情况下，Aider 会检查所有编辑过的文件。您可以使用 `--no-auto-lint` 参数关闭此功能。
 
-## Testing
+## 测试
 
-You can run tests with `/test <test-command>`.
-Aider will run the test command without any arguments.
-If there are test errors, aider expects the
-command to print them on stdout/stderr
-and return a non-zero exit code.
+您可以使用 `/test <测试命令>` 来运行测试。Aider 会直接执行测试命令而不带任何参数。如果测试失败，Aider 期望命令能在标准输出/错误中显示错误信息并以非零状态码退出。
 
-Aider will try and fix any errors
-if the command returns a non-zero exit code.
+当命令返回非零状态码时，Aider 会尝试自动修复错误。
 
-You can configure aider to run your test suite
-after each time the AI edits your code
-using the `--test-cmd <test-command>` and
-`--auto-test` switch.
+您可以通过 `--test-cmd <测试命令>` 和 `--auto-test` 参数配置 Aider 在每次代码修改后自动运行测试。
 
 
 
-## Compiled languages
+## 编译型语言
 
-If you want to have aider compile code after each edit, you
-can use the lint and test commands to achieve this.
+如果您希望 Aider 在每次编辑后编译代码，可以通过以下方式实现：
 
-- You might want to recompile each file which was modified
-to check for compile errors.
-To do this,
-provide a `--lint-cmd` which both lints and compiles the file.
-You could create a small shell script for this.
-- You might want to rebuild the entire project after files
-are edited to check for build errors.
-To do this,
-provide a `--test-cmd` which both builds and tests the project.
-You could create a small shell script for this.
-Or you may be able to do something as simple as
-`--test-cmd "dotnet build && dotnet test"`.
+- 要检查单个文件的编译错误：使用 `--lint-cmd` 指定同时包含代码检查和编译的命令（可以创建一个小型 shell 脚本实现）
+- 要检查整个项目的构建错误：使用 `--test-cmd` 指定同时包含构建和测试的命令（也可以创建脚本），或者直接使用类似 `--test-cmd "dotnet build && dotnet test"` 的命令
 
-## Manually running code
+## 手动运行代码
 
-You can use the `/run` command in the chat to run your code
-and optionally share the output with aider.
-This can be useful to share error messages or to show aider
-the code's output before asking for changes or corrections.
+您可以使用聊天中的 `/run` 命令运行代码，并选择将输出分享给 Aider。这在需要展示错误信息或代码运行结果时非常有用。
 
 <div class="chat-transcript" markdown="1">
 > Aider v0.43.5-dev  
@@ -80,11 +45,11 @@ the code's output before asking for changes or corrections.
 ```
 Traceback (most recent call last):  
  File "myscript.py", line 22, in \<module\ 
-   raise ValueError("something bad happened")  
-ValueError: something bad happened  
+   raise ValueError("发生了一些错误")  
+ValueError: 发生了一些错误  
 ```
 
-> Add the output to the chat? y  
+> 是否将输出添加到聊天？ y  
 
 </div>
 
