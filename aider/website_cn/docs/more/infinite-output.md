@@ -1,56 +1,37 @@
----
+--- 
 parent: 更多信息
 nav_order: 480
-description: Aider can handle "infinite output" from models that support prefill.
+description: Aider可以通过支持预填充的模型实现"无限输出"。
 ---
 
-# Infinite output
+# 无限输出
 
-LLM providers limit how much output a model can generate from a single request.
-This is usually called the output token limit.
+LLM服务提供商通常会限制单个请求的输出量，这通常称为输出令牌限制。
 
-Aider is able to work around this limit with models that support
-"prefilling" the assistant response.
-When you use aider with a model that supports prefill, you will see
-"infinite output" noted in the announcement lines displayed at launch:
+对于支持"预填充"助手响应的模型，Aider能够突破这一限制。当您使用支持预填充的模型时，启动时会显示"infinite output"的提示：
 
 ```
 Aider v0.58.0
-Main model: claude-3-5-sonnet-20240620 with diff edit format, prompt cache, infinite output
+主模型: claude-3-5-sonnet-20240620 支持差异编辑格式、提示缓存和无限输出
 ```
 
-Models that support prefill can be primed to think they started their response
-with a specific piece of text.
-You can put words in their mouth, and they will continue generating
-text from that point forward.
+支持预填充的模型可以被设定为从特定文本开始响应。当Aider从模型收集代码编辑遇到输出令牌限制时，它会用部分响应预填充发起新的LLM请求，提示模型从断点处继续生成内容。这种预填充机制可以重复进行，从而实现超长输出。跨越这些输出限制边界的文本拼接需要一些启发式方法，但通常相当可靠。
 
-When aider is collecting code edits from a model and
-it hits the output token limit,
-aider simply initiates another LLM request with the partial
-response prefilled.
-This prompts the model to continue where it left off,
-generating more of the desired response.
-This prefilling of the partially completed response can be repeated,
-allowing for very long outputs.
-Joining the text across these output limit boundaries 
-requires some heuristics, but is typically fairly reliable.
-
-Aider supports "infinite output" for models that support "prefill",
-such as:
+目前支持"无限输出"的预填充模型包括：
 
 <!--[[[cog
 import requests
 import json
 
-# Fetch the JSON data
+# 获取JSON数据
 url = "https://raw.githubusercontent.com/BerriAI/litellm/refs/heads/main/model_prices_and_context_window.json"
 response = requests.get(url)
 data = json.loads(response.text)
 
-# Process the JSON to find models with supports_assistant_prefill=true
+# 筛选支持预填充的模型
 prefill_models = [model for model, info in data.items() if info.get('supports_assistant_prefill') == True]
 
-# Generate the list of models
+# 生成模型列表
 model_list = "\n".join(f"- {model}" for model in sorted(prefill_models))
 
 cog.out(model_list)
