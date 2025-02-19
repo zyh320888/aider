@@ -1,122 +1,107 @@
 ---
 parent: 更多信息
 nav_order: 500
-description: Opt-in, anonymous, no personal info.
+description: 可选的匿名数据收集，不包含个人信息
 ---
 
-# Analytics
+# 分析数据
 
-Aider can collect anonymous analytics to help
-improve aider's ability to work with LLMs, edit code and complete user requests.
+Aider 可以收集匿名分析数据以帮助改进其使用大语言模型、编辑代码和完成用户请求的能力。
 
-## Opt-in, anonymous, no personal info
+## 可选的匿名数据，不包含个人信息
 
-Analytics are only collected if you agree and opt-in. 
-Aider respects your privacy and never collects your code, chat messages, keys or
-personal info.
+只有在您同意并选择加入时才会收集分析数据。
+Aider 尊重您的隐私，从不收集您的代码、聊天信息、密钥或个人信息。
 
-Aider collects information on:
+Aider 收集的信息包括：
 
-- which LLMs are used and with how many tokens,
-- which of aider's edit formats are used,
-- how often features and commands are used,
-- information about exceptions and errors,
-- etc
+- 使用的大语言模型及其token消耗量
+- 使用的代码编辑格式
+- 功能和使用命令的频率
+- 异常和错误信息
+- 其他相关信息
 
-These analytics are associated with an anonymous,
-randomly generated UUID4 user identifier.
+这些分析数据会关联一个匿名随机生成的UUID4用户标识符。
 
-This information helps improve aider by identifying which models, edit formats,
-features and commands are most used.
-It also helps uncover bugs that users are experiencing, so that they can be fixed
-in upcoming releases.
+这些信息通过识别最常用的模型、编辑格式、功能和命令来帮助改进aider。同时也有助于发现用户遇到的错误，以便在未来的版本中修复。
 
-## Disabling analytics
+## 禁用分析数据
 
-You can opt out of analytics forever by running this command one time:
+您可以通过运行以下命令永久禁用分析数据收集：
 
 ```
 aider --analytics-disable
 ```
 
-## Enabling analytics
+## 启用分析数据
 
-The `--[no-]analytics` switch controls whether analytics are enabled for the
-current session:
+`--[no-]analytics` 开关控制当前会话是否启用分析数据：
 
-- `--analytics` will turn on analytics for the current session.
-This will *not* have any effect if you have permanently disabled analytics 
-with `--analytics-disable`.
-If this is the first time you have enabled analytics, aider
-will confirm you wish to opt-in to analytics.
-- `--no-analytics` will turn off analytics for the current session.
-- By default, if you don't provide `--analytics` or `--no-analytics`,
-aider will enable analytics for a random subset of users.
-This will never happen if you have permanently disabled analytics 
-with `--analytics-disable`.
-Randomly selected users will be asked if they wish to opt-in to analytics.
+- `--analytics` 会在当前会话启用分析数据。
+如果您已使用`--analytics-disable`永久禁用，该开关将失效。
+如果是首次启用，aider会确认您是否同意加入分析数据收集。
+- `--no-analytics` 会在当前会话禁用分析数据。
+- 默认情况下，如果您不提供`--analytics`或`--no-analytics`参数，
+aider会为随机选择的用户启用分析数据。如果您已使用`--analytics-disable`永久禁用，则不会启用。
+被随机选中的用户会被询问是否同意加入分析数据收集。
 
 
-## Opting in
+## 选择加入
 
-The first time analytics are enabled, you will need to agree to opt-in.
+首次启用分析数据时，需要确认同意加入：
 
 ```
 aider --analytics
 
-Aider respects your privacy and never collects your code, prompts, chats, keys or any personal
-info.
-For more info: https://aider.chat/docs/more/analytics.html
-Allow collection of anonymous analytics to help improve aider? (Y)es/(N)o [Yes]:
+Aider尊重您的隐私，从不收集您的代码、提示词、聊天记录、密钥或任何个人信息。
+更多信息请访问：https://aider.chat/docs/more/analytics.html
+是否允许收集匿名分析数据以帮助改进aider？(Y)是/(N)否 [Yes]：
 ```
 
-If you say "no", analytics will be permanently disabled.
+如果选择"否"，分析数据收集将被永久禁用。
 
 
-## Details about data being collected
+## 数据收集详情
 
-### Sample analytics data
+### 分析数据示例
 
-To get a better sense of what type of data is collected, you can review some
-[sample analytics logs](https://github.com/aider-ai/aider/blob/main/aider/website/assets/sample-analytics.jsonl).
-These are the last 1,000 analytics events from the author's
-personal use of aider, updated regularly.
-
-
-### Analytics code
-
-Since aider is open source, all the places where aider collects analytics
-are visible in the source code.
-They can be viewed using 
-[GitHub search](https://github.com/search?q=repo%3Aaider-ai%2Faider+%22.event%28%22&type=code).
+要了解收集的数据类型，您可以查看
+[示例分析日志](https://github.com/aider-ai/aider/blob/main/aider/website/assets/sample-analytics.jsonl)。
+这些是作者个人使用aider的最后1000条分析事件，会定期更新。
 
 
-### Logging and inspecting analytics
+### 分析代码
 
-You can get a full log of the analytics that aider is collecting,
-in case you would like to audit or inspect this data.
+由于aider是开源项目，所有收集分析数据的代码都可以在源码中查看。
+可以通过
+[GitHub搜索](https://github.com/search?q=repo%3Aaider-ai%2Faider+%22.event%28%22&type=code)
+查看相关代码。
+
+
+### 记录和查看分析数据
+
+您可以获取aider收集的所有分析数据的完整日志，以便审核或检查：
 
 ```
 aider --analytics-log filename.jsonl
 ```
 
-If you want to just log analytics without reporting them, you can do:
+如果只想记录分析数据但不发送，可以：
 
 ```
 aider --analytics-log filename.jsonl --no-analytics
 ```
 
 
-## Reporting issues
+## 问题反馈
 
-If you have concerns about any of the analytics that aider is collecting
-or our data practices
-please contact us by opening a
-[GitHub Issue](https://github.com/aider-ai/aider/issues).
+如果您对aider收集的分析数据或我们的数据实践有任何疑问，
+请通过提交
+[GitHub Issue](https://github.com/aider-ai/aider/issues)
+联系我们。
 
-## Privacy policy
+## 隐私政策
 
-Please see aider's
-[privacy policy](/docs/legal/privacy.html)
-for more details.
+更多详细信息请参阅aider的
+[隐私政策](/docs/legal/privacy.html)。
 
