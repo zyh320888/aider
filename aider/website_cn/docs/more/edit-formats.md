@@ -1,26 +1,23 @@
 ---
 parent: 更多信息
 nav_order: 490
-description: Aider uses various "edit formats" to let LLMs edit source files.
+description: Aider 使用多种"编辑格式"让大语言模型编辑源代码文件。
 ---
 
-# Edit formats
+# 编辑格式
 
-Aider uses various "edit formats" to let LLMs edit source files.
-Different models work better or worse with different edit formats.
-Aider is configured to use the optimal format for most popular, common models.
-You can always force use of a specific edit format with 
-the `--edit-format` switch.
+Aider 使用多种"编辑格式"让大语言模型编辑源代码文件。
+不同模型对不同编辑格式的适配性有所差异。
+Aider 默认会为大多数主流模型选择最优格式。
+您始终可以使用 `--edit-format` 参数强制指定特定的编辑格式。
 
-## whole
+## 完整文件格式（whole）
 
-The "whole" edit format is the simplest possible editing format.
-The LLM is instructed to return a full, updated
-copy of each source file that needs changes.
-While simple, it can be slow and costly because the LLM has to return
-the *entire file* even if just a few lines are edited.
+这是最简单的编辑格式。
+LLM 被要求返回需要修改的源文件的完整更新副本。
+虽然简单，但可能效率较低且成本较高，因为即使只修改几行代码，LLM 也必须返回整个文件内容。
 
-The whole format expects the file path just before the fenced file content:
+格式要求文件路径直接放在代码块标记之前：
 
 ````
 show_greeting.py
@@ -35,15 +32,12 @@ if __name__ == '__main__':
 ```
 ````
 
+## 差异格式（diff）
 
-## diff
+该格式要求 LLM 以搜索/替换块序列的形式指定文件修改。
+这是种高效格式，因为模型只需返回文件中有变化的部分。
 
-The "diff" edit format asks the LLM to specify file edits as a series of search/replace blocks.
-This is an efficient format, because the model only needs to return parts of the file
-which have changes.
-
-Edits are formatted using a syntax similar to the git merge conflict resolution markings,
-with the file path right before a fenced block:
+编辑使用类似 git 合并冲突标记的语法，文件路径直接放在代码块前：
 
 ````
 mathweb/flask/app.py
@@ -57,12 +51,10 @@ from flask import Flask
 ```
 ````
 
-## diff-fenced
+## 围栏差异格式（diff-fenced）
 
-The "diff-fenced" edit format is based on the diff format, but
-the file path is placed inside the fence.
-It is primarily used with the Gemini family of models,
-which often fail to conform to the fencing approach specified in the diff format.
+该格式基于差异格式，但文件路径放在代码块标记内部。
+主要用于 Gemini 系列模型，这些模型常常无法严格遵守标准差异格式的围栏要求。
 
 ````
 ```
@@ -76,19 +68,13 @@ from flask import Flask
 ```
 ````
 
-## udiff
+## 统一差异格式（udiff）
 
-The "udiff" edit format is based on the widely used unified diff format,
-but [modified and simplified](/2023/12/21/unified-diffs.html).
-This is an efficient format, because the model only needs to return parts of the file
-which have changes.
+该格式基于广泛使用的统一差异格式，但[经过修改和简化](/2023/12/21/unified-diffs.html)。
+这是种高效格式，因为模型只需返回文件中发生变化的部分。
 
-It was mainly used to the GPT-4 Turbo family of models,
-because it reduced their "lazy coding" tendencies.
-With other edit formats the GPT-4 Turbo models tended to elide
-large sections of code and replace them with "# ... original code here ..."
-style comments.
-
+该格式主要适用于 GPT-4 Turbo 系列模型，因为它能减少模型的"惰性编码"倾向。
+使用其他格式时，GPT-4 Turbo 模型倾向于用"# ...原有代码..." 风格的注释来省略大段代码。
 
 ````
 ```diff
@@ -102,15 +88,8 @@ style comments.
 ```
 ````
 
-## editor-diff and editor-whole
+## 编辑器差异格式（editor-diff）和编辑器完整格式（editor-whole）
 
-These are streamlined versions of the diff and whole formats, intended to be used
-with `--editor-edit-format` when using
-[architect mode](/docs/usage/modes.html).
-The actual edit format is the same, but aider uses a simpler prompt that
-is more narrowly focused on just editing the file as opposed to
-solving the coding task.
-The architect model resolves the coding task and
-provides plain text instructions about which file changes need to be made.
-The editor interprets those instructions to produce the
-syntactically correct diff or whole edits.
+这些是差异格式和完整文件格式的简化版本，当使用[架构模式](/docs/usage/modes.html)时，可通过 `--editor-edit-format` 参数启用。
+实际编辑格式相同，但 Aider 会使用更简洁的提示词，专注于文件编辑本身而非解决编码任务。
+架构模型负责解决编码任务并提供需要修改文件的纯文本说明，编辑器模型则根据这些说明生成语法正确的差异或完整文件修改。
