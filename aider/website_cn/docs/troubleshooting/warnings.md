@@ -3,10 +3,10 @@ parent: 故障排除
 nav_order: 20
 ---
 
-# Model warnings
+# 模型警告
 
 {% include model-warnings.md %}
 
-## More help
+## 更多帮助
 
 {% include help.md %}
