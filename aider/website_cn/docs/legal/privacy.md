@@ -3,102 +3,100 @@ parent: 更多信息
 nav_order: 500
 ---
 
-# Privacy policy
+# 隐私政策
 
-[Aider AI LLC](/docs/faq.html#what-is-aider-ai-llc)
-(“Aider,” “we,” “our,” and/or “us”) values the privacy of individuals who use our website, programming tools, and related services (collectively, our “Services”). This privacy policy (the “Privacy Policy”) explains how we collect, use, and disclose information from users of our Services. By using our Services, you agree to the collection, use, disclosure, and procedures this Privacy Policy describes. 
+[Aider AI LLC](/docs/faq.html#什么是-aider-ai-llc)
+（以下简称"Aider"、"我们"）重视用户隐私。本隐私政策说明了我们如何收集、使用和披露通过网站、编程工具及相关服务（统称"服务"）获取的信息。使用我们的服务即表示您同意本政策所述的信息处理方式。
 
-### Information We Collect
+### 我们收集的信息
 
-We may collect a variety of information from or about you or your devices from various sources, as described below.
+我们可能通过以下渠道收集您或您设备的各类信息：
 
-### A. Information You Provide to Us.
+### A. 您提供的信息
 
-**Communications.** If you contact us directly, we may receive additional information about you, such as your name, email address, the contents of a message or attachments that you may send to us, and other information you choose to provide.
+**沟通信息**：当您直接联系我们时，我们可能收到您的姓名、电子邮箱、消息内容、附件及其他您选择提供的信息。
 
-### B. Information We Collect When You Use Our Services. 
+### B. 使用服务时收集的信息
 
-**Device Information.** We may receive information about the device and software you use to access our Services, including IP address, device type, device identifiers, web browser type and version, and operating system version.
+**设备信息**：包括IP地址、设备类型、设备标识符、浏览器类型及版本、操作系统版本等。
 
-**Usage Information.** We may automatically receive information about your interactions with our Services, like the pages or other content you view, referrer information (the website you visited before coming to our Services), and the dates and times of your visits.
+**使用信息**：包括访问页面、引荐来源（访问我们服务前的网站）、访问日期时间等交互数据。
 
-**Analytics Information.** If you use our programming tools, we may receive information about your interactions with the tools, such as how often certain features or commands are used, information about exceptions and errors, and which large language models are used. This information is associated with a randomly generated identifier, not any directly identifiable user information such as your name or email address. Please see the “Your Choices” section below for information on how to disable the collection of this information.
+**分析信息**：使用编程工具时，我们会收集功能使用频率、异常错误信息、使用的大语言模型等信息。这些数据与随机生成的标识符关联，不会包含姓名、邮箱等直接标识信息。您可以在下文"您的选择"部分禁用此收集。
 
-**Information from Cookies and Other Tracking Technologies.** We and our third-party partners may collect information about your activities on our Services using cookies, pixel tags, SDKs, or other tracking technologies. Our third-party partners, such as analytics and security partners, may also use these technologies to collect information about your online activities over time and across different services. 
-
-
-### How We Use the Information We Collect
-
-We use the information we collect:
- 
-- To provide, maintain, improve, and enhance our Services;
-- To understand and analyze how you use our Services and develop new products, services, features, and functionality;
-- To communicate with you, provide you with updates and other information relating to our Services, provide information that you request, respond to comments and questions, and otherwise provide customer support;
-- To generate anonymized or aggregate data containing only de-identified, non-personal information that we may use for any lawful purposes such as to publish reports;
-- To find and prevent fraud and abuse, and respond to trust and safety issues that may arise; 
-- For compliance purposes, including enforcing our legal rights, or as may be required by applicable laws and regulations or requested by any judicial process or governmental agency; and
-- For other purposes for which we provide specific notice at the time the information is collected.
-
-### How We Disclose the Information We Collect
-
-**Affiliates.** We may disclose any information we receive to our current or future affiliates for any of the purposes described in this Privacy Policy.  
-
-**Vendors and Service Providers.** We may disclose any information we receive to vendors and service providers retained in connection with the provision of our Services. 
-
-**Analytics Partners.** We may use analytics services to collect and process certain analytics data to improve our Services, such as by improving the ability of our programming tools to work with LLMs, edit code, and complete user requests. 
-
-**As Required By Law and Similar Disclosures.** We may access, preserve, and disclose your information if we believe doing so is required or appropriate to: (a) comply with law enforcement requests and legal process, such as a court order or subpoena; (b) respond to your requests; or (c) protect your, our, or others’ rights, property, or safety. For the avoidance of doubt, the disclosure of your information may occur if you post any objectionable content on or through the Services.
-
-**Merger, Sale, or Other Asset Transfers.** We may transfer your information to service providers, advisors, potential transactional partners, or other third parties in connection with the consideration, negotiation, or completion of a corporate transaction in which we are acquired by or merged with another company or we sell, liquidate, or transfer all or a portion of our assets. The use of your information following any of these events will be governed by the provisions of this Privacy Policy in effect at the time the applicable information was collected.
-
-**Consent.** We may also disclose your information with your permission.
-
-### Your Choices
-
-**Analytics Information.** You can turn off analytics collection when using our programming tools. Please visit this 
-[documentation page](/docs/more/analytics.html)
-for more information about the data collected and your options.
-
-### Third Parties
-
-Our Services may contain links to other websites, products, or services that we do not own or operate. We are not responsible for the privacy practices of these third parties. Please be aware that this Privacy Policy does not apply to your activities on these third-party services or any information you disclose to these third parties. We encourage you to read their privacy policies before providing any information to them.
-
-### Security 
-
-We make reasonable efforts to protect your information by using physical and electronic safeguards designed to improve the security of the information we maintain. However, because no electronic transmission or storage of information can be entirely secure, we can make no guarantees as to the security or privacy of your information.
-
-### Children’s Privacy
-
-We do not knowingly collect, maintain, or use personal information from children under 18 years of age, and no part of our Service(s) is directed to children. If you learn that a child has provided us with personal information in violation of this Privacy Policy, then you may alert us at privacy@aider.chat.
-
-### International Visitors
-
-Our Services are hosted in the United States and intended for visitors located within the United States. If you choose to use the Services from the European Union or other regions of the world with laws governing data collection and use that may differ from U.S. law, then please note that you are transferring your personal information outside of those regions to the U.S. for storage and processing. We may also transfer your data from the U.S. to other countries or regions in connection with storage and processing of data, fulfilling your requests, and operating the Services. By providing any information, including personal information, on or to the Services, you consent to such transfer, storage, and processing. 
+**Cookie与追踪技术**：我们及第三方合作伙伴可能使用Cookie、像素标签、SDK等技术收集您的活动信息。第三方合作伙伴可能跨服务追踪您的在线活动。
 
 
-### Changes to this Privacy Policy
+### 信息使用方式
 
-We will post any adjustments to the Privacy Policy on this page, and the revised version will be effective when it is posted. If we materially change the ways in which we use or disclose personal information previously collected from you through the Services, we will notify you through the Services, by email, or other communication.
+我们收集的信息用于：
 
-### Contact Information
+- 提供、维护和改进服务
+- 分析使用情况并开发新产品功能
+- 发送服务更新、响应咨询及提供支持
+- 生成匿名汇总数据用于报告等合法用途
+- 防范欺诈和滥用，处理信任与安全问题
+- 履行法律义务和执行合法权利
+- 信息收集时声明的其他用途
 
-If you have any questions, comments, or concerns about our processing activities, please email us at privacy@aider.chat.
+### 信息披露
+
+**关联公司**：为实现本政策目的，我们可能向现有或未来关联公司披露信息。
+
+**服务提供商**：向协助提供服务的供应商披露必要信息。
+
+**分析合作伙伴**：与第三方分析服务合作改进编程工具功能。
+
+**依法披露**：根据法律要求、响应政府请求，或为保护各方权益时披露。
+
+**企业交易**：在公司并购、资产出售等交易中可能转移信息，受当时有效的隐私政策约束。
+
+**经您同意**：在获得您授权时披露。
+
+### 您的选择
+
+**分析信息**：您可以通过访问[此文档页面](/docs/more/analytics.html)了解如何禁用分析数据收集。
+
+### 第三方服务
+
+我们的服务可能包含第三方链接，其隐私实践不受本政策约束。建议您阅读第三方隐私政策。
+
+### 安全措施
+
+我们采取合理安全措施保护信息，但无法保证绝对安全。
+
+### 儿童隐私
+
+我们不会故意收集18岁以下儿童信息。如发现相关情况请联系privacy@aider.chat。
+
+### 国际用户
+
+我们的服务托管在美国，国际用户请注意数据会传输至美国处理。
+
+
+### 政策更新
+
+本政策的重大变更将通过服务通知、邮件等方式告知。
+
+### 联系我们
+
+如有疑问请联系 privacy@aider.chat。
 
 ----
 
 <p class="post-date">
-Last updated 
+最后更新于
 <!--[[[cog
 import subprocess
 import datetime
 
-result = subprocess.run(['git', 'log', '-1', '--format=%ct', 'aider/website/docs/legal/privacy.md'], capture_output=True, text=True)
+result = subprocess.run(['git', 'log', '-1', '--format=%ct', 'aider/website_cn/docs/legal/privacy.md'], capture_output=True, text=True)
 if result.returncode == 0:
     timestamp = int(result.stdout.strip())
     date = datetime.datetime.fromtimestamp(timestamp)
-    cog.out(f"{date.strftime('%B %d, %Y.')}")
+    cog.out(f"{date.strftime('%Y年%m月%d日')}")
 ]]]-->
-December 06, 2024.
+2024年12月06日
 <!--[[[end]]]-->
 
 </p>
