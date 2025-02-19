@@ -176,11 +176,24 @@ Aider的统计仅记录"知名"LLM的名称。
 
 ## 能否分享聊天记录？
 
-{: .tip }
-`/git`命令的输出不会包含在聊天上下文中
+可以美观地分享aider聊天记录：
 
-1. 将`.aider.chat.history.md`内容发布为gist
-2. 拼接URL：`https://aider.chat/share/?mdurl=你的gist地址`
+1. 从`.aider.chat.history.md`复制Markdown日志创建github gist，或将原始Markdown发布到网络
+
+   ```
+   https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
+   ```
+
+2. 将gist URL附加到：
+   ```
+   https://aider.chat/share/?mdurl=
+   ```
+   生成如下URL，可以显示终端样式的聊天记录：
+   ```
+   https://aider.chat/share/?mdurl=https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
+   ```
+
+
 
 ## 运行aider时能否手动编辑文件？
 
