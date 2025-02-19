@@ -13,11 +13,11 @@ description: 关于aider的常见问题解答。
 
 ## 如何将所有文件添加到聊天？
 
-用户经常询问如何将仓库中的**大量或全部文件**添加到聊天中。这通常不是一个好主意，可能会带来更多问题而非帮助。
+用户经常询问如何将代码库中的**大量或全部文件**添加到聊天中。这通常不是一个好主意，可能会带来更多问题而非帮助。
 
 最佳做法是考虑完成当前任务需要修改哪些文件，只添加这些文件到聊天中。
 
-当人们想要添加"所有文件"时，通常认为这能为LLM提供代码库的整体上下文。Aider会自动通过分析整个代码库来构建紧凑的[仓库地图](https://aider.chat/2023/10/22/repomap.html)。
+当人们想要添加"所有文件"时，通常认为这能为LLM提供代码库的整体上下文。Aider会自动通过分析整个代码库来构建紧凑的[代码库地图](https://aider.chat/2023/10/22/repomap.html)。
 
 添加大量与当前任务无关的文件会分散LLM的注意力，导致代码生成质量下降甚至文件编辑错误。同时也会增加token消耗成本。
 
@@ -26,11 +26,11 @@ description: 关于aider的常见问题解答。
 - 在聊天中使用带通配符的`/add`命令：`/add src/*.py`
 - 为`/add`命令指定目录名递归添加：`/add src`
 
-## 能否在大型（单体）仓库中使用aider？
+## 能否在大型（单体）代码库中使用aider？
 
-Aider可在任何规模的仓库中使用，但对超大型仓库的响应速度未做专门优化。以下建议可改善性能：
+Aider可在任何规模的代码库中使用，但对超大型代码库的响应速度未做专门优化。以下建议可改善性能：
 
-请先查看[通用使用技巧](/docs/usage/tips.html)，再考虑以下大型仓库专用建议：
+请先查看[通用使用技巧](/docs/usage/tips.html)，再考虑以下大型代码库专用建议：
 
 - 使用`--subtree-only`参数，限制aider只处理当前子目录
 - 创建`.aiderignore`文件（遵循`.gitignore`语法）忽略无关部分。例如：
@@ -52,22 +52,22 @@ Aider可在任何规模的仓库中使用，但对超大型仓库的响应速度
 
 - 使用`--aiderignore <filename>`指定不同的忽略规则文件
 
-## 能否同时使用多个git仓库？
+## 能否同时使用多个git代码库？
 
-当前aider只能处理单个仓库。如需跨仓库协作，可以尝试：
+当前aider只能处理单个代码库。如需跨代码库协作，可以尝试：
 
-1. 在仓库A中使用`/read`命令添加仓库B的关键文件（只读）
-2. 在各仓库中运行`aider --show-repo-map > map.md`生成仓库地图
-3. 在仓库A中`/read`仓库B的地图文件
-4. 使用aider编写跨仓库文档，在需要时`/read`相关文档
+1. 在代码库A中使用`/read`命令添加代码库B的关键文件（只读）
+2. 在各代码库中运行`aider --show-repo-map > map.md`生成代码库地图
+3. 在代码库A中`/read`代码库B的地图文件
+4. 使用aider编写跨代码库文档，在需要时`/read`相关文档
 
-## 如何启用仓库地图？
+## 如何启用代码库地图？
 
-根据使用的LLM，aider可能默认禁用仓库地图：
+根据使用的LLM，aider可能默认禁用代码库地图：
 ```
 Repo-map: disabled
 ```
-这是因为较弱模型容易被仓库地图内容干扰。如需强制启用，可运行`aider --map-tokens 1024`。
+这是因为较弱模型容易被代码库地图内容干扰。如需强制启用，可运行`aider --map-tokens 1024`。
 
 ## 如何在上下文中包含git历史？
 
@@ -98,7 +98,7 @@ Repo-map: disabled
 
 本地运行步骤：
 ```
-# 克隆仓库
+# 克隆代码库
 git clone git@github.com:Aider-AI/aider.git
 
 # 进入项目目录
@@ -158,13 +158,13 @@ tr:hover { background-color: #f5f5f5; }
 </table>
 
 {: .note :}
-Some models show as REDACTED, because they are new or unpopular models.
-Aider's analytics only records the names of "well known" LLMs.
+部分模型显示为REDACTED，因它们是新模型或非主流模型。
+Aider的统计仅记录"知名"LLM的名称。
 <!--[[[end]]]-->
 
 ## 如何统计"aider编写xx%代码"？
 
-通过[git blame](https://github.com/Aider-AI/aider/blob/main/scripts/blame.py)统计每个版本中新增的源代码行数（不含文档和提示文件）。
+通过[git blame统计脚本](https://github.com/Aider-AI/aider/blob/main/scripts/blame.py)分析代码库历史，计算每个版本中新增的源代码行数（仅统计源代码文件，不含文档和提示文件）。
 
 ## 为什么有时代码高亮失效？
 
@@ -175,6 +175,9 @@ Aider's analytics only records the names of "well known" LLMs.
 可尝试用`--chat-language <语言>`明确设置，但LLM可能不遵守。
 
 ## 能否分享聊天记录？
+
+{: .tip }
+`/git`命令的输出不会包含在聊天上下文中
 
 1. 将`.aider.chat.history.md`内容发布为gist
 2. 拼接URL：`https://aider.chat/share/?mdurl=你的gist地址`
