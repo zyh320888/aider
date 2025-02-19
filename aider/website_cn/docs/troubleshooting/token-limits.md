@@ -1,5 +1,5 @@
 ---
-parent: Troubleshooting
+parent: 故障排除
 nav_order: 25
 ---
 

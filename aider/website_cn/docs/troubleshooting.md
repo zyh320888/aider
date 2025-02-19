@@ -1,11 +1,11 @@
 ---
 nav_order: 60
 has_children: true
-description: How to troubleshoot problems with aider and get help.
+description: 如何排除aider的问题并获取帮助。
 ---
 
-# Troubleshooting
+# 故障排除
 
-Below are some approaches for troubleshooting problems with aider.
+以下是使用aider时进行问题排查的一些方法。
 
 {% include help.md %}
