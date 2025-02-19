@@ -17,9 +17,9 @@ description: 关于aider的常见问题解答。
 
 最佳做法是考虑完成当前任务需要修改哪些文件，只添加这些文件到聊天中。
 
-当人们想要添加"所有文件"时，通常认为这能为LLM提供代码库的整体上下文。Aider会自动通过分析整个代码库来构建紧凑的[代码库地图](https://aider.chat/2023/10/22/repomap.html)。
+当人们想要添加"所有文件"时，通常认为这能为大语言模型提供代码库的整体上下文。Aider会自动通过分析整个代码库来构建紧凑的[仓库地图](https://aider.chat/2023/10/22/repomap.html)。
 
-添加大量与当前任务无关的文件会分散LLM的注意力，导致代码生成质量下降甚至文件编辑错误。同时也会增加token消耗成本。
+添加大量与当前任务无关的文件会分散大语言模型的注意力，导致代码生成质量下降甚至文件编辑错误。同时也会增加token消耗成本。
 
 如果仍希望添加多个文件，可以：
 - 启动时使用通配符：`aider src/*.py`
@@ -73,16 +73,16 @@ Repo-map: disabled
 
 在新会话中包含近期git历史：
 1. 使用`/run git diff`命令查看差异：
-   ```
+   ``` 
    /run git diff HEAD~1
    ```
 2. 查看多个提交：
-   ```
+   ``` 
    /run git diff HEAD~3
    ```
-   
+
 查看PR分支差异：
-```
+``` 
 /run git diff one-branch..another-branch
 
 ...
@@ -164,7 +164,7 @@ Aider的统计仅记录"知名"LLM的名称。
 
 ## 如何统计"aider编写xx%代码"？
 
-通过[git blame统计脚本](https://github.com/Aider-AI/aider/blob/main/scripts/blame.py)分析代码库历史，计算每个版本中新增的源代码行数（仅统计源代码文件，不含文档和提示文件）。
+通过[git blame统计脚本](https://github.com/Aider-AI/aider/blob/main/scripts/blame.py)分析仓库历史，计算每个版本中新增的源代码行数（仅统计源代码文件，不含文档和提示文件）。
 
 ## 为什么有时代码高亮失效？
 
