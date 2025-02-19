@@ -1,51 +1,26 @@
 ---
 parent: 更多信息
 nav_order: 200
-description: Aider supports pretty much all popular coding languages.
+description: Aider 支持几乎所有流行的编程语言。
 ---
-# Supported languages
+# 支持的语言
 
-Aider should work well with most popular coding languages.
-This is because top LLMs are fluent in most mainstream languages,
-and familiar with popular libraries, packages and frameworks.
+Aider 能够很好地与大多数主流编程语言配合使用。这是因为顶尖的大语言模型（LLM）精通多数主流语言，并熟悉流行的库、包和框架。
 
-Aider has specific support for linting many languages.
-By default, aider runs the built in linter any time a file is edited.
-If it finds syntax errors, aider will offer to fix them for you.
-This helps catch small code issues and quickly fix them.
+Aider 对许多语言提供了专门的语法检查支持。默认情况下，Aider 在每次文件编辑后都会运行内置的语法检查器。如果发现语法错误，Aider 会主动提供修复建议。这有助于捕获代码中的小问题并快速修复。
 
-Aider also does code analysis to help
-the LLM navigate larger code bases by producing
-a [repository map](https://aider.chat/docs/repomap.html).
-Aider can currently produce repository maps for many popular
-mainstream languages, listed below.
+Aider 还通过代码分析帮助 LLM 导航大型代码库，生成[仓库地图](https://aider.chat/docs/repomap.html)。目前 Aider 可以为以下列出的多种主流语言生成仓库地图。
 
 
-## How to add support for another language
+## 如何添加对新语言的支持
 
-Aider should work quite well for other languages, even those
-without repo map or linter support.
-You should really try coding with aider before
-assuming it needs better support for your language.
+即使没有仓库地图或语法检查支持，Aider 对其他语言仍然有很好的兼容性。在假设 Aider 需要增强对您所用语言的支持之前，建议先尝试使用 Aider 进行编码。
 
-That said, if aider already has support for linting your language,
-then it should be possible to add repo map support.
-To build a repo map, aider needs the `tags.scm` file
-from the given language's tree-sitter grammar.
-If you can find and share that file in a 
-[GitHub issue](https://github.com/Aider-AI/aider/issues),
-then it may be possible to add repo map support.
+也就是说，如果 Aider 已经支持对您所用语言的语法检查，那么添加仓库地图支持是可行的。要构建仓库地图，Aider 需要来自该语言的 tree-sitter 语法的 `tags.scm` 文件。如果您能在 [GitHub issue](https://github.com/Aider-AI/aider/issues) 中找到并分享该文件，我们就有可能添加仓库地图支持。
 
-If aider doesn't support linting, it will be complicated to
-add linting and repo map support.
-That is because aider relies on 
-[py-tree-sitter-languages](https://github.com/grantjenks/py-tree-sitter-languages)
-to provide pre-packaged versions of tree-sitter
-parsers for many languages.
+如果 Aider 尚未支持语法检查，添加语法检查和仓库地图支持会相对复杂。这是因为 Aider 依赖于 [py-tree-sitter-languages](https://github.com/grantjenks/py-tree-sitter-languages) 来提供多种语言的预打包 tree-sitter 解析器。
 
-Aider needs to be easy for users to install in many environments,
-and it is probably too complex to add dependencies on
-additional individual tree-sitter parsers.
+Aider 需要保持在不同环境中的易安装性，因此为额外的 tree-sitter 解析器添加依赖可能会过于复杂。
 
 
 <!--[[[cog
