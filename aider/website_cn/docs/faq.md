@@ -1,236 +1,135 @@
 ---
 nav_order: 90
-description: Frequently asked questions about aider.
+description: 关于aider的常见问题解答。
 ---
 
 # FAQ
 {: .no_toc }
 
-- TOC
+- 目录
 {:toc}
 
 {% include help-tip.md %}
 
-## How can I add ALL the files to the chat?
+## 如何将所有文件添加到聊天？
 
-People regularly ask about how to add **many or all of their repo's files** to the chat.
-This is probably not a good idea and will likely do more harm than good.
+用户经常询问如何将仓库中的**大量或全部文件**添加到聊天中。这通常不是一个好主意，可能会带来更多问题而非帮助。
 
-The best approach is think about which files need to be changed to accomplish
-the task you are working on. Just add those files to the chat.
+最佳做法是考虑完成当前任务需要修改哪些文件，只添加这些文件到聊天中。
 
-Usually when people want to add "all the files" it's because they think it
-will give the LLM helpful context about the overall code base.
-Aider will automatically give the LLM a bunch of additional context about
-the rest of your git repo.
-It does this by analyzing your entire codebase in light of the
-current chat to build a compact
-[repository map](https://aider.chat/2023/10/22/repomap.html).
+当人们想要添加"所有文件"时，通常认为这能为LLM提供代码库的整体上下文。Aider会自动通过分析整个代码库来构建紧凑的[仓库地图](https://aider.chat/2023/10/22/repomap.html)。
 
-Adding a bunch of files that are mostly irrelevant to the
-task at hand will often distract or confuse the LLM.
-The LLM will give worse coding results, and sometimese even fail to correctly edit files.
-Addings extra files will also increase your token costs.
+添加大量与当前任务无关的文件会分散LLM的注意力，导致代码生成质量下降甚至文件编辑错误。同时也会增加token消耗成本。
 
-Again, it's usually best to just add the files to the chat that will need to be modified.
-If you still wish to add lots of files to the chat, you can:
+如果仍希望添加多个文件，可以：
+- 启动时使用通配符：`aider src/*.py`
+- 在聊天中使用带通配符的`/add`命令：`/add src/*.py`
+- 为`/add`命令指定目录名递归添加：`/add src`
 
-- Use a wildcard when you launch aider: `aider src/*.py`
-- Use a wildcard with the in-chat `/add` command: `/add src/*.py`
-- Give the `/add` command a directory name and it will recursively add every file under that dir: `/add src`
+## 能否在大型（单体）仓库中使用aider？
 
-## Can I use aider in a large (mono) repo?
+Aider可在任何规模的仓库中使用，但对超大型仓库的响应速度未做专门优化。以下建议可改善性能：
 
-Aider will work in any size repo, but is not optimized for quick
-performance and response time in very large repos.
-There are some things you can do to improve performance.
+请先查看[通用使用技巧](/docs/usage/tips.html)，再考虑以下大型仓库专用建议：
 
-Be sure to check the
-[general usage tips](/docs/usage/tips.html)
-before considering this large-repo specific advice.
-To get the best results from aider you want to 
-be thoughtful about how you add files to the chat,
-regardless of your repo size.
-
-You can change into a sub directory of your repo that contains the
-code you want to work on and use the `--subtree-only` switch.
-This will tell aider to ignore the repo outside of the
-directory you start in.
-
-You can also create a `.aiderignore` file to tell aider
-to ignore parts of the repo that aren't relevant to your task.
-This file conforms to `.gitignore` syntax and conventions.
-For example, to focus only on specific directories in a monorepo,
-you could create a `.aiderignore` file with:
+- 使用`--subtree-only`参数，限制aider只处理当前子目录
+- 创建`.aiderignore`文件（遵循`.gitignore`语法）忽略无关部分。例如：
 
 ```
-# Ignore everything
+# 忽略所有
 /*
 
-# Allow specific directories and their contents
+# 允许特定目录
 !foo/
 !bar/
 !baz/
 
-# Allow nested files under these directories
+# 允许这些目录下的嵌套文件
 !foo/**
 !bar/**
 !baz/**
 ```
 
-You can use `--aiderignore <filename>` to name a specific file
-to use for ignore patterns.
-You might have a few of these handy for when you want to work on
-frontend, backend, etc portions of your repo.
+- 使用`--aiderignore <filename>`指定不同的忽略规则文件
 
-## Can I use aider with multiple git repos at once?
+## 能否同时使用多个git仓库？
 
-Currently aider can only work with one repo at a time.
+当前aider只能处理单个仓库。如需跨仓库协作，可以尝试：
 
-There are some things you can try if you need to work with
-multiple interrelated repos:
+1. 在仓库A中使用`/read`命令添加仓库B的关键文件（只读）
+2. 在各仓库中运行`aider --show-repo-map > map.md`生成仓库地图
+3. 在仓库A中`/read`仓库B的地图文件
+4. 使用aider编写跨仓库文档，在需要时`/read`相关文档
 
-- You can run aider in repo-A where you need to make a change
-and use `/read` to add some files read-only from another repo-B.
-This can let aider see key functions or docs from the other repo.
-- You can run `aider --show-repo-map > map.md` within each
-repo to create repo maps.
-You could then run aider in repo-A and 
-use `/read ../path/to/repo-B/map.md` to share
-a high level map of the other repo.
-- You can use aider to write documentation about a repo.
-Inside each repo, you could run `aider docs.md`
-and work with aider to write some markdown docs.
-Then while using aider to edit repo-A
-you can `/read ../path/to/repo-B/docs.md` to
-read in those docs from the other repo.
-- In repo A, ask aider to write a small script that demonstrates
-the functionality you want to use in repo B.
-Then when you're using aider in repo B, you can 
-`/read` in that script.
+## 如何启用仓库地图？
 
-## How do I turn on the repository map?
-
-Depending on the LLM you are using, aider may launch with the repo map disabled by default:
-
+根据使用的LLM，aider可能默认禁用仓库地图：
 ```
 Repo-map: disabled
 ```
+这是因为较弱模型容易被仓库地图内容干扰。如需强制启用，可运行`aider --map-tokens 1024`。
 
-This is because weaker models get easily overwhelmed and confused by the content of the
-repo map. They sometimes mistakenly try to edit the code in the repo map.
-The repo map is usually disabled for a good reason.
+## 如何在上下文中包含git历史？
 
-If you would like to force it on, you can run aider with `--map-tokens 1024`.
-
-## How do I include the git history in the context?
-
-When starting a fresh aider session, you can include recent git history in the chat context. This can be useful for providing the LLM with information about recent changes. To do this:
-
-1. Use the `/run` command with `git diff` to show recent changes:
+在新会话中包含近期git历史：
+1. 使用`/run git diff`命令查看差异：
    ```
    /run git diff HEAD~1
    ```
-   This will include the diff of the last commit in the chat history.
-
-2. To include diffs from multiple commits, increase the number after the tilde:
+2. 查看多个提交：
    ```
    /run git diff HEAD~3
    ```
-   This will show changes from the last three commits.
-
-Remember, the chat history already includes recent changes made during the current session, so this tip is most useful when starting a new aider session and you want to provide context about recent work.
-
-You can also use aider to review PR branches:
-
+   
+查看PR分支差异：
 ```
 /run git diff one-branch..another-branch
 
 ...
+添加6.9k tokens的命令输出到聊天？(Y)es/(N)o [Yes]: Yes
 
-Add 6.9k tokens of command output to the chat? (Y)es/(N)o [Yes]: Yes
-
-/ask Are there any problems with the way this change works with the FooBar class?
+/ask 这个修改与FooBar类的协作是否存在问题？
 ```
 
 {: .tip }
-The `/git` command will not work for this purpose, as its output is not included in the chat. 
+`/git`命令的输出不会包含在聊天上下文中
 
-## How can I run aider locally from source code?
+## 如何从源码本地运行aider？
 
-To run the project locally, follow these steps:
-
+本地运行步骤：
 ```
-# Clone the repository
+# 克隆仓库
 git clone git@github.com:Aider-AI/aider.git
 
-# Navigate to the project directory
+# 进入项目目录
 cd aider
 
-# It's recommended to make a virtual environment
+# 建议创建虚拟环境
 
-# Install aider in editable/development mode, 
-# so it runs from the latest copy of these source files
+# 以可编辑模式安装
 python -m pip install -e .
 
-# Run the local version of aider
+# 运行本地版本
 python -m aider
 ```
 
 
+## 能否修改aider使用的系统提示？
 
-## Can I change the system prompts that aider uses?
+最便捷的方式是使用[约定文件](https://aider.chat/docs/usage/conventions.html)添加自定义指令。
 
-The most convenient way to add custom instructions is to use a
-[conventions file](https://aider.chat/docs/usage/conventions.html).
+aider采用模块化设计支持不同的系统提示和编辑格式。查看`aider/coders`子目录可以看到基础提示和多种具体实现。如果想实验系统提示，可以参考[代码编辑基准测试文档](https://aider.chat/docs/benchmarks.html)。
 
-But, aider is set up to support different actual system prompts and edit formats
-in a modular way. If you look in the `aider/coders` subdirectory, you'll
-see there's a base coder with base prompts, and then there are
-a number of
-different specific coder implementations.
+当前支持的编辑器格式：
+- wholefile格式（GPT-3.5默认）：`--edit-format whole`
+- editblock格式（GPT-4o默认）：`--edit-format diff` 
+- universal diff格式（GPT-4 Turbo默认）：`--edit-format udiff`
 
-If you're thinking about experimenting with system prompts
-this document about
-[benchmarking GPT-3.5 and GPT-4 on code editing](https://aider.chat/docs/benchmarks.html)
-might be useful background.
+实验时可使用`--verbose --no-pretty`参数查看原始通信数据。
 
-While it's not well documented how to add new coder subsystems, you may be able
-to modify an existing implementation or use it as a template to add another.
+## 开发aider时使用哪些LLM？
 
-To get started, try looking at and modifying these files.
-
-The wholefile coder is currently used by GPT-3.5 by default. You can manually select it with `--edit-format whole`.
-
-- wholefile_coder.py
-- wholefile_prompts.py
-
-The editblock coder is currently used by GPT-4o by default. You can manually select it with `--edit-format diff`.
-
-- editblock_coder.py
-- editblock_prompts.py
-
-The universal diff coder is currently used by GPT-4 Turbo by default. You can manually select it with `--edit-format udiff`.
-
-- udiff_coder.py
-- udiff_prompts.py
-
-When experimenting with coder backends, it helps to run aider with `--verbose --no-pretty` so you can see
-all the raw information being sent to/from the LLM in the conversation.
-
-You can also refer to the
-[instructions for installing a development version of aider](https://aider.chat/docs/install/optional.html#install-the-development-version-of-aider).
-
-## What LLMs do you use to build aider?
-
-Aider writes a lot of its own code, usually about 70% of the new code in each
-release.
-People often ask which LLMs I use with aider, when writing aider.
-Below is a table showing the models I have used recently,
-extracted from the 
-[public log](https://github.com/aider-ai/aider/blob/main/aider/website/assets/sample-analytics.jsonl)
-of my
-[aider analytics](https://aider.chat/docs/more/analytics.html).
+aider自身约70%的新代码由LLM编写。以下是从[公开日志](https://github.com/aider-ai/aider/blob/main/aider/website/assets/sample-analytics.jsonl)提取的近期使用模型统计：
 
 <!--[[[cog
 import sys
@@ -263,91 +162,30 @@ Some models show as REDACTED, because they are new or unpopular models.
 Aider's analytics only records the names of "well known" LLMs.
 <!--[[[end]]]-->
 
-## How are the "aider wrote xx% of code" stats computed?
+## 如何统计"aider编写xx%代码"？
 
-[Aider is tightly integrated with git](/docs/git.html) so all
-of aider's code changes are committed to the repo with proper attribution.
-The 
-[stats are computed](https://github.com/Aider-AI/aider/blob/main/scripts/blame.py)
-by doing something like `git blame` on the repo,
-and counting up who wrote all the new lines of code in each release.
-Only lines in source code files are counted, not documentation or prompt files.
+通过[git blame](https://github.com/Aider-AI/aider/blob/main/scripts/blame.py)统计每个版本中新增的源代码行数（不含文档和提示文件）。
 
-## Why does aider sometimes stop highlighting code in its replies?
+## 为什么有时代码高亮失效？
 
-Aider displays the markdown responses that are coming back from the LLM.
-Usually, the LLM will reply with code in a markdown "code block" with
-triple backtick fences, like this:
+当添加的文件包含三重反引号时，aider会改用`<source>`标签包裹代码块以保证安全，此时可能失去语法高亮。
 
-````
-Here's some code:
+## 为什么LLM使用意外语言回复？
 
-```
-print("hello")
-```
-````
+可尝试用`--chat-language <语言>`明确设置，但LLM可能不遵守。
 
-But if you've added files to the chat that contain triple backticks,
-aider needs to tell the LLM to use a different set of fences.
-Otherwise, the LLM can't safely include your code's triple backticks
-inside the code blocks that it returns with edits.
-Aider will use fences like `<source>...</source>` in this case.
+## 能否分享聊天记录？
 
-A side effect of this is that the code that aider outputs may no
-longer be properly highlighted.
-You will most often notice this if you add markdown files
-to you chats that contain code blocks.
+1. 将`.aider.chat.history.md`内容发布为gist
+2. 拼接URL：`https://aider.chat/share/?mdurl=你的gist地址`
 
-## Why is the LLM speaking to me in an unexpected language?
+## 运行aider时能否手动编辑文件？
 
-Aider goes to some effort to prompt the model to use the language that is configured
-for your system.
-But LLMs aren't fully reliable, and they sometimes decide to speak in
-an unexpected language.
-Claude is especially fond of speaking French.
+可以，但建议不要在等待回复时编辑已加入聊天的文件，可能产生冲突。
 
-You can explicitly set the language that aider tells the model to use with
-`--chat-language <language>`.
-But the LLM may not comply.
+## 什么是Aider AI LLC？
 
-## Can I share my aider chat transcript?
-
-Yes, you can now share aider chat logs in a pretty way.
-
-1. Copy the markdown logs you want to share from `.aider.chat.history.md` and make a github gist. Or publish the raw markdown logs on the web any way you'd like.
-
-   ```
-   https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
-   ```
-
-2. Take the gist URL and append it to:
-
-   ```
-   https://aider.chat/share/?mdurl=
-   ```
-
-This will give you a URL like this, which shows the chat history like you'd see in a terminal:
-
-```
-https://aider.chat/share/?mdurl=https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
-```
-
-## Can I edit files myself while aider is running?
-
-Yes. Aider always reads the latest copy of files from the file
-system when you send each message.
-
-While you're waiting for aider's reply to complete, it's probably unwise to
-edit files that you've added to the chat.
-Your edits and aider's edits might conflict.
-
-## What is Aider AI LLC?
-
-Aider AI LLC is the company behind the aider AI coding tool.
-Aider is 
-[open source and available on GitHub](https://github.com/Aider-AI/aider)
-under an 
-[Apache 2.0 license](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt).
+aider的开发者公司，项目在[GitHub开源](https://github.com/Aider-AI/aider)并采用[Apache 2.0协议](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt)。
 
 
 <div style="height:80vh"></div>
