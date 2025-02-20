@@ -1,67 +1,46 @@
 
-## Unknown context window size and token costs
+## 未知的上下文窗口大小和令牌成本
 
 ```
-Model foobar: Unknown context window size and costs, using sane defaults.
+Model foobar: 未知的上下文窗口大小和成本，使用合理的默认值。
 ```
 
-If you specify a model that aider has never heard of, you will get
-this warning.
-This means aider doesn't know the context window size and token costs
-for that model.
-Aider will use an unlimited context window and assume the model is free,
-so this is not usually a significant problem.
+当你指定一个aider不认识的模型时，会出现这个警告。这意味着aider不知道该模型的上下文窗口大小和令牌成本。aider将使用无限制的上下文窗口并假设该模型是免费的，因此这通常不会造成重大问题。
 
-See the docs on 
-[configuring advanced model settings](/docs/config/adv-model-settings.html)
-for details on how to remove this warning.
+详见[配置高级模型设置](/docs/config/adv-model-settings.html)文档了解如何消除此警告。
 
 {: .tip }
-You can probably ignore the unknown context window size and token costs warning.
+你可以忽略未知的上下文窗口大小和令牌成本警告。
 
-## Did you mean?
+## 你是否是指？
 
-If aider isn't familiar with the model you've specified,
-it will suggest similarly named models.
-This helps
-in the case where you made a typo or mistake when specifying the model name.
+当aider不熟悉你指定的模型时，会建议名称相似的模型。这在你拼写错误或输错模型名称时很有帮助。
 
 ```
-Model gpt-5o: Unknown context window size and costs, using sane defaults.
-Did you mean one of these?
+Model gpt-5o: 未知的上下文窗口大小和成本，使用合理的默认值。
+你是否是指以下模型之一？
 - gpt-4o
 ```
 
-## Missing environment variables
+## 缺少环境变量
 
-You need to set the listed environment variables.
-Otherwise you will get error messages when you start chatting with the model.
+你需要设置列出的环境变量，否则在与模型开始聊天时会收到错误信息。
 
 ```
-Model azure/gpt-4-turbo: Missing these environment variables:
+Model azure/gpt-4-turbo: 缺少这些环境变量：
 - AZURE_API_BASE
 - AZURE_API_VERSION
 - AZURE_API_KEY
 ```
 
 {: .tip }
-On Windows, 
-if you just set these environment variables using `setx` you may need to restart your terminal or
-command prompt for the changes to take effect.
+在Windows系统上，如果使用`setx`设置这些环境变量，可能需要重启终端或命令提示符才能使更改生效。
 
-
-## Unknown which environment variables are required
+## 未知需要哪些环境变量
 
 ```
-Model gpt-5: Unknown which environment variables are required.
+Model gpt-5: 未知需要哪些环境变量。
 ```
 
-Aider is unable verify the environment because it doesn't know
-which variables are required for the model.
-If required variables are missing,
-you may get errors when you attempt to chat with the model.
-You can look in the [aider's LLM documentation](/docs/llms.html)
-or the
-[litellm documentation](https://docs.litellm.ai/docs/providers)
-to see if the required variables are listed there.
+aider无法验证环境配置，因为它不知道该模型需要哪些变量。如果缺少必需的变量，在与模型聊天时可能会出现错误。你可以查看[aider的LLM文档](/docs/llms.html)或[litellm文档](https://docs.litellm.ai/docs/providers)来查找所需的变量。
 
