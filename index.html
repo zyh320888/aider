@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>股票投资直播课堂</title>
+  <title>多八多Aider</title>
   
   <script type="importmap">
     {
@@ -13,7 +13,9 @@
         "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
         "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@5.67.1",
         "axios": "https://esm.sh/axios@1.6.2",
-        "@d8d-appcontainer/api": "https://esm.sh/@d8d-appcontainer/api@3.0.39"
+        "@heroicons/react": "https://esm.sh/@heroicons/react@2.2.0",
+        "@d8d-appcontainer/api": "https://esm.sh/@d8d-appcontainer/api@3.0.39",
+        "@monaco-editor/react": "https://esm.sh/@monaco-editor/react@4.6.0?deps=react@19.0.0,react-dom@19.0.0"
       }
     }
   </script>
@@ -83,73 +85,131 @@
     import { createRoot } from 'react-dom/client';
     import { QueryClient, QueryClientProvider, useQuery, useMutation } from '@tanstack/react-query';
     import { APIClient } from '@d8d-appcontainer/api';
+    import { DocumentIcon } from '@heroicons/react/24/outline';
+    import Editor from '@monaco-editor/react';
+    import axios from 'axios';
 
     const queryClient = new QueryClient();
-    let apiClient = null;
-
+    const API_BASE_URL = window.location.origin;
+    
+    // 数据表名常量
+    const TABLE_PREFIX = 'd8d_';
+    const TABLE_PROJECTS = `${TABLE_PREFIX}projects`;
+    const TABLE_TEMPLATES = `${TABLE_PREFIX}templates`;
+    const TABLE_CHAT_HISTORY = `${TABLE_PREFIX}chat_history`;
+    
+    // 默认模板代码（将被从模板目录加载的内容替换）
+    const TEMPLATE_CODE = '<!-- 加载中... -->';
+    
+    // 获取API客户端
     const getApiClient = async () => {
-      if (!apiClient) {
-        apiClient = await APIClient.getInstance({
-          scope: 'user',
-          config: {
-            serverUrl: 'https://app-server.d8d.fun',
-            workspaceKey: 'ws_mphxpy6prf9',
-            type: 'http'
-          }
-        });
-      }
-      return apiClient;
+      return await APIClient.getInstance({
+        scope: 'user',
+        config: {
+          serverUrl: 'https://app-server.d8d.fun',
+          workspaceKey: 'ws_mphxpy6prf9',
+          type: 'http'
+        }
+      });
     };
-
+    
     // 初始化数据库
     const initDatabase = async () => {
       const apiClient = await getApiClient();
       try {
-        // 创建课程表
-        await apiClient.database.schema.createTable('courses', (table) => {
+        // 创建项目表
+        await apiClient.database.schema.createTable(TABLE_PROJECTS, (table) => {
           table.increments('id').primary();
-          table.string('title').notNullable();
+          table.string('name').notNullable();
           table.text('description');
-          table.string('instructor');
-          table.string('cover_image');
-          table.boolean('is_live').defaultTo(false);
-          table.timestamp('start_time');
-          table.decimal('price', 10, 2);
-          table.timestamps(true, true);
+          table.text('code').notNullable(); // HTML代码
+          table.string('thumbnail'); // 缩略图URL
+          table.timestamp('created_at').defaultTo(apiClient.database.fn.now());
+          table.timestamp('updated_at').defaultTo(apiClient.database.fn.now());
         });
 
-        // 创建聊天消息表
-        await apiClient.database.schema.createTable('chat_messages', (table) => {
+        // 创建模板表
+        await apiClient.database.schema.createTable(TABLE_TEMPLATES, (table) => {
           table.increments('id').primary();
-          table.integer('course_id').notNullable();
-          table.string('user_name').notNullable();
+          table.string('name').notNullable();
+          table.text('description');
+          table.text('code').notNullable(); // HTML代码
+          table.string('thumbnail'); // 缩略图URL
+          table.string('category').defaultTo('custom'); // 模板分类
+          table.timestamp('created_at').defaultTo(apiClient.database.fn.now());
+        });
+
+        // 创建聊天记录表
+        await apiClient.database.schema.createTable(TABLE_CHAT_HISTORY, (table) => {
+          table.increments('id').primary();
+          table.integer('project_id'); // 可以为空，表示不针对特定项目
+          table.string('role').notNullable(); // user 或 assistant
           table.text('message').notNullable();
-          table.timestamps(true, true);
+          table.timestamp('created_at').defaultTo(apiClient.database.fn.now());
         });
 
         // 插入示例数据
-        await apiClient.database.insert('courses', [
-          {
-            title: '股市技术分析入门',
-            description: '学习K线、均线等基本技术分析工具',
-            instructor: '张教授',
-            cover_image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3',
-            is_live: true,
-            start_time: apiClient.database.fn.now(),
-            price: 199.00
-          },
-          {
-            title: '量化交易策略解析',
-            description: '深入理解量化交易策略的制定与实施',
-            instructor: '李老师',
-            cover_image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f',
-            is_live: false,
-            start_time: apiClient.database.raw('CURRENT_TIMESTAMP + INTERVAL 1 DAY'),
-            price: 299.00
+        const existingTemplates = await apiClient.database.table(TABLE_TEMPLATES).select('*');
+        if (!existingTemplates || existingTemplates.length === 0) {
+          // 插入基础模板
+          await apiClient.database.insert(TABLE_TEMPLATES, [
+            {
+              name: '简单计数器',
+              description: '一个简单的React计数器应用示例',
+              code: TEMPLATE_CODE,
+              thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c',
+              category: 'basic'
+            }
+          ]);
+          
+          // 从模板目录加载其他模板
+          try {
+            const response = await axios.get(`${API_BASE_URL}/templates`);
+            const templateNames = response.data.templates || [];
+            
+            for (const name of templateNames) {
+              const templateResponse = await axios.get(`${API_BASE_URL}/templates/${name}`);
+              const templateContent = templateResponse.data.content;
+              
+              let description = '自定义模板';
+              let thumbnail = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97';
+              let category = 'custom';
+              
+              if (name === 'db_template') {
+                description = '数据库产品展示应用';
+                thumbnail = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30';
+                category = 'database';
+              } else if (name === 'todo_template') {
+                description = '待办事项管理应用';
+                thumbnail = 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b';
+                category = 'productivity';
+              }
+              
+              await apiClient.database.insert(TABLE_TEMPLATES, {
+                name,
+                description,
+                code: templateContent,
+                thumbnail,
+                category
+              });
+            }
+          } catch (error) {
+            console.error('加载模板出错:', error);
           }
-        ]);
+        }
+        
+        // 创建示例项目
+        const existingProjects = await apiClient.database.table(TABLE_PROJECTS).select('*');
+        if (!existingProjects || existingProjects.length === 0) {
+          await apiClient.database.insert(TABLE_PROJECTS, {
+            name: '我的第一个应用',
+            description: '使用AI编辑器创建的第一个应用',
+            code: TEMPLATE_CODE,
+            thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c'
+          });
+        }
       } catch (error) {
-        console.log('表已存在或其他错误:', error);
+        console.log('表已存在或初始化出错:', error);
       }
     };
 
@@ -378,21 +438,712 @@
       </div>
     );
 
-    // 主应用组件
-    const App = () => {
-      const [activeTab, setActiveTab] = useState('courses');
-      const [selectedCourse, setSelectedCourse] = useState(null);
+    // 代码片段组件
+    const CodeSnippet = ({ title, code, onSelect }) => (
+      <div className="p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer" onClick={() => onSelect(code)}>
+        <h3 className="font-medium text-blue-600">{title}</h3>
+        <pre className="mt-2 p-2 bg-gray-100 rounded text-xs overflow-hidden text-ellipsis whitespace-nowrap">
+          {code.substring(0, 100)}...
+        </pre>
+      </div>
+    );
+
+    // 编辑器组件
+    const EditorComponent = () => {
+      const [code, setCode] = useState(TEMPLATE_CODE);
+      const [previewKey, setPreviewKey] = useState(Date.now());
+      const [isSending, setIsSending] = useState(false);
+      const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+      const [chatMessages, setChatMessages] = useState([]);
+      const [prompt, setPrompt] = useState('');
+      const [showTemplates, setShowTemplates] = useState(false);
+      const [showSaveDialog, setShowSaveDialog] = useState(false);
+      const [projectName, setProjectName] = useState('');
+      const [projectDescription, setProjectDescription] = useState('');
+      const previewRef = useRef(null);
+      const sessionId = useRef('editor-' + Date.now());
       
-      const { data: courses, isLoading } = useQuery({
-        queryKey: ['courses'],
+      // 初始化时加载默认模板
+      useEffect(() => {
+        loadTemplate('counter_template');
+      }, []);
+      
+      // 获取模板列表
+      const { data: templatesData, isLoading: isLoadingTemplateList } = useQuery({
+        queryKey: ['templates'],
         queryFn: async () => {
-          const apiClient = await getApiClient();
-          return apiClient.database.table('courses').select('*');
+          try {
+            // 从API获取模板目录
+            const response = await axios.get(`${API_BASE_URL}/templates`);
+            const apiTemplates = response.data.templates || [];
+            
+            // 从数据库获取模板
+            const apiClient = await getApiClient();
+            const dbTemplates = await apiClient.database.table(TABLE_TEMPLATES).select('*');
+            
+            // 合并两种模板来源
+            return {
+              apiTemplates,
+              dbTemplates
+            };
+          } catch (error) {
+            console.error('获取模板列表出错:', error);
+            return { apiTemplates: [], dbTemplates: [] };
+          }
         }
       });
-
+      
+      // 获取项目列表
+      const { data: projectsData, isLoading: isLoadingProjects } = useQuery({
+        queryKey: ['projects'],
+        queryFn: async () => {
+          try {
+            const apiClient = await getApiClient();
+            return await apiClient.database.table(TABLE_PROJECTS).select('*');
+          } catch (error) {
+            console.error('获取项目列表出错:', error);
+            return [];
+          }
+        }
+      });
+      
+      // 更新预览
+      const updatePreview = () => {
+        const iframe = previewRef.current;
+        if (iframe) {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+          iframeDoc.open();
+          iframeDoc.write(code);
+          iframeDoc.close();
+        }
+      };
+      
+      // 代码发生变化时更新预览
       useEffect(() => {
-        initDatabase();
+        const timeoutId = setTimeout(() => {
+          updatePreview();
+        }, 1000);
+        
+        return () => clearTimeout(timeoutId);
+      }, [code]);
+      
+      // 初始化预览
+      useEffect(() => {
+        updatePreview();
+      }, []);
+      
+      // 加载模板
+      const loadTemplate = async (templateName) => {
+        try {
+          setIsLoadingTemplate(true);
+          
+          // 先尝试从数据库加载
+          if (templatesData && templatesData.dbTemplates) {
+            const dbTemplate = templatesData.dbTemplates.find(t => t.name === templateName);
+            if (dbTemplate) {
+              setCode(dbTemplate.code);
+              setPreviewKey(Date.now());
+              setShowTemplates(false);
+              setIsLoadingTemplate(false);
+              return;
+            }
+          }
+          
+          // 如果数据库中没有，从API加载
+          try {
+            const response = await axios.get(`${API_BASE_URL}/templates/${templateName}`);
+            setCode(response.data.content);
+            setPreviewKey(Date.now());
+            setShowTemplates(false);
+          } catch (error) {
+            // 如果API加载失败，尝试通过JSONP加载
+            loadTemplateViaJSONP(templateName);
+          }
+        } catch (error) {
+          console.error('加载模板出错:', error);
+          alert('加载模板失败: ' + error.message);
+        } finally {
+          setIsLoadingTemplate(false);
+        }
+      };
+      
+      // 通过JSONP加载模板
+      const loadTemplateViaJSONP = (templateName) => {
+        // 创建一个全局回调函数
+        window.handleTemplateLoad = (templateData) => {
+          if (templateData && templateData.content) {
+            setCode(templateData.content);
+            setPreviewKey(Date.now());
+            setShowTemplates(false);
+            
+            // 清理全局回调
+            setTimeout(() => {
+              delete window.handleTemplateLoad;
+            }, 100);
+          }
+        };
+        
+        // 创建script标签加载模板
+        const script = document.createElement('script');
+        script.src = `${API_BASE_URL}/templates/${templateName}.js`;
+        script.onerror = () => {
+          console.error(`无法加载模板: ${templateName}`);
+          alert(`无法加载模板: ${templateName}`);
+          delete window.handleTemplateLoad;
+        };
+        document.body.appendChild(script);
+        
+        // 清理script标签
+        setTimeout(() => {
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        }, 1000);
+      };
+      
+      // 保存项目
+      const saveProject = async (name, description = '') => {
+        try {
+          const apiClient = await getApiClient();
+          
+          // 检查是否已存在同名项目
+          const existingProject = projectsData && projectsData.find(p => p.name === name);
+          
+          if (existingProject) {
+            // 更新现有项目
+            await apiClient.database.table(TABLE_PROJECTS)
+              .where('id', existingProject.id)
+              .update({
+                code,
+                description,
+                updated_at: apiClient.database.fn.now()
+              });
+            
+            alert(`项目 "${name}" 已更新`);
+          } else {
+            // 创建新项目
+            await apiClient.database.insert(TABLE_PROJECTS, {
+              name,
+              description,
+              code,
+              thumbnail: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97',
+              created_at: apiClient.database.fn.now(),
+              updated_at: apiClient.database.fn.now()
+            });
+            
+            alert(`项目 "${name}" 已保存`);
+          }
+          
+          // 刷新项目列表
+          queryClient.invalidateQueries({ queryKey: ['projects'] });
+        } catch (error) {
+          console.error('保存项目出错:', error);
+          alert('保存项目失败: ' + error.message);
+        }
+      };
+      
+      // 发送聊天消息的突变
+      const chatMutation = useMutation({
+        mutationFn: (message) => {
+          // 检查是否是加载模板的命令
+          if (message.toLowerCase().includes('使用数据库应用模板')) {
+            loadTemplate('db_template');
+            return Promise.resolve({ data: { response: '已加载数据库应用模板' } });
+          } else if (message.toLowerCase().includes('使用待办事项模板')) {
+            loadTemplate('todo_template');
+            return Promise.resolve({ data: { response: '已加载待办事项模板' } });
+          } else if (message.toLowerCase().includes('保存项目') || message.toLowerCase().includes('保存应用')) {
+            // 提取项目名称
+            const nameMatch = message.match(/保存(?:项目|应用)\s*[""'](.+?)[""']/);
+            const name = nameMatch ? nameMatch[1] : '新项目_' + Date.now();
+            
+            // 提取描述
+            const descMatch = message.match(/描述\s*[""'](.+?)[""']/);
+            const description = descMatch ? descMatch[1] : '';
+            
+            saveProject(name, description);
+            return Promise.resolve({ data: { response: `已将项目保存为 "${name}"` } });
+          }
+          
+          // 记录聊天历史
+          const recordChat = async () => {
+            try {
+              const apiClient = await getApiClient();
+              await apiClient.database.insert(TABLE_CHAT_HISTORY, {
+                role: 'user',
+                message,
+                created_at: apiClient.database.fn.now()
+              });
+            } catch (error) {
+              console.error('记录聊天历史出错:', error);
+            }
+          };
+          
+          recordChat();
+          
+          return axios.post(`${API_BASE_URL}/chat`, {
+            message,
+            session_id: sessionId.current
+          });
+        },
+        onSuccess: (response) => {
+          // 记录AI回复
+          const recordAiResponse = async () => {
+            try {
+              const apiClient = await getApiClient();
+              await apiClient.database.insert(TABLE_CHAT_HISTORY, {
+                role: 'assistant',
+                message: response.data.response,
+                created_at: apiClient.database.fn.now()
+              });
+            } catch (error) {
+              console.error('记录AI回复出错:', error);
+            }
+          };
+          
+          recordAiResponse();
+          
+          setChatMessages(prev => [
+            ...prev, 
+            { role: 'assistant', content: response.data.response }
+          ]);
+          setIsSending(false);
+          
+          // 如果有编辑，触发预览更新
+          if (response.data.edits && response.data.edits.files) {
+            setPreviewKey(Date.now());
+          }
+        },
+        onError: (error) => {
+          console.error('发送消息出错:', error);
+          setChatMessages(prev => [
+            ...prev,
+            { role: 'assistant', content: '发送消息时出错: ' + error.message }
+          ]);
+          setIsSending(false);
+        }
+      });
+      
+      // 发送消息
+      const sendMessage = () => {
+        if (!prompt.trim()) return;
+        
+        setChatMessages(prev => [...prev, { role: 'user', content: prompt }]);
+        setIsSending(true);
+        chatMutation.mutate(prompt);
+        setPrompt('');
+      };
+      
+      return (
+        <div className="min-h-screen flex flex-col">
+          {/* 顶部导航栏 */}
+          <div className="bg-gray-800 text-white p-4 flex justify-between items-center">
+            <h1 className="text-xl font-bold">多八多AI应用编辑器</h1>
+            <div className="flex space-x-4">
+              <a href="#" className="hover:text-blue-300">文档</a>
+              <a href="#" className="hover:text-blue-300">关于</a>
+            </div>
+          </div>
+          
+          {/* 主内容区域 */}
+          <div className="flex-1 flex">
+            {/* 左侧边栏 */}
+            <div className="w-64 bg-gray-100 border-r overflow-y-auto p-4">
+              <h2 className="font-medium text-gray-700 mb-4">模板与项目</h2>
+              
+              {/* 项目列表 */}
+              <div className="mt-4">
+                <h3 className="font-medium text-gray-700 mb-2">我的项目</h3>
+                {isLoadingProjects ? (
+                  <div className="flex items-center justify-center p-4">
+                    <span className="text-gray-500">加载中...</span>
+                  </div>
+                ) : projectsData && projectsData.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-4">
+                    {projectsData.map((project) => (
+                      <div 
+                        key={project.id}
+                        className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="h-32 bg-gray-100 relative">
+                          {project.thumbnail ? (
+                            <img 
+                              src={project.thumbnail} 
+                              alt={project.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                              <DocumentIcon className="h-12 w-12 text-gray-400" />
+                            </div>
+                          )}
+                          <div 
+                            className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-opacity flex items-center justify-center opacity-0 hover:opacity-100"
+                          >
+                            <button 
+                              className="bg-white text-gray-800 px-3 py-1 rounded-md shadow-sm text-sm font-medium"
+                              onClick={() => {
+                                setCode(project.code);
+                                setPreviewKey(Date.now());
+                              }}
+                            >
+                              加载项目
+                            </button>
+                          </div>
+                        </div>
+                        <div className="p-3">
+                          <h4 className="font-medium text-gray-800">{project.name}</h4>
+                          {project.description && (
+                            <p className="text-sm text-gray-500 mt-1">{project.description}</p>
+                          )}
+                          <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+                            <span>更新于: {new Date(project.updated_at).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-gray-500 border border-dashed rounded-lg">
+                    没有保存的项目
+                  </div>
+                )}
+              </div>
+              
+              {/* 模板按钮 */}
+              <div className="mt-6">
+                <button 
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  onClick={() => setShowTemplates(true)}
+                >
+                  浏览模板库
+                </button>
+              </div>
+            </div>
+            
+            {/* 主编辑区域 */}
+            <div className="flex-1 flex">
+              {/* 代码编辑器 */}
+              <div className="w-1/2 flex flex-col border-r">
+                {/* 工具栏 */}
+                <div className="bg-gray-100 border-b p-2 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      className="px-3 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
+                      onClick={() => setShowTemplates(true)}
+                    >
+                      加载模板
+                    </button>
+                    <button 
+                      className="px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors"
+                      onClick={() => setShowSaveDialog(true)}
+                    >
+                      保存项目
+                    </button>
+                  </div>
+                  <div>
+                    <button 
+                      className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors"
+                      onClick={() => setPreviewKey(Date.now())}
+                    >
+                      刷新预览
+                    </button>
+                  </div>
+                </div>
+                
+                {/* 编辑器 */}
+                <div className="flex-1 overflow-hidden">
+                  <Editor
+                    height="100%"
+                    defaultLanguage="html"
+                    value={code}
+                    onChange={(value) => setCode(value)}
+                    theme="vs-dark"
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 14,
+                      wordWrap: 'on',
+                      automaticLayout: true
+                    }}
+                  />
+                </div>
+              </div>
+              
+              {/* 预览区域 */}
+              <div className="w-1/2 flex flex-col">
+                <div className="bg-gray-100 border-b p-2 flex items-center justify-between">
+                  <h3 className="font-medium text-gray-700">实时预览</h3>
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 transition-colors"
+                      onClick={() => window.open('', '_blank').document.write(code)}
+                    >
+                      在新窗口打开
+                    </button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-hidden">
+                  <iframe 
+                    key={previewKey}
+                    ref={previewRef}
+                    title="预览"
+                    className="w-full h-full border-none"
+                    sandbox="allow-scripts allow-same-origin"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* 底部AI聊天区域 */}
+          <div className="border-t bg-white">
+            <div className="container mx-auto p-4">
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="向AI助手提问或请求修改代码..."
+                  className="flex-1 px-4 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      if (prompt.trim() && !isSending) {
+                        setChatMessages(prev => [...prev, { role: 'user', content: prompt }]);
+                        chatMutation.mutate(prompt);
+                        setIsSending(true);
+                        setPrompt('');
+                      }
+                    }
+                  }}
+                />
+                <button
+                  className={`px-4 py-2 bg-blue-600 text-white rounded-r-md ${isSending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+                  disabled={isSending || !prompt.trim()}
+                  onClick={() => {
+                    if (prompt.trim() && !isSending) {
+                      setChatMessages(prev => [...prev, { role: 'user', content: prompt }]);
+                      chatMutation.mutate(prompt);
+                      setIsSending(true);
+                      setPrompt('');
+                    }
+                  }}
+                >
+                  发送
+                </button>
+              </div>
+              
+              {chatMessages.length > 0 && (
+                <div className="mt-4 border rounded-md overflow-hidden">
+                  <div className="max-h-40 overflow-y-auto p-4">
+                    {chatMessages.map((msg, index) => (
+                      <div key={index} className={`mb-2 ${msg.role === 'user' ? 'text-right' : ''}`}>
+                        <div className={`inline-block px-3 py-2 rounded-lg ${msg.role === 'user' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
+                          {msg.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 模板选择对话框 */}
+          {showTemplates && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium text-gray-900">选择模板</h3>
+                  <button 
+                    className="text-gray-400 hover:text-gray-500"
+                    onClick={() => setShowTemplates(false)}
+                  >
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto">
+                  <div className="p-2 border-b border-gray-200">
+                    <h3 className="font-medium text-gray-600">内置模板</h3>
+                  </div>
+                  <div 
+                    className="p-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                    onClick={() => {
+                      loadTemplate('counter_template');
+                      setShowTemplates(false);
+                    }}
+                  >
+                    <DocumentIcon className="h-5 w-5 text-blue-500 mr-2" />
+                    <span>简单计数器应用</span>
+                  </div>
+                  <div 
+                    className="p-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                    onClick={() => {
+                      loadTemplate('todo_template');
+                      setShowTemplates(false);
+                    }}
+                  >
+                    <DocumentIcon className="h-5 w-5 text-blue-500 mr-2" />
+                    <span>待办事项应用</span>
+                  </div>
+                  <div 
+                    className="p-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                    onClick={() => {
+                      loadTemplate('db_template');
+                      setShowTemplates(false);
+                    }}
+                  >
+                    <DocumentIcon className="h-5 w-5 text-blue-500 mr-2" />
+                    <span>数据库产品展示</span>
+                  </div>
+                  
+                  {isLoadingTemplate ? (
+                    <div className="flex items-center justify-center p-4">
+                      <span className="text-gray-500">加载中...</span>
+                    </div>
+                  ) : templatesData && templatesData.apiTemplates && templatesData.apiTemplates.length > 0 ? (
+                    <>
+                      <div className="p-2 border-b border-gray-200 mt-2">
+                        <h3 className="font-medium text-gray-600">API模板</h3>
+                      </div>
+                      {templatesData.apiTemplates.map((template, index) => (
+                        <div 
+                          key={index}
+                          className="p-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                          onClick={() => loadTemplate(template)}
+                        >
+                          <DocumentIcon className="h-5 w-5 text-blue-500 mr-2" />
+                          <span>{template}</span>
+                        </div>
+                      ))}
+                      
+                      {templatesData.dbTemplates && templatesData.dbTemplates.length > 0 && (
+                        <>
+                          <div className="p-2 border-b border-gray-200 mt-2">
+                            <h3 className="font-medium text-gray-600">数据库模板</h3>
+                          </div>
+                          {templatesData.dbTemplates.map((template) => (
+                            <div 
+                              key={template.id}
+                              className="p-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                              onClick={() => loadTemplate(template.name)}
+                            >
+                              <DocumentIcon className="h-5 w-5 text-green-500 mr-2" />
+                              <span>{template.name}</span>
+                              {template.description && (
+                                <span className="ml-2 text-xs text-gray-500">{template.description}</span>
+                              )}
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      没有可用的模板
+                    </div>
+                  )}
+                </div>
+                
+                <div className="mt-4 flex justify-end">
+                  <button
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                    onClick={() => setShowTemplates(false)}
+                  >
+                    关闭
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* 保存项目对话框 */}
+          {showSaveDialog && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">保存项目</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="projectName" className="block text-sm font-medium text-gray-700 mb-1">
+                      项目名称
+                    </label>
+                    <input
+                      type="text"
+                      id="projectName"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                      placeholder="输入项目名称"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="projectDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                      项目描述 (可选)
+                    </label>
+                    <textarea
+                      id="projectDescription"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={projectDescription}
+                      onChange={(e) => setProjectDescription(e.target.value)}
+                      placeholder="输入项目描述"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end space-x-3">
+                  <button
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                    onClick={() => {
+                      setShowSaveDialog(false);
+                      setProjectName('');
+                      setProjectDescription('');
+                    }}
+                  >
+                    取消
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    onClick={() => {
+                      if (projectName.trim()) {
+                        saveProject(projectName.trim(), projectDescription.trim());
+                        setShowSaveDialog(false);
+                        setProjectName('');
+                        setProjectDescription('');
+                      } else {
+                        alert('请输入项目名称');
+                      }
+                    }}
+                  >
+                    保存
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // 主应用组件
+    const App = () => {
+      const [isLoading, setIsLoading] = useState(true);
+      
+      useEffect(() => {
+        // 初始化数据库
+        const init = async () => {
+          try {
+            await initDatabase();
+          } catch (error) {
+            console.error('初始化数据库出错:', error);
+          } finally {
+            setIsLoading(false);
+          }
+        };
+        
+        init();
       }, []);
 
       if (isLoading) {
@@ -403,50 +1154,7 @@
         );
       }
 
-      const renderContent = () => {
-        if (activeTab === 'live' && selectedCourse) {
-          return <LivePage course={selectedCourse} />;
-        }
-
-        switch (activeTab) {
-          case 'courses':
-            return <CoursesPage 
-              courses={courses} 
-              onCourseClick={(course) => {
-                setSelectedCourse(course);
-                setActiveTab('live');
-              }} 
-            />;
-          case 'profile':
-            return <ProfilePage />;
-          default:
-            return null;
-        }
-      };
-
-      return (
-        <div className="min-h-screen">
-          {/* 顶部搜索栏 */}
-          <div className="sticky top-0 bg-white shadow-sm p-4 z-40">
-            <div className="relative">
-              <input
-                type="search"
-                placeholder="搜索课程..."
-                className="w-full px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <svg className="w-5 h-5 absolute right-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
-
-          {/* 主内容区域 */}
-          {renderContent()}
-
-          {/* 底部导航 */}
-          <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
-        </div>
-      );
+      return <EditorComponent />;
     };
 
     // 渲染应用

@@ -4,10 +4,13 @@ import os
 import sys
 from typing import List, Optional, Dict, Any
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
+import glob
 
 from aider import urls
 from aider.coders import Coder
@@ -83,6 +86,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 获取项目根目录
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# 挂载静态文件目录
+app.mount("/templates", StaticFiles(directory=os.path.join(ROOT_DIR, "templates")), name="templates")
+app.mount("/static", StaticFiles(directory=os.path.join(ROOT_DIR, "static")), name="static")
+
+# 首页
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    index_path = os.path.join(ROOT_DIR, "index.html")
+    if os.path.exists(index_path):
+        with open(index_path, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>多八多AI应用编辑器</h1><p>请创建index.html文件</p>"
 
 
 def get_coder(session_id: str = "default"):
@@ -259,8 +278,111 @@ async def get_web_content(request: WebContentRequest):
         return {"error": str(e)}
 
 
+# 模板响应模型
+class TemplateResponse(BaseModel):
+    name: str
+    content: str
+
+# 模板列表响应模型
+class TemplatesListResponse(BaseModel):
+    templates: List[str]
+
+# 获取模板列表
+@app.get("/templates", response_model=TemplatesListResponse)
+async def get_templates():
+    templates_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates")
+    if not os.path.exists(templates_dir):
+        return {"templates": []}
+    
+    # 获取HTML和JS模板文件
+    html_templates = glob.glob(os.path.join(templates_dir, "*.html"))
+    js_templates = glob.glob(os.path.join(templates_dir, "*.js"))
+    
+    # 提取模板名称（不包括扩展名）
+    template_names = []
+    for template in html_templates + js_templates:
+        name = os.path.basename(template).split('.')[0]
+        if name not in template_names:
+            template_names.append(name)
+    
+    return {"templates": template_names}
+
+# 获取特定模板内容
+@app.get("/templates/{name}", response_model=Optional[TemplateResponse])
+async def get_template(name: str):
+    templates_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates")
+    
+    # 首先尝试查找HTML模板
+    html_path = os.path.join(templates_dir, f"{name}.html")
+    if os.path.exists(html_path):
+        with open(html_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        return {"name": name, "content": content}
+    
+    # 如果HTML模板不存在，尝试查找JS模板
+    js_path = os.path.join(templates_dir, f"{name}.js")
+    if os.path.exists(js_path):
+        # 对于JS模板，直接返回文件而不是JSON响应
+        return FileResponse(js_path, media_type="application/javascript")
+    
+    # 如果模板不存在，返回404错误
+    raise HTTPException(status_code=404, detail=f"Template '{name}' not found")
+
+
 def main(port=8000):
     """启动FastAPI服务器"""
+    # 检查依赖项
+    try:
+        import importlib
+        for pkg in ["fastapi.staticfiles", "fastapi.responses"]:
+            try:
+                importlib.import_module(pkg)
+            except ImportError:
+                print(f"正在安装缺失的依赖: {pkg}")
+                import subprocess
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "fastapi"])
+    except Exception as e:
+        print(f"依赖项检查失败: {e}")
+        
+    # 添加静态文件服务
+    from fastapi.staticfiles import StaticFiles
+    from fastapi.responses import RedirectResponse
+    
+    # 获取当前目录路径
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    static_dir = os.path.join(os.path.dirname(current_dir), "static")
+    
+    # 确保静态目录存在
+    os.makedirs(static_dir, exist_ok=True)
+
+    # 将index.html复制到静态目录（如果存在）
+    editor_html_path = os.path.join(static_dir, "index.html")
+    index_html_path = os.path.join(os.path.dirname(current_dir), "index.html")
+    
+    if os.path.exists(index_html_path):
+        print(f"使用项目根目录中的index.html")
+        with open(index_html_path, "r", encoding="utf-8") as src:
+            with open(editor_html_path, "w", encoding="utf-8") as dest:
+                dest.write(src.read())
+    else:
+        print(f"未找到index.html文件，将使用默认模板")
+        # 如果找不到index.html，使用默认模板
+        if not os.path.exists(editor_html_path):
+            with open(editor_html_path, "w", encoding="utf-8") as f:
+                f.write(get_editor_html())
+    
+    # 挂载静态文件目录
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    
+    # 添加根路径重定向
+    @app.get("/", include_in_schema=False)
+    async def root_redirect():
+        return RedirectResponse(url="/static/index.html")
+    
+    print(f"启动Aider AI编辑器服务...")
+    print(f"请访问: http://localhost:{port}/ 或 https://23947.dev.d8dcloud.com/")
+    print(f"API文档: http://localhost:{port}/docs")
+    
     uvicorn.run(app, host="0.0.0.0", port=port)
 
 
