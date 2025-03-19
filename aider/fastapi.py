@@ -84,6 +84,11 @@ class WebContentResponse(BaseModel):
     error: Optional[str] = None
 
 
+class WorkspaceDirRequest(BaseModel):
+    workspace_dir: str
+    session_id: str = "default"
+
+
 app = FastAPI(title="Aider API", description="与Aider对话并编辑代码的API")
 
 # 添加CORS中间件以允许跨域请求
@@ -112,28 +117,48 @@ async def read_root():
     return "<h1>多八多AI应用编辑器</h1><p>请创建index.html文件</p>"
 
 
-def get_coder(session_id: str = "default"):
+def get_coder(session_id: str = "default", workspace_dir: str = None):
     """获取或创建一个Coder实例"""
+    print(f"获取Coder实例 - session_id: {session_id}, workspace_dir: {workspace_dir}")
     if session_id not in coder_instances:
-        coder = cli_main(return_coder=True)
-        if not isinstance(coder, Coder):
-            raise ValueError(f"无法创建Coder实例: {coder}")
+        current_dir = workspace_dir or os.getcwd()
+        print(f"创建新的Coder实例，工作目录: {current_dir}")
         
-        # 配置IO捕获
-        io = CaptureIO(
-            pretty=False,
-            yes=True,
-            dry_run=coder.io.dry_run,
-            encoding=coder.io.encoding,
-        )
-        coder.commands.io = io
-        
-        # 配置流式输出
-        coder.yield_stream = True
-        coder.stream = True
-        coder.pretty = False
-        
-        coder_instances[session_id] = coder
+        try:
+            # 切换到工作目录
+            os.chdir(current_dir)
+            print(f"已切换到工作目录: {current_dir}")
+            
+            # 创建Coder实例
+            coder = cli_main(return_coder=True)
+            
+            if not isinstance(coder, Coder):
+                raise ValueError(f"无法创建Coder实例: {coder}")
+            
+            # 配置IO捕获
+            io = CaptureIO(
+                pretty=False,
+                dry_run=coder.io.dry_run,
+                encoding=coder.io.encoding,
+            )
+            coder.commands.io = io
+            
+            # 配置流式输出
+            coder.yield_stream = True
+            coder.stream = True
+            coder.pretty = False
+            
+            # 初始化git仓库（如果需要）
+            if not os.path.exists(os.path.join(current_dir, '.git')):
+                coder.init_git()
+                print("已初始化git仓库")
+            
+            coder_instances[session_id] = coder
+            print(f"已创建并缓存Coder实例: {session_id}")
+            
+        except Exception as e:
+            print(f"创建Coder实例失败: {str(e)}")
+            raise
     
     return coder_instances[session_id]
 
@@ -260,9 +285,13 @@ async def chat_stream(request: ChatRequest):
 async def get_files(session_id: str = "default"):
     """获取当前聊天中的文件"""
     try:
+        print(f"获取文件列表 - session_id: {session_id}")
         coder = get_coder(session_id)
-        return {"files": coder.get_inchat_relative_files()}
+        files = coder.get_inchat_relative_files()
+        print(f"获取到的文件列表: {files}")
+        return {"files": files}
     except Exception as e:
+        print(f"获取文件列表失败: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -356,6 +385,50 @@ async def get_web_content(request: WebContentRequest):
             return {"error": f"无法获取 {request.url} 的内容"}
     except Exception as e:
         return {"error": str(e)}
+
+
+@app.post("/set_workspace_dir")
+async def set_workspace_dir(request: WorkspaceDirRequest):
+    """设置Aider工作目录"""
+    try:
+        print(f"设置工作目录 - session_id: {request.session_id}, dir: {request.workspace_dir}")
+        
+        # 检查目录是否存在
+        if not os.path.exists(request.workspace_dir):
+            print(f"目录不存在: {request.workspace_dir}")
+            return {
+                "status": "error",
+                "error": f"目录 {request.workspace_dir} 不存在"
+            }
+        
+        # 检查目录权限
+        if not os.access(request.workspace_dir, os.R_OK | os.W_OK):
+            print(f"目录权限不足: {request.workspace_dir}")
+            return {
+                "status": "error",
+                "error": f"目录 {request.workspace_dir} 权限不足"
+            }
+        
+        # 如果会话已存在，删除旧的Coder实例
+        if request.session_id in coder_instances:
+            print(f"删除旧的Coder实例: {request.session_id}")
+            del coder_instances[request.session_id]
+        
+        # 创建新的Coder实例，传入工作目录
+        coder = get_coder(request.session_id, request.workspace_dir)
+        print(f"已创建新的Coder实例: {request.session_id}")
+        
+        return {
+            "status": "success",
+            "message": f"已设置工作目录为 {request.workspace_dir}",
+            "workspace_dir": request.workspace_dir
+        }
+    except Exception as e:
+        print(f"设置工作目录失败: {str(e)}")
+        return {
+            "status": "error",
+            "error": str(e)
+        }
 
 
 # 模板响应模型
