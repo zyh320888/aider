@@ -2,7 +2,7 @@
 
 # 设置环境变量
 VENV_NAME="aider_env"
-PORT=23947
+PORT=23948
 WORK_DIR="." # 默认为当前目录
 
 # 打印彩色输出的函数
