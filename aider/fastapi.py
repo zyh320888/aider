@@ -8,9 +8,11 @@ from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 import glob
+import json
+import asyncio
 
 from aider import urls
 from aider.coders import Coder
@@ -54,6 +56,12 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+    edits: Optional[Dict[str, Any]] = None
+
+
+class StreamChunk(BaseModel):
+    content: str
+    done: bool = False
     edits: Optional[Dict[str, Any]] = None
 
 
@@ -142,7 +150,7 @@ async def root():
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """向LLM发送消息并获取回复"""
+    """向LLM发送消息并获取回复（非流式）"""
     try:
         coder = get_coder(request.session_id)
         
@@ -152,16 +160,11 @@ async def chat(request: ChatRequest):
         # 运行对话
         response = coder.run(request.message)
         
-        # 构建响应
-        result = {
-            "response": response,
-            "edits": None
-        }
-        
-        # 如果有编辑，添加到响应中
+        # 处理编辑信息
+        edit_info = None
         if coder.aider_edited_files:
             edit_info = {
-                "files": coder.aider_edited_files,
+                "files": list(coder.aider_edited_files),
             }
             
             if coder.last_aider_commit_hash:
@@ -177,10 +180,77 @@ async def chat(request: ChatRequest):
                         coder.last_aider_commit_hash,
                     )
                     edit_info["diff"] = diff
-            
-            result["edits"] = edit_info
+        
+        # 构建响应
+        result = {
+            "response": response,
+            "edits": edit_info
+        }
         
         return result
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/chat/stream")
+async def chat_stream(request: ChatRequest):
+    """向LLM发送消息并获取流式回复"""
+    try:
+        coder = get_coder(request.session_id)
+        
+        # 记录输入历史
+        coder.io.add_to_input_history(request.message)
+        
+        # 创建一个生成器来产生流式响应
+        async def response_generator():
+            # 运行聊天并获取流式响应
+            buffer = ""
+            for chunk in coder.run_stream(request.message):
+                buffer += chunk
+                # 构建流式响应片段
+                yield json.dumps({
+                    "content": chunk,
+                    "done": False,
+                    "edits": None
+                }) + "\n"
+                
+                # 为了节省带宽，可以设置更大的缓冲区，这里简单处理
+                await asyncio.sleep(0.01)
+            
+            # 最后返回编辑信息（如果有）
+            edit_info = None
+            if coder.aider_edited_files:
+                edit_info = {
+                    "files": list(coder.aider_edited_files),
+                }
+                
+                if coder.last_aider_commit_hash:
+                    edit_info["commit_hash"] = coder.last_aider_commit_hash
+                    edit_info["commit_message"] = coder.last_aider_commit_message
+                    
+                    # 获取diff
+                    if coder.repo:
+                        commits = f"{coder.last_aider_commit_hash}~1"
+                        diff = coder.repo.diff_commits(
+                            coder.pretty,
+                            commits,
+                            coder.last_aider_commit_hash,
+                        )
+                        edit_info["diff"] = diff
+            
+            # 返回完成标记和编辑信息
+            yield json.dumps({
+                "content": "",
+                "done": True,
+                "edits": edit_info
+            })
+        
+        # 返回流式响应
+        return StreamingResponse(
+            response_generator(),
+            media_type="application/x-ndjson"
+        )
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -201,7 +271,7 @@ async def get_all_files(session_id: str = "default"):
     """获取所有可添加到聊天的文件"""
     try:
         coder = get_coder(session_id)
-        return {"files": coder.get_all_relative_files()}
+        return {"files": list(coder.get_all_relative_files())}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -248,19 +318,29 @@ async def undo_commit(session_id: str = "default"):
         
         # 确保这是最新的Aider提交
         if not coder.last_aider_commit_hash:
-            return {"status": "error", "message": "没有可撤销的提交"}
+            return {
+                "status": "error",
+                "error": "没有找到上次的提交"
+            }
         
-        coder.commands.io.get_captured_lines()
-        reply = coder.commands.cmd_undo(None)
-        lines = coder.commands.io.get_captured_lines()
+        # 撤销提交
+        result = coder.repo.undo_last_commit()
         
-        return {
-            "status": "success", 
-            "message": "\n".join(lines),
-            "reply": reply
-        }
+        if result:
+            return {
+                "status": "success",
+                "message": "已撤销最后一次提交"
+            }
+        else:
+            return {
+                "status": "error",
+                "error": "撤销提交失败"
+            }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "status": "error",
+            "error": str(e)
+        }
 
 
 @app.post("/web_content", response_model=WebContentResponse)

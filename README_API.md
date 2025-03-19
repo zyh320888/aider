@@ -34,6 +34,22 @@ python -m aider.fastapi
   }
   ```
 
+- **POST /chat/stream** - 向LLM发送消息并获取流式回复
+  ```json
+  {
+    "message": "帮我优化这段代码",
+    "session_id": "default"
+  }
+  ```
+  返回的是[NDJSON](http://ndjson.org/)格式的数据流，每行包含:
+  ```json
+  {"content": "部分回复内容", "done": false, "edits": null}
+  ```
+  最后一行包含完成状态和编辑信息：
+  ```json
+  {"content": "", "done": true, "edits": {"files": ["main.py"], "commit_hash": "abc123", "commit_message": "优化代码", "diff": "..."}}
+  ```
+
 ### 文件管理
 
 - **GET /files** - 获取当前聊天中的文件
@@ -92,6 +108,14 @@ curl -X POST http://localhost:8000/chat \
   -d '{"message": "创建一个简单的Python计算器", "session_id": "my_project"}'
 ```
 
+### 使用curl发送流式聊天消息
+
+```bash
+curl -X POST http://localhost:8000/chat/stream \
+  -H "Content-Type: application/json" \
+  -d '{"message": "创建一个简单的Python计算器", "session_id": "my_project"}'
+```
+
 ### 使用Python请求API
 
 ```python
@@ -110,6 +134,35 @@ response = requests.post(
 )
 
 print(response.json())
+```
+
+### 使用Python处理流式响应
+
+```python
+import requests
+import json
+
+# 添加文件到聊天
+requests.post(
+    "http://localhost:8000/add_file",
+    json={"filename": "calculator.py", "session_id": "my_project"}
+)
+
+# 发送流式聊天消息
+response = requests.post(
+    "http://localhost:8000/chat/stream",
+    json={"message": "请添加除法功能", "session_id": "my_project"},
+    stream=True
+)
+
+# 处理流式响应
+for line in response.iter_lines():
+    if line:  # 过滤掉保持连接活跃的空行
+        data = json.loads(line.decode('utf-8'))
+        if data["done"]:
+            print("\n完成！编辑信息:", data["edits"])
+        else:
+            print(data["content"], end="", flush=True)
 ```
 
 ## 前端集成
