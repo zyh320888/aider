@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 import glob
 import json
 import asyncio
+import base64
 
 from aider import urls
 from aider.coders import Coder
@@ -245,24 +246,90 @@ async def chat_stream(request: ChatRequest):
             
             # 最后返回编辑信息（如果有）
             edit_info = None
+            print(f"检查编辑文件: {coder.aider_edited_files}")  # 添加日志
+            
             if coder.aider_edited_files:
                 edit_info = {
                     "files": list(coder.aider_edited_files),
                 }
+                print(f"编辑信息: {edit_info}")  # 添加日志
                 
                 if coder.last_aider_commit_hash:
                     edit_info["commit_hash"] = coder.last_aider_commit_hash
-                    edit_info["commit_message"] = coder.last_aider_commit_message
+                    
+                    # base64 编码提交消息
+                    if coder.last_aider_commit_message:
+                        # commit_message_encoded = base64.b64encode(
+                        #     coder.last_aider_commit_message.encode('utf-8')
+                        # ).decode('utf-8')
+                        # edit_info["commit_message_base64"] = commit_message_encoded
+                        edit_info["commit_message"] = coder.last_aider_commit_message
+                    
+                    print(f"提交哈希: {coder.last_aider_commit_hash}")  # 添加日志
+                    print(f"提交消息: {coder.last_aider_commit_message}")  # 添加日志
                     
                     # 获取diff
                     if coder.repo:
                         commits = f"{coder.last_aider_commit_hash}~1"
+                        print(f"获取diff，比较提交: {commits} 和 {coder.last_aider_commit_hash}")  # 添加日志
                         diff = coder.repo.diff_commits(
                             coder.pretty,
                             commits,
                             coder.last_aider_commit_hash,
                         )
-                        edit_info["diff"] = diff
+                        
+                        # base64 编码 diff
+                        if diff:
+                            # diff_encoded = base64.b64encode(diff.encode('utf-8')).decode('utf-8')
+                            # edit_info["diff_base64"] = diff_encoded
+                            edit_info["diff"] = diff
+                        
+                        print(f"生成的diff: {diff}")  # 添加日志
+                
+                # 读取修改后的文件内容
+                updated_files = []
+                for filename in edit_info["files"]:
+                    try:
+                        print(f"读取文件: {filename}")  # 添加日志
+                        with open(filename, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                            
+                        # 使用base64编码文件内容，避免JSON解析问题
+                        # encoded_content = base64.b64encode(content.encode('utf-8')).decode('utf-8')
+                            
+                        # 确定文件类型
+                        ext = filename.split('.')[-1].lower()
+                        file_type = 'text'
+                        if ext in ['html', 'htm']:
+                            file_type = 'html'
+                        elif ext == 'css':
+                            file_type = 'css'
+                        elif ext == 'js':
+                            file_type = 'javascript'
+                        elif ext == 'tsx':
+                            file_type = 'typescriptreact'
+                        elif ext == 'ts':
+                            file_type = 'typescript'
+                        elif ext == 'json':
+                            file_type = 'json'
+                        elif ext == 'md':
+                            file_type = 'markdown'
+                            
+                        # 创建文件对象
+                        updated_files.append({
+                            "name": filename,
+                            "content": content,
+                            # "content_base64": encoded_content,  # 使用base64编码
+                            "type": file_type,
+                            "is_main": filename.endswith('index.html') or ext == 'tsx'
+                        })
+                        print(f"成功读取文件: {filename}, 类型: {file_type}")  # 添加日志
+                    except Exception as e:
+                        print(f"读取文件失败 {filename}: {str(e)}")
+                
+                # 将文件内容添加到编辑信息中
+                edit_info["updated_files"] = updated_files
+                print(f"最终编辑信息: {json.dumps(edit_info, indent=2)}")  # 添加日志
             
             # 返回完成标记和编辑信息
             yield json.dumps({
@@ -278,6 +345,7 @@ async def chat_stream(request: ChatRequest):
         )
     
     except Exception as e:
+        print(f"发生错误: {str(e)}")  # 添加错误日志
         raise HTTPException(status_code=500, detail=str(e))
 
 
