@@ -67,12 +67,22 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 检查是否已安装依赖
-if [ ! -f "$VENV_NAME/lib/python3.*/site-packages/fastapi/__init__.py" ]; then
+# 检查是否已安装核心依赖
+if ! pip freeze | grep -q "^json5=="; then
+    print_info "安装Aider核心依赖"
+    pip install -r requirements.txt
+    if [ $? -ne 0 ]; then
+        print_error "安装核心依赖失败"
+        exit 1
+    fi
+fi
+
+# 检查是否已安装API依赖
+if ! pip freeze | grep -q "^fastapi=="; then
     print_info "安装API依赖"
     pip install -r requirements/requirements-api.txt
     if [ $? -ne 0 ]; then
-        print_error "安装依赖失败"
+        print_error "安装API依赖失败"
         exit 1
     fi
 fi
