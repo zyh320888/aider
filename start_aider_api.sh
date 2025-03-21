@@ -106,25 +106,25 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 检查是否已安装核心依赖
-if ! pip freeze | grep -q "^json5=="; then
-    print_info "安装Aider核心依赖"
-    pip install -r requirements.txt
-    if [ $? -ne 0 ]; then
-        print_error "安装核心依赖失败"
-        exit 1
-    fi
-fi
+# # 检查是否已安装核心依赖
+# if ! pip freeze | grep -q "^json5=="; then
+#     print_info "安装Aider核心依赖"
+#     pip install -r requirements.txt
+#     if [ $? -ne 0 ]; then
+#         print_error "安装核心依赖失败"
+#         exit 1
+#     fi
+# fi
 
-# 检查是否已安装API依赖
-if ! pip freeze | grep -q "^fastapi=="; then
-    print_info "安装API依赖"
-    pip install -r requirements/requirements-api.txt
-    if [ $? -ne 0 ]; then
-        print_error "安装API依赖失败"
-        exit 1
-    fi
-fi
+# # 检查是否已安装API依赖
+# if ! pip freeze | grep -q "^fastapi=="; then
+#     print_info "安装API依赖"
+#     pip install -r requirements/requirements-api.txt
+#     if [ $? -ne 0 ]; then
+#         print_error "安装API依赖失败"
+#         exit 1
+#     fi
+# fi
 
 # 构建Python命令行参数
 PYTHON_ARGS="--port $PORT"
