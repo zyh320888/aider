@@ -137,8 +137,29 @@ def get_coder(session_id: str = "default", workspace_dir: str = None):
             os.chdir(current_dir)
             logger.info(f"已切换到工作目录: {current_dir}")
             
-            # 创建Coder实例
-            coder = cli_main(return_coder=True)
+            # 设置命令行参数，从环境变量读取配置
+            cli_args = ["--yes-always"]  # 基本参数
+            
+            # 读取配置文件路径
+            config_file = os.environ.get("AIDER_CONFIG_FILE")
+            if config_file:
+                cli_args.extend(["--config", config_file])
+                logger.info(f"使用配置文件: {config_file}")
+            
+            # 读取模型元数据文件路径
+            model_metadata_file = os.environ.get("AIDER_MODEL_METADATA_FILE")
+            if model_metadata_file:
+                cli_args.extend(["--model-metadata-file", model_metadata_file])
+                logger.info(f"使用模型元数据文件: {model_metadata_file}")
+            
+            # 读取模型设置文件路径
+            model_settings_file = os.environ.get("AIDER_MODEL_SETTINGS_FILE")
+            if model_settings_file:
+                cli_args.extend(["--model-settings-file", model_settings_file])
+                logger.info(f"使用模型设置文件: {model_settings_file}")
+            
+            # 创建Coder实例并传递命令行参数
+            coder = cli_main(argv=cli_args, return_coder=True)
             
             if not isinstance(coder, Coder):
                 raise ValueError(f"无法创建Coder实例: {coder}")
@@ -485,7 +506,7 @@ async def set_workspace_dir(request: WorkspaceDirRequest):
         }
 
 
-def main(port=8000):
+def main(port=8000, config_file=None, model_metadata_file=None, model_settings_file=None):
     """启动FastAPI服务器"""
     # 检查依赖项
     try:
@@ -500,6 +521,19 @@ def main(port=8000):
     except Exception as e:
         logger.error(f"依赖项检查失败: {e}")
     
+    # 设置环境变量，用于配置 Coder 实例
+    if config_file:
+        os.environ["AIDER_CONFIG_FILE"] = config_file
+        logger.info(f"设置配置文件: {config_file}")
+    
+    if model_metadata_file:
+        os.environ["AIDER_MODEL_METADATA_FILE"] = model_metadata_file
+        logger.info(f"设置模型元数据文件: {model_metadata_file}")
+    
+    if model_settings_file:
+        os.environ["AIDER_MODEL_SETTINGS_FILE"] = model_settings_file
+        logger.info(f"设置模型设置文件: {model_settings_file}")
+    
     logger.info(f"启动Aider API服务...")
     logger.info(f"API地址: http://localhost:{port}")
     logger.info(f"API文档: http://localhost:{port}/docs")
@@ -513,9 +547,17 @@ if __name__ == "__main__":
     # 创建命令行参数解析器
     parser = argparse.ArgumentParser(description="启动Aider API服务")
     parser.add_argument("--port", type=int, default=8000, help="指定服务器端口号")
+    parser.add_argument("--config", type=str, help="Aider配置文件路径")
+    parser.add_argument("--model-metadata-file", type=str, help="模型元数据文件路径")
+    parser.add_argument("--model-settings-file", type=str, help="模型设置文件路径")
     
     # 解析命令行参数
     args = parser.parse_args()
     
-    # 使用指定的端口启动服务器
-    main(port=args.port) 
+    # 使用指定的端口和配置启动服务器
+    main(
+        port=args.port, 
+        config_file=args.config,
+        model_metadata_file=args.model_metadata_file,
+        model_settings_file=args.model_settings_file
+    ) 
