@@ -1,27 +1,27 @@
 ---
-parent: Configuration
+parent: 配置
 nav_order: 15
-description: How to configure aider with a yaml config file.
+description: 如何使用yaml配置文件配置aider。
 ---
 
-# YAML config file
+# YAML配置文件
 
-Most of aider's options can be set in an `.aider.conf.yml` file.
-Aider will look for a this file in these locations:
+aider的大多数选项都可以在`.aider.conf.yml`文件中设置。
+Aider会在以下位置查找该文件：
 
-- Your home directory.
-- The root of your git repo.
-- The current directory.
+- 您的主目录。
+- 您的git仓库的根目录。
+- 当前目录。
 
-If the files above exist, they will be loaded in that order. Files loaded last will take priority.
+如果上述文件存在，它们将按照该顺序加载。最后加载的文件将优先生效。
 
-You can also specify the `--config <filename>` parameter, which will only load the one config file.
+您也可以指定`--config <文件名>`参数，这将只加载一个配置文件。
 
 {% include keys.md %}
 
-## A note on lists
+## 关于列表的说明
 
-Lists of values can be specified either as a bulleted list:
+值列表可以指定为项目符号列表：
 
 ```
 read:
@@ -30,17 +30,16 @@ read:
   - thirdfile.py
 ```
 
-Or lists can be specified using commas and square brackets:
+或者列表可以使用逗号和方括号指定：
 
 ```
 read: [CONVENTIONS.md, anotherfile.txt, thirdfile.py]
 ```
 
-## Sample YAML config file
+## YAML配置文件示例
 
-Below is a sample of the YAML config file, which you
-can also
-[download from GitHub](https://github.com/Aider-AI/aider/blob/main/aider/website/assets/sample.aider.conf.yml).
+以下是YAML配置文件的示例，您也可以
+[从GitHub下载](https://github.com/Aider-AI/aider/blob/main/aider/website/assets/sample.aider.conf.yml)。
 
 <!--[[[cog
 from aider.args import get_sample_yaml
@@ -53,445 +52,445 @@ cog.outl("```")
 ]]]-->
 ```
 ##########################################################
-# Sample .aider.conf.yml
-# This file lists *all* the valid configuration entries.
-# Place in your home dir, or at the root of your git repo.
+# 示例 .aider.conf.yml
+# 此文件列出了*所有*有效的配置项。
+# 放置在您的家目录，或者您的git仓库的根目录。
 ##########################################################
 
-# Note: You can only put OpenAI and Anthropic API keys in the yaml
-# config file. Keys for all APIs can be stored in a .env file
+# 注意：您只能将OpenAI和Anthropic API密钥放在yaml
+# 配置文件中。所有API的密钥都可以存储在.env文件中
 # https://aider.chat/docs/config/dotenv.html
 
 ##########
-# options:
+# 选项：
 
-## show this help message and exit
+## 显示此帮助信息并退出
 #help: xxx
 
 #############
-# Main model:
+# 主模型：
 
-## Specify the model to use for the main chat
+## 指定用于主聊天的模型
 #model: xxx
 
-## Use claude-3-opus-20240229 model for the main chat
+## 使用claude-3-opus-20240229模型进行主聊天
 #opus: false
 
-## Use claude-3-5-sonnet-20241022 model for the main chat
+## 使用claude-3-5-sonnet-20241022模型进行主聊天
 #sonnet: false
 
-## Use claude-3-5-haiku-20241022 model for the main chat
+## 使用claude-3-5-haiku-20241022模型进行主聊天
 #haiku: false
 
-## Use gpt-4-0613 model for the main chat
+## 使用gpt-4-0613模型进行主聊天
 #4: false
 
-## Use gpt-4o model for the main chat
+## 使用gpt-4o模型进行主聊天
 #4o: false
 
-## Use gpt-4o-mini model for the main chat
+## 使用gpt-4o-mini模型进行主聊天
 #mini: false
 
-## Use gpt-4-1106-preview model for the main chat
+## 使用gpt-4-1106-preview模型进行主聊天
 #4-turbo: false
 
-## Use gpt-3.5-turbo model for the main chat
+## 使用gpt-3.5-turbo模型进行主聊天
 #35turbo: false
 
-## Use deepseek/deepseek-chat model for the main chat
+## 使用deepseek/deepseek-chat模型进行主聊天
 #deepseek: false
 
-## Use o1-mini model for the main chat
+## 使用o1-mini模型进行主聊天
 #o1-mini: false
 
-## Use o1-preview model for the main chat
+## 使用o1-preview模型进行主聊天
 #o1-preview: false
 
 ########################
-# API Keys and settings:
+# API密钥和设置：
 
-## Specify the OpenAI API key
+## 指定OpenAI API密钥
 #openai-api-key: xxx
 
-## Specify the Anthropic API key
+## 指定Anthropic API密钥
 #anthropic-api-key: xxx
 
-## Specify the api base url
+## 指定api基础url
 #openai-api-base: xxx
 
-## (deprecated, use --set-env OPENAI_API_TYPE=<value>)
+## (已弃用，使用--set-env OPENAI_API_TYPE=<值>)
 #openai-api-type: xxx
 
-## (deprecated, use --set-env OPENAI_API_VERSION=<value>)
+## (已弃用，使用--set-env OPENAI_API_VERSION=<值>)
 #openai-api-version: xxx
 
-## (deprecated, use --set-env OPENAI_API_DEPLOYMENT_ID=<value>)
+## (已弃用，使用--set-env OPENAI_API_DEPLOYMENT_ID=<值>)
 #openai-api-deployment-id: xxx
 
-## (deprecated, use --set-env OPENAI_ORGANIZATION=<value>)
+## (已弃用，使用--set-env OPENAI_ORGANIZATION=<值>)
 #openai-organization-id: xxx
 
-## Set an environment variable (to control API settings, can be used multiple times)
+## 设置环境变量（用于控制API设置，可多次使用）
 #set-env: xxx
-## Specify multiple values like this:
+## 指定多个值的方式：
 #set-env:
 #  - xxx
 #  - yyy
 #  - zzz
 
-## Set an API key for a provider (eg: --api-key provider=<key> sets PROVIDER_API_KEY=<key>)
+## 为提供者设置API密钥（例如：--api-key provider=<key>设置PROVIDER_API_KEY=<key>）
 #api-key: xxx
-## Specify multiple values like this:
+## 指定多个值的方式：
 #api-key:
 #  - xxx
 #  - yyy
 #  - zzz
 
 #################
-# Model settings:
+# 模型设置：
 
-## List known models which match the (partial) MODEL name
+## 列出与（部分）MODEL名称匹配的已知模型
 #list-models: xxx
 
-## Specify a file with aider model settings for unknown models
+## 为未知模型指定带有aider模型设置的文件
 #model-settings-file: .aider.model.settings.yml
 
-## Specify a file with context window and costs for unknown models
+## 为未知模型指定带有上下文窗口和成本的文件
 #model-metadata-file: .aider.model.metadata.json
 
-## Add a model alias (can be used multiple times)
+## 添加模型别名（可多次使用）
 #alias: xxx
-## Specify multiple values like this:
+## 指定多个值的方式：
 #alias:
 #  - xxx
 #  - yyy
 #  - zzz
 
-## Set the reasoning_effort API parameter (default: not set)
+## 设置reasoning_effort API参数（默认：未设置）
 #reasoning-effort: xxx
 
-## Verify the SSL cert when connecting to models (default: True)
+## 连接到模型时验证SSL证书（默认：True）
 #verify-ssl: true
 
-## Timeout in seconds for API calls (default: None)
+## API调用超时秒数（默认：None）
 #timeout: xxx
 
-## Specify what edit format the LLM should use (default depends on model)
+## 指定LLM应使用的编辑格式（默认取决于模型）
 #edit-format: xxx
 
-## Use architect edit format for the main chat
+## 为主聊天使用architect编辑格式
 #architect: false
 
-## Specify the model to use for commit messages and chat history summarization (default depends on --model)
+## 指定用于提交消息和聊天历史摘要的模型（默认取决于--model）
 #weak-model: xxx
 
-## Specify the model to use for editor tasks (default depends on --model)
+## 指定用于编辑任务的模型（默认取决于--model）
 #editor-model: xxx
 
-## Specify the edit format for the editor model (default: depends on editor model)
+## 指定编辑器模型的编辑格式（默认：取决于编辑器模型）
 #editor-edit-format: xxx
 
-## Only work with models that have meta-data available (default: True)
+## 仅使用具有可用元数据的模型（默认：True）
 #show-model-warnings: true
 
-## Soft limit on tokens for chat history, after which summarization begins. If unspecified, defaults to the model's max_chat_history_tokens.
+## 聊天历史的软标记限制，达到后开始摘要。如果未指定，默认为模型的max_chat_history_tokens。
 #max-chat-history-tokens: xxx
 
 #################
-# Cache settings:
+# 缓存设置：
 
-## Enable caching of prompts (default: False)
+## 启用提示缓存（默认：False）
 #cache-prompts: false
 
-## Number of times to ping at 5min intervals to keep prompt cache warm (default: 0)
+## 以5分钟间隔ping的次数，以保持提示缓存活跃（默认：0）
 #cache-keepalive-pings: false
 
 ###################
-# Repomap settings:
+# 仓库映射设置：
 
-## Suggested number of tokens to use for repo map, use 0 to disable
+## 建议用于仓库映射的标记数，使用0禁用
 #map-tokens: xxx
 
-## Control how often the repo map is refreshed. Options: auto, always, files, manual (default: auto)
+## 控制仓库映射刷新的频率。选项：auto, always, files, manual（默认：auto）
 #map-refresh: auto
 
-## Multiplier for map tokens when no files are specified (default: 2)
+## 未指定文件时的映射标记乘数（默认：2）
 #map-multiplier-no-files: true
 
 ################
-# History Files:
+# 历史文件：
 
-## Specify the chat input history file (default: .aider.input.history)
+## 指定聊天输入历史文件（默认：.aider.input.history）
 #input-history-file: .aider.input.history
 
-## Specify the chat history file (default: .aider.chat.history.md)
+## 指定聊天历史文件（默认：.aider.chat.history.md）
 #chat-history-file: .aider.chat.history.md
 
-## Restore the previous chat history messages (default: False)
+## 恢复之前的聊天历史消息（默认：False）
 #restore-chat-history: false
 
-## Log the conversation with the LLM to this file (for example, .aider.llm.history)
+## 将与LLM的对话记录到此文件中（例如，.aider.llm.history）
 #llm-history-file: xxx
 
 ##################
-# Output settings:
+# 输出设置：
 
-## Use colors suitable for a dark terminal background (default: False)
+## 使用适合深色终端背景的颜色（默认：False）
 #dark-mode: false
 
-## Use colors suitable for a light terminal background (default: False)
+## 使用适合浅色终端背景的颜色（默认：False）
 #light-mode: false
 
-## Enable/disable pretty, colorized output (default: True)
+## 启用/禁用漂亮的彩色输出（默认：True）
 #pretty: true
 
-## Enable/disable streaming responses (default: True)
+## 启用/禁用流式响应（默认：True）
 #stream: true
 
-## Set the color for user input (default: #00cc00)
+## 设置用户输入的颜色（默认：#00cc00）
 #user-input-color: #00cc00
 
-## Set the color for tool output (default: None)
+## 设置工具输出的颜色（默认：None）
 #tool-output-color: xxx
 
-## Set the color for tool error messages (default: #FF2222)
+## 设置工具错误消息的颜色（默认：#FF2222）
 #tool-error-color: #FF2222
 
-## Set the color for tool warning messages (default: #FFA500)
+## 设置工具警告消息的颜色（默认：#FFA500）
 #tool-warning-color: #FFA500
 
-## Set the color for assistant output (default: #0088ff)
+## 设置助手输出的颜色（默认：#0088ff）
 #assistant-output-color: #0088ff
 
-## Set the color for the completion menu (default: terminal's default text color)
+## 设置补全菜单的颜色（默认：终端的默认文本颜色）
 #completion-menu-color: xxx
 
-## Set the background color for the completion menu (default: terminal's default background color)
+## 设置补全菜单的背景颜色（默认：终端的默认背景颜色）
 #completion-menu-bg-color: xxx
 
-## Set the color for the current item in the completion menu (default: terminal's default background color)
+## 设置补全菜单中当前项目的颜色（默认：终端的默认背景颜色）
 #completion-menu-current-color: xxx
 
-## Set the background color for the current item in the completion menu (default: terminal's default text color)
+## 设置补全菜单中当前项目的背景颜色（默认：终端的默认文本颜色）
 #completion-menu-current-bg-color: xxx
 
-## Set the markdown code theme (default: default, other options include monokai, solarized-dark, solarized-light, or a Pygments builtin style, see https://pygments.org/styles for available themes)
+## 设置markdown代码主题（默认：default，其他选项包括monokai, solarized-dark, solarized-light或Pygments内置样式，查看https://pygments.org/styles获取可用主题）
 #code-theme: default
 
-## Show diffs when committing changes (default: False)
+## 提交更改时显示差异（默认：False）
 #show-diffs: false
 
 ###############
-# Git settings:
+# Git设置：
 
-## Enable/disable looking for a git repo (default: True)
+## 启用/禁用查找git仓库（默认：True）
 #git: true
 
-## Enable/disable adding .aider* to .gitignore (default: True)
+## 启用/禁用将.aider*添加到.gitignore（默认：True）
 #gitignore: true
 
-## Specify the aider ignore file (default: .aiderignore in git root)
+## 指定aider忽略文件（默认：git根目录中的.aiderignore）
 #aiderignore: .aiderignore
 
-## Only consider files in the current subtree of the git repository
+## 仅考虑git仓库当前子树中的文件
 #subtree-only: false
 
-## Enable/disable auto commit of LLM changes (default: True)
+## 启用/禁用LLM更改的自动提交（默认：True）
 #auto-commits: true
 
-## Enable/disable commits when repo is found dirty (default: True)
+## 启用/禁用当仓库发现有未提交更改时的提交（默认：True）
 #dirty-commits: true
 
-## Attribute aider code changes in the git author name (default: True)
+## 在git作者名称中归属aider代码更改（默认：True）
 #attribute-author: true
 
-## Attribute aider commits in the git committer name (default: True)
+## 在git提交者名称中归属aider提交（默认：True）
 #attribute-committer: true
 
-## Prefix commit messages with 'aider: ' if aider authored the changes (default: False)
+## 如果aider创作了更改，则在提交消息前加上'aider: '（默认：False）
 #attribute-commit-message-author: false
 
-## Prefix all commit messages with 'aider: ' (default: False)
+## 在所有提交消息前加上'aider: '（默认：False）
 #attribute-commit-message-committer: false
 
-## Commit all pending changes with a suitable commit message, then exit
+## 用合适的提交消息提交所有待处理的更改，然后退出
 #commit: false
 
-## Specify a custom prompt for generating commit messages
+## 指定生成提交消息的自定义提示
 #commit-prompt: xxx
 
-## Perform a dry run without modifying files (default: False)
+## 执行不修改文件的试运行（默认：False）
 #dry-run: false
 
-## Skip the sanity check for the git repository (default: False)
+## 跳过对git仓库的健全性检查（默认：False）
 #skip-sanity-check-repo: false
 
-## Enable/disable watching files for ai coding comments (default: False)
+## 启用/禁用监视文件以查找ai编码注释（默认：False）
 #watch-files: false
 
 ########################
-# Fixing and committing:
+# 修复和提交：
 
-## Lint and fix provided files, or dirty files if none provided
+## 整理并修复提供的文件，如果没有提供则修复有未提交更改的文件
 #lint: false
 
-## Specify lint commands to run for different languages, eg: "python: flake8 --select=..." (can be used multiple times)
+## 为不同语言指定运行的lint命令，例如："python: flake8 --select=..."（可多次使用）
 #lint-cmd: xxx
-## Specify multiple values like this:
+## 指定多个值的方式：
 #lint-cmd:
 #  - xxx
 #  - yyy
 #  - zzz
 
-## Enable/disable automatic linting after changes (default: True)
+## 启用/禁用更改后自动整理（默认：True）
 #auto-lint: true
 
-## Specify command to run tests
+## 指定运行测试的命令
 #test-cmd: xxx
 
-## Enable/disable automatic testing after changes (default: False)
+## 启用/禁用更改后自动测试（默认：False）
 #auto-test: false
 
-## Run tests, fix problems found and then exit
+## 运行测试，修复发现的问题，然后退出
 #test: false
 
 ############
-# Analytics:
+# 分析：
 
-## Enable/disable analytics for current session (default: random)
+## 为当前会话启用/禁用分析（默认：随机）
 #analytics: xxx
 
-## Specify a file to log analytics events
+## 指定记录分析事件的文件
 #analytics-log: xxx
 
-## Permanently disable analytics
+## 永久禁用分析
 #analytics-disable: false
 
 ############
-# Upgrading:
+# 升级：
 
-## Check for updates and return status in the exit code
+## 检查更新并在退出代码中返回状态
 #just-check-update: false
 
-## Check for new aider versions on launch
+## 启动时检查新的aider版本
 #check-update: true
 
-## Show release notes on first run of new version (default: None, ask user)
+## 在新版本首次运行时显示发布说明（默认：None，询问用户）
 #show-release-notes: xxx
 
-## Install the latest version from the main branch
+## 从主分支安装最新版本
 #install-main-branch: false
 
-## Upgrade aider to the latest version from PyPI
+## 从PyPI升级aider到最新版本
 #upgrade: false
 
-## Show the version number and exit
+## 显示版本号并退出
 #version: xxx
 
 ########
-# Modes:
+# 模式：
 
-## Specify a single message to send the LLM, process reply then exit (disables chat mode)
+## 指定发送给LLM的单个消息，处理回复然后退出（禁用聊天模式）
 #message: xxx
 
-## Specify a file containing the message to send the LLM, process reply, then exit (disables chat mode)
+## 指定包含要发送给LLM的消息的文件，处理回复然后退出（禁用聊天模式）
 #message-file: xxx
 
-## Run aider in your browser (default: False)
+## 在浏览器中运行aider（默认：False）
 #gui: false
 
-## Enable automatic copy/paste of chat between aider and web UI (default: False)
+## 启用aider和Web UI之间的聊天自动复制/粘贴（默认：False）
 #copy-paste: false
 
-## Apply the changes from the given file instead of running the chat (debug)
+## 应用给定文件中的更改，而不是运行聊天（调试）
 #apply: xxx
 
-## Apply clipboard contents as edits using the main model's editor format
+## 应用剪贴板内容作为使用主模型编辑器格式的编辑
 #apply-clipboard-edits: false
 
-## Do all startup activities then exit before accepting user input (debug)
+## 执行所有启动活动，然后在接受用户输入前退出（调试）
 #exit: false
 
-## Print the repo map and exit (debug)
+## 打印仓库映射并退出（调试）
 #show-repo-map: false
 
-## Print the system prompts and exit (debug)
+## 打印系统提示并退出（调试）
 #show-prompts: false
 
 #################
-# Voice settings:
+# 语音设置：
 
-## Audio format for voice recording (default: wav). webm and mp3 require ffmpeg
+## 语音录制的音频格式（默认：wav）。webm和mp3需要ffmpeg
 #voice-format: wav
 
-## Specify the language for voice using ISO 639-1 code (default: auto)
+## 使用ISO 639-1代码指定语音的语言（默认：auto）
 #voice-language: en
 
-## Specify the input device name for voice recording
+## 指定语音录制的输入设备名称
 #voice-input-device: xxx
 
 #################
-# Other settings:
+# 其他设置：
 
-## specify a file to edit (can be used multiple times)
+## 指定要编辑的文件（可多次使用）
 #file: xxx
-## Specify multiple values like this:
+## 指定多个值的方式：
 #file:
 #  - xxx
 #  - yyy
 #  - zzz
 
-## specify a read-only file (can be used multiple times)
+## 指定只读文件（可多次使用）
 #read: xxx
-## Specify multiple values like this:
+## 指定多个值的方式：
 #read:
 #  - xxx
 #  - yyy
 #  - zzz
 
-## Use VI editing mode in the terminal (default: False)
+## 在终端中使用VI编辑模式（默认：False）
 #vim: false
 
-## Specify the language to use in the chat (default: None, uses system settings)
+## 指定在聊天中使用的语言（默认：None，使用系统设置）
 #chat-language: xxx
 
-## Always say yes to every confirmation
+## 对每个确认始终回答yes
 #yes-always: false
 
-## Enable verbose output
+## 启用详细输出
 #verbose: false
 
-## Load and execute /commands from a file on launch
+## 在启动时加载并执行来自文件的/commands
 #load: xxx
 
-## Specify the encoding for input and output (default: utf-8)
+## 指定输入和输出的编码（默认：utf-8）
 #encoding: utf-8
 
-## Line endings to use when writing files (default: platform)
+## 写入文件时使用的行尾（默认：platform）
 #line-endings: platform
 
-## Specify the config file (default: search for .aider.conf.yml in git root, cwd or home directory)
+## 指定配置文件（默认：在git根目录、当前工作目录或主目录中查找.aider.conf.yml）
 #config: xxx
 
-## Specify the .env file to load (default: .env in git root)
+## 指定要加载的.env文件（默认：git根目录中的.env）
 #env-file: .env
 
-## Enable/disable suggesting shell commands (default: True)
+## 启用/禁用建议shell命令（默认：True）
 #suggest-shell-commands: true
 
-## Enable/disable fancy input with history and completion (default: True)
+## 启用/禁用带有历史和自动完成的高级输入（默认：True）
 #fancy-input: true
 
-## Enable/disable multi-line input mode with Meta-Enter to submit (default: False)
+## 启用/禁用多行输入模式，使用Meta-Enter提交（默认：False）
 #multiline: false
 
-## Enable/disable detection and offering to add URLs to chat (default: True)
+## 启用/禁用检测并提供将URL添加到聊天的功能（默认：True）
 #detect-urls: true
 
-## Specify which editor to use for the /editor command
+## 指定用于/editor命令的编辑器
 #editor: xxx
 
-## Install the tree_sitter_language_pack (experimental)
+## 安装tree_sitter_language_pack（实验性）
 #install-tree-sitter-language-pack: false
 ```
 <!--[[[end]]]-->
