@@ -1,4 +1,3 @@
-import configparser
 import json
 import os
 import re
@@ -25,6 +24,7 @@ from aider.coders import Coder
 from aider.coders.base_coder import UnknownEditFormat
 from aider.commands import Commands, SwitchCoder
 from aider.copypaste import ClipboardWatcher
+from aider.deprecated import handle_deprecated_model_args
 from aider.format_settings import format_settings, scrub_sensitive_info
 from aider.history import ChatSummary
 from aider.io import InputOutput
@@ -126,17 +126,15 @@ def setup_git(git_root, io):
     if not repo:
         return
 
-    user_name = None
-    user_email = None
-    with repo.config_reader() as config:
-        try:
-            user_name = config.get_value("user", "name", None)
-        except (configparser.NoSectionError, configparser.NoOptionError):
-            pass
-        try:
-            user_email = config.get_value("user", "email", None)
-        except (configparser.NoSectionError, configparser.NoOptionError):
-            pass
+    try:
+        user_name = repo.git.config("--get", "user.name") or None
+    except git.exc.GitCommandError:
+        user_name = None
+
+    try:
+        user_email = repo.git.config("--get", "user.email") or None
+    except git.exc.GitCommandError:
+        user_email = None
 
     if user_name and user_email:
         return repo.working_tree_dir
@@ -211,18 +209,6 @@ def check_streamlit_install(io):
         "streamlit",
         "You need to install the aider browser feature",
         ["aider-chat[browser]"],
-    )
-
-
-def install_tree_sitter_language_pack(io):
-    return utils.check_pip_install_extra(
-        io,
-        "tree_sitter_language_pack",
-        "Install tree_sitter_language_pack?",
-        [
-            "tree-sitter-language-pack==0.4.0",
-            "tree-sitter==0.24.0",
-        ],
     )
 
 
@@ -519,6 +505,8 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         litellm._load_litellm()
         litellm._lazy_module.client_session = httpx.Client(verify=False)
         litellm._lazy_module.aclient_session = httpx.AsyncClient(verify=False)
+        # Set verify_ssl on the model_info_manager
+        models.model_info_manager.set_verify_ssl(False)
 
     if args.timeout:
         models.request_timeout = args.timeout
@@ -567,6 +555,8 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
             editingmode=editing_mode,
             fancy_input=args.fancy_input,
             multiline_mode=args.multiline,
+            notifications=args.notifications,
+            notifications_command=args.notifications_command,
         )
 
     io = get_io(args.pretty)
@@ -606,6 +596,9 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
 
     if args.openai_api_key:
         os.environ["OPENAI_API_KEY"] = args.openai_api_key
+
+    # Handle deprecated model shortcut args
+    handle_deprecated_model_args(args, io)
     if args.openai_api_base:
         os.environ["OPENAI_API_BASE"] = args.openai_api_base
     if args.openai_api_version:
@@ -718,11 +711,6 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         analytics.event("exit", reason="Upgrade completed")
         return 0 if success else 1
 
-    if args.install_tree_sitter_language_pack:
-        success = install_tree_sitter_language_pack(io)
-        analytics.event("exit", reason="Install TSLP completed")
-        return 0 if success else 1
-
     if args.check_update:
         check_version(io, verbose=args.verbose)
 
@@ -768,7 +756,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         model_key_pairs = [
             ("ANTHROPIC_API_KEY", "sonnet"),
             ("DEEPSEEK_API_KEY", "deepseek"),
-            ("OPENROUTER_API_KEY", "openrouter/anthropic/claude-3.5-sonnet"),
+            ("OPENROUTER_API_KEY", "openrouter/anthropic/claude-3.7-sonnet"),
             ("OPENAI_API_KEY", "gpt-4o"),
             ("GEMINI_API_KEY", "flash"),
         ]
@@ -790,15 +778,49 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         weak_model=args.weak_model,
         editor_model=args.editor_model,
         editor_edit_format=args.editor_edit_format,
+        verbose=args.verbose,
     )
 
-    # add --reasoning-effort cli param
+    # Check if deprecated remove_reasoning is set
+    if main_model.remove_reasoning is not None:
+        io.tool_warning(
+            "Model setting 'remove_reasoning' is deprecated, please use 'reasoning_tag' instead."
+        )
+
+    # Set reasoning effort and thinking tokens if specified
     if args.reasoning_effort is not None:
-        if not getattr(main_model, "extra_params", None):
-            main_model.extra_params = {}
-        if "extra_body" not in main_model.extra_params:
-            main_model.extra_params["extra_body"] = {}
-        main_model.extra_params["extra_body"]["reasoning_effort"] = args.reasoning_effort
+        # Apply if check is disabled or model explicitly supports it
+        if not args.check_model_accepts_settings or (
+            main_model.accepts_settings and "reasoning_effort" in main_model.accepts_settings
+        ):
+            main_model.set_reasoning_effort(args.reasoning_effort)
+
+    if args.thinking_tokens is not None:
+        # Apply if check is disabled or model explicitly supports it
+        if not args.check_model_accepts_settings or (
+            main_model.accepts_settings and "thinking_tokens" in main_model.accepts_settings
+        ):
+            main_model.set_thinking_tokens(args.thinking_tokens)
+
+    # Show warnings about unsupported settings that are being ignored
+    if args.check_model_accepts_settings:
+        settings_to_check = [
+            {"arg": args.reasoning_effort, "name": "reasoning_effort"},
+            {"arg": args.thinking_tokens, "name": "thinking_tokens"},
+        ]
+
+        for setting in settings_to_check:
+            if setting["arg"] is not None and (
+                not main_model.accepts_settings
+                or setting["name"] not in main_model.accepts_settings
+            ):
+                io.tool_warning(
+                    f"Warning: {main_model.name} does not support '{setting['name']}', ignoring."
+                )
+                io.tool_output(
+                    f"Use --no-check-model-accepts-settings to force the '{setting['name']}'"
+                    " setting."
+                )
 
     if args.copy_paste and args.edit_format is None:
         if main_model.edit_format in ("diff", "whole"):
@@ -847,6 +869,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
                 attribute_commit_message_committer=args.attribute_commit_message_committer,
                 commit_prompt=args.commit_prompt,
                 subtree_only=args.subtree_only,
+                git_commit_verify=args.git_commit_verify,
             )
         except FileNotFoundError:
             pass
@@ -872,6 +895,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         parser=parser,
         verbose=args.verbose,
         editor=args.editor,
+        original_read_only_fnames=read_only_fnames,
     )
 
     summarizer = ChatSummary(
@@ -926,6 +950,7 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
             chat_language=args.chat_language,
             detect_urls=args.detect_urls,
             auto_copy_context=args.copy_paste,
+            auto_accept_architect=args.auto_accept_architect,
         )
     except UnknownEditFormat as err:
         io.tool_error(str(err))

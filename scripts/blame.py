@@ -13,8 +13,10 @@ import yaml
 from tqdm import tqdm
 
 website_files = [
+    "aider/website/index.html",
     "aider/website/share/index.md",
     "aider/website/_includes/head_custom.html",
+    "aider/website/_includes/home.css",
     "aider/website/docs/leaderboards/index.md",
 ]
 
@@ -38,6 +40,7 @@ def blame(start_tag, end_tag=None):
         for f in files
         if f.endswith((".js", ".py", ".scm", ".sh", "Dockerfile", "Gemfile"))
         or (f.startswith(".github/workflows/") and f.endswith(".yml"))
+        or (f.startswith("aider/resources/") and f.endswith(".yml"))
         or f in website_files
         or f in test_files
     ]

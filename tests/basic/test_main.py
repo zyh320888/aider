@@ -684,6 +684,116 @@ class TestMain(TestCase):
             )
             self.assertTrue(coder.detect_urls)
 
+    def test_accepts_settings_warnings(self):
+        # Test that appropriate warnings are shown based on accepts_settings configuration
+        with GitTemporaryDirectory():
+            # Test model that accepts the thinking_tokens setting
+            with (
+                patch("aider.io.InputOutput.tool_warning") as mock_warning,
+                patch("aider.models.Model.set_thinking_tokens") as mock_set_thinking,
+            ):
+                main(
+                    [
+                        "--model",
+                        "anthropic/claude-3-7-sonnet-20250219",
+                        "--thinking-tokens",
+                        "1000",
+                        "--yes",
+                        "--exit",
+                    ],
+                    input=DummyInput(),
+                    output=DummyOutput(),
+                )
+                # No warning should be shown as this model accepts thinking_tokens
+                for call in mock_warning.call_args_list:
+                    self.assertNotIn("thinking_tokens", call[0][0])
+                # Method should be called
+                mock_set_thinking.assert_called_once_with("1000")
+
+            # Test model that doesn't have accepts_settings for thinking_tokens
+            with (
+                patch("aider.io.InputOutput.tool_warning") as mock_warning,
+                patch("aider.models.Model.set_thinking_tokens") as mock_set_thinking,
+            ):
+                main(
+                    [
+                        "--model",
+                        "gpt-4o",
+                        "--thinking-tokens",
+                        "1000",
+                        "--check-model-accepts-settings",
+                        "--yes",
+                        "--exit",
+                    ],
+                    input=DummyInput(),
+                    output=DummyOutput(),
+                )
+                # Warning should be shown
+                warning_shown = False
+                for call in mock_warning.call_args_list:
+                    if "thinking_tokens" in call[0][0]:
+                        warning_shown = True
+                self.assertTrue(warning_shown)
+                # Method should NOT be called because model doesn't support it and check flag is on
+                mock_set_thinking.assert_not_called()
+
+            # Test model that accepts the reasoning_effort setting
+            with (
+                patch("aider.io.InputOutput.tool_warning") as mock_warning,
+                patch("aider.models.Model.set_reasoning_effort") as mock_set_reasoning,
+            ):
+                main(
+                    ["--model", "o1", "--reasoning-effort", "3", "--yes", "--exit"],
+                    input=DummyInput(),
+                    output=DummyOutput(),
+                )
+                # No warning should be shown as this model accepts reasoning_effort
+                for call in mock_warning.call_args_list:
+                    self.assertNotIn("reasoning_effort", call[0][0])
+                # Method should be called
+                mock_set_reasoning.assert_called_once_with("3")
+
+            # Test model that doesn't have accepts_settings for reasoning_effort
+            with (
+                patch("aider.io.InputOutput.tool_warning") as mock_warning,
+                patch("aider.models.Model.set_reasoning_effort") as mock_set_reasoning,
+            ):
+                main(
+                    ["--model", "gpt-3.5-turbo", "--reasoning-effort", "3", "--yes", "--exit"],
+                    input=DummyInput(),
+                    output=DummyOutput(),
+                )
+                # Warning should be shown
+                warning_shown = False
+                for call in mock_warning.call_args_list:
+                    if "reasoning_effort" in call[0][0]:
+                        warning_shown = True
+                self.assertTrue(warning_shown)
+                # Method should still be called by default
+                mock_set_reasoning.assert_not_called()
+
+    @patch("aider.models.ModelInfoManager.set_verify_ssl")
+    def test_no_verify_ssl_sets_model_info_manager(self, mock_set_verify_ssl):
+        with GitTemporaryDirectory():
+            # Mock Model class to avoid actual model initialization
+            with patch("aider.models.Model") as mock_model:
+                # Configure the mock to avoid the TypeError
+                mock_model.return_value.info = {}
+                mock_model.return_value.name = "gpt-4"  # Add a string name
+                mock_model.return_value.validate_environment.return_value = {
+                    "missing_keys": [],
+                    "keys_in_environment": [],
+                }
+
+                # Mock fuzzy_match_models to avoid string operations on MagicMock
+                with patch("aider.models.fuzzy_match_models", return_value=[]):
+                    main(
+                        ["--no-verify-ssl", "--exit", "--yes"],
+                        input=DummyInput(),
+                        output=DummyOutput(),
+                    )
+                mock_set_verify_ssl.assert_called_once_with(False)
+
     def test_pytest_env_vars(self):
         # Verify that environment variables from pytest.ini are properly set
         self.assertEqual(os.environ.get("AIDER_ANALYTICS"), "false")
@@ -740,6 +850,83 @@ class TestMain(TestCase):
         with GitTemporaryDirectory():
             result = main(["--api-key", "INVALID_FORMAT", "--exit", "--yes"])
             self.assertEqual(result, 1)
+
+    def test_git_config_include(self):
+        # Test that aider respects git config includes for user.name and user.email
+        with GitTemporaryDirectory() as git_dir:
+            git_dir = Path(git_dir)
+
+            # Create an includable config file with user settings
+            include_config = git_dir / "included.gitconfig"
+            include_config.write_text(
+                "[user]\n    name = Included User\n    email = included@example.com\n"
+            )
+
+            # Set up main git config to include the other file
+            repo = git.Repo(git_dir)
+            include_path = str(include_config).replace("\\", "/")
+            repo.git.config("--local", "include.path", str(include_path))
+
+            # Verify the config is set up correctly using git command
+            self.assertEqual(repo.git.config("user.name"), "Included User")
+            self.assertEqual(repo.git.config("user.email"), "included@example.com")
+
+            # Manually check the git config file to confirm include directive
+            git_config_path = git_dir / ".git" / "config"
+            git_config_content = git_config_path.read_text()
+
+            # Run aider and verify it doesn't change the git config
+            main(["--yes", "--exit"], input=DummyInput(), output=DummyOutput())
+
+            # Check that the user settings are still the same using git command
+            repo = git.Repo(git_dir)  # Re-open repo to ensure we get fresh config
+            self.assertEqual(repo.git.config("user.name"), "Included User")
+            self.assertEqual(repo.git.config("user.email"), "included@example.com")
+
+            # Manually check the git config file again to ensure it wasn't modified
+            git_config_content_after = git_config_path.read_text()
+            self.assertEqual(git_config_content, git_config_content_after)
+
+    def test_git_config_include_directive(self):
+        # Test that aider respects the include directive in git config
+        with GitTemporaryDirectory() as git_dir:
+            git_dir = Path(git_dir)
+
+            # Create an includable config file with user settings
+            include_config = git_dir / "included.gitconfig"
+            include_config.write_text(
+                "[user]\n    name = Directive User\n    email = directive@example.com\n"
+            )
+
+            # Set up main git config with include directive
+            git_config = git_dir / ".git" / "config"
+            # Use normalized path with forward slashes for git config
+            include_path = str(include_config).replace("\\", "/")
+            with open(git_config, "a") as f:
+                f.write(f"\n[include]\n    path = {include_path}\n")
+
+            # Read the modified config file
+            modified_config_content = git_config.read_text()
+
+            # Verify the include directive was added correctly
+            self.assertIn("[include]", modified_config_content)
+
+            # Verify the config is set up correctly using git command
+            repo = git.Repo(git_dir)
+            self.assertEqual(repo.git.config("user.name"), "Directive User")
+            self.assertEqual(repo.git.config("user.email"), "directive@example.com")
+
+            # Run aider and verify it doesn't change the git config
+            main(["--yes", "--exit"], input=DummyInput(), output=DummyOutput())
+
+            # Check that the git config file wasn't modified
+            config_after_aider = git_config.read_text()
+            self.assertEqual(modified_config_content, config_after_aider)
+
+            # Check that the user settings are still the same using git command
+            repo = git.Repo(git_dir)  # Re-open repo to ensure we get fresh config
+            self.assertEqual(repo.git.config("user.name"), "Directive User")
+            self.assertEqual(repo.git.config("user.email"), "directive@example.com")
 
     def test_invalid_edit_format(self):
         with GitTemporaryDirectory():
@@ -836,7 +1023,7 @@ class TestMain(TestCase):
 
     def test_reasoning_effort_option(self):
         coder = main(
-            ["--reasoning-effort", "3", "--yes", "--exit"],
+            ["--reasoning-effort", "3", "--no-check-model-accepts-settings", "--yes", "--exit"],
             input=DummyInput(),
             output=DummyOutput(),
             return_coder=True,
@@ -844,3 +1031,90 @@ class TestMain(TestCase):
         self.assertEqual(
             coder.main_model.extra_params.get("extra_body", {}).get("reasoning_effort"), "3"
         )
+
+    def test_thinking_tokens_option(self):
+        coder = main(
+            ["--model", "sonnet", "--thinking-tokens", "1000", "--yes", "--exit"],
+            input=DummyInput(),
+            output=DummyOutput(),
+            return_coder=True,
+        )
+        self.assertEqual(
+            coder.main_model.extra_params.get("thinking", {}).get("budget_tokens"), 1000
+        )
+
+    def test_check_model_accepts_settings_flag(self):
+        # Test that --check-model-accepts-settings affects whether settings are applied
+        with GitTemporaryDirectory():
+            # When flag is on, setting shouldn't be applied to non-supporting model
+            with patch("aider.models.Model.set_thinking_tokens") as mock_set_thinking:
+                main(
+                    [
+                        "--model",
+                        "gpt-4o",
+                        "--thinking-tokens",
+                        "1000",
+                        "--check-model-accepts-settings",
+                        "--yes",
+                        "--exit",
+                    ],
+                    input=DummyInput(),
+                    output=DummyOutput(),
+                )
+                # Method should not be called because model doesn't support it and flag is on
+                mock_set_thinking.assert_not_called()
+
+            # When flag is off, setting should be applied regardless of support
+            with patch("aider.models.Model.set_reasoning_effort") as mock_set_reasoning:
+                main(
+                    [
+                        "--model",
+                        "gpt-3.5-turbo",
+                        "--reasoning-effort",
+                        "3",
+                        "--no-check-model-accepts-settings",
+                        "--yes",
+                        "--exit",
+                    ],
+                    input=DummyInput(),
+                    output=DummyOutput(),
+                )
+                # Method should be called because flag is off
+                mock_set_reasoning.assert_called_once_with("3")
+
+    def test_model_accepts_settings_attribute(self):
+        with GitTemporaryDirectory():
+            # Test with a model where we override the accepts_settings attribute
+            with patch("aider.models.Model") as MockModel:
+                # Setup mock model instance to simulate accepts_settings attribute
+                mock_instance = MockModel.return_value
+                mock_instance.name = "test-model"
+                mock_instance.accepts_settings = ["reasoning_effort"]
+                mock_instance.validate_environment.return_value = {
+                    "missing_keys": [],
+                    "keys_in_environment": [],
+                }
+                mock_instance.info = {}
+                mock_instance.weak_model_name = None
+                mock_instance.get_weak_model.return_value = None
+
+                # Run with both settings, but model only accepts reasoning_effort
+                main(
+                    [
+                        "--model",
+                        "test-model",
+                        "--reasoning-effort",
+                        "3",
+                        "--thinking-tokens",
+                        "1000",
+                        "--check-model-accepts-settings",
+                        "--yes",
+                        "--exit",
+                    ],
+                    input=DummyInput(),
+                    output=DummyOutput(),
+                )
+
+                # Only set_reasoning_effort should be called, not set_thinking_tokens
+                mock_instance.set_reasoning_effort.assert_called_once_with("3")
+                mock_instance.set_thinking_tokens.assert_not_called()

@@ -56,6 +56,7 @@ class GitRepo:
         attribute_commit_message_committer=False,
         commit_prompt=None,
         subtree_only=False,
+        git_commit_verify=True,
     ):
         self.io = io
         self.models = models
@@ -69,6 +70,7 @@ class GitRepo:
         self.attribute_commit_message_committer = attribute_commit_message_committer
         self.commit_prompt = commit_prompt
         self.subtree_only = subtree_only
+        self.git_commit_verify = git_commit_verify
         self.ignore_file_cache = {}
 
         if git_dname:
@@ -133,7 +135,9 @@ class GitRepo:
         # if context:
         #    full_commit_message += "\n\n# Aider chat conversation:\n\n" + context
 
-        cmd = ["-m", full_commit_message, "--no-verify"]
+        cmd = ["-m", full_commit_message]
+        if not self.git_commit_verify:
+            cmd.append("--no-verify")
         if fnames:
             fnames = [str(self.abs_root_path(fn)) for fn in fnames]
             for fname in fnames:
@@ -145,7 +149,7 @@ class GitRepo:
         else:
             cmd += ["-a"]
 
-        original_user_name = self.repo.config_reader().get_value("user", "name")
+        original_user_name = self.repo.git.config("--get", "user.name")
         original_committer_name_env = os.environ.get("GIT_COMMITTER_NAME")
         committer_name = f"{original_user_name} (aider)"
 
@@ -309,8 +313,11 @@ class GitRepo:
 
         # Add staged files
         index = self.repo.index
-        staged_files = [path for path, _ in index.entries.keys()]
-        files.update(self.normalize_path(path) for path in staged_files)
+        try:
+            staged_files = [path for path, _ in index.entries.keys()]
+            files.update(self.normalize_path(path) for path in staged_files)
+        except ANY_GIT_ERROR as err:
+            self.io.tool_error(f"Unable to read staged files: {err}")
 
         res = [fname for fname in files if not self.ignored_file(fname)]
 

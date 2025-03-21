@@ -172,8 +172,10 @@ cog.out("```\n")
   streaming: true
   editor_model_name: null
   editor_edit_format: null
+  reasoning_tag: null
   remove_reasoning: null
   system_prompt_prefix: null
+  accepts_settings: null
 
 - name: anthropic/claude-3-5-haiku-20241022
   edit_format: diff
@@ -223,6 +225,36 @@ cog.out("```\n")
   editor_model_name: anthropic/claude-3-5-sonnet-20241022
   editor_edit_format: editor-diff
 
+- name: anthropic/claude-3-7-sonnet-20250219
+  edit_format: diff
+  weak_model_name: anthropic/claude-3-5-haiku-20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: anthropic/claude-3-7-sonnet-20250219
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
+- name: anthropic/claude-3-7-sonnet-latest
+  edit_format: diff
+  weak_model_name: anthropic/claude-3-5-haiku-20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: anthropic/claude-3-7-sonnet-latest
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
 - name: anthropic/claude-3-haiku-20240307
   weak_model_name: anthropic/claude-3-haiku-20240307
   examples_as_sys_msg: true
@@ -239,6 +271,8 @@ cog.out("```\n")
   streaming: false
   editor_model_name: azure/gpt-4o
   editor_edit_format: editor-diff
+  accepts_settings:
+  - reasoning_effort
 
 - name: azure/o1-mini
   weak_model_name: azure/gpt-4o-mini
@@ -265,6 +299,8 @@ cog.out("```\n")
   editor_model_name: azure/gpt-4o
   editor_edit_format: editor-diff
   system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
 
 - name: bedrock/anthropic.claude-3-5-haiku-20241022-v1:0
   edit_format: diff
@@ -287,6 +323,66 @@ cog.out("```\n")
   cache_control: true
   editor_model_name: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
   editor_edit_format: editor-diff
+
+- name: bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0
+  edit_format: diff
+  weak_model_name: bedrock/anthropic.claude-3-5-haiku-20241022-v1:0
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
+- name: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0
+  edit_format: diff
+  weak_model_name: bedrock/us.anthropic.claude-3-5-haiku-20241022-v1:0
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
+- name: bedrock_converse/anthropic.claude-3-7-sonnet-20250219-v1:0
+  edit_format: diff
+  weak_model_name: bedrock_converse/anthropic.claude-3-5-haiku-20241022-v1:0
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: bedrock_converse/anthropic.claude-3-7-sonnet-20250219-v1:0
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
+- name: bedrock_converse/us.anthropic.claude-3-7-sonnet-20250219-v1:0
+  edit_format: diff
+  weak_model_name: bedrock_converse/us.anthropic.claude-3-5-haiku-20241022-v1:0
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: bedrock_converse/us.anthropic.claude-3-7-sonnet-20250219-v1:0
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
 
 - name: claude-3-5-haiku-20241022
   edit_format: diff
@@ -324,6 +420,36 @@ cog.out("```\n")
   editor_model_name: claude-3-5-sonnet-20241022
   editor_edit_format: editor-diff
 
+- name: claude-3-7-sonnet-20250219
+  edit_format: diff
+  weak_model_name: claude-3-5-haiku-20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: claude-3-7-sonnet-20250219
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
+- name: claude-3-7-sonnet-latest
+  edit_format: diff
+  weak_model_name: claude-3-5-haiku-20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: claude-3-7-sonnet-latest
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
 - name: claude-3-haiku-20240307
   weak_model_name: claude-3-haiku-20240307
   examples_as_sys_msg: true
@@ -339,6 +465,9 @@ cog.out("```\n")
 
 - name: claude-3-sonnet-20240229
   weak_model_name: claude-3-5-haiku-20241022
+
+- name: cohere_chat/command-a-03-2025
+  examples_as_sys_msg: true
 
 - name: command-r-08-2024
   weak_model_name: command-r-08-2024
@@ -408,7 +537,7 @@ cog.out("```\n")
   use_temperature: false
   editor_model_name: fireworks_ai/accounts/fireworks/models/deepseek-v3
   editor_edit_format: editor-diff
-  remove_reasoning: think
+  reasoning_tag: think
 
 - name: fireworks_ai/accounts/fireworks/models/deepseek-v3
   edit_format: diff
@@ -417,6 +546,19 @@ cog.out("```\n")
   examples_as_sys_msg: true
   extra_params:
     max_tokens: 128000
+
+- name: fireworks_ai/accounts/fireworks/models/qwq-32b
+  edit_format: diff
+  weak_model_name: fireworks_ai/accounts/fireworks/models/qwen2p5-coder-32b-instruct
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    max_tokens: 32000
+    top_p: 0.95
+  use_temperature: 0.6
+  editor_model_name: fireworks_ai/accounts/fireworks/models/qwen2p5-coder-32b-instruct
+  editor_edit_format: editor-diff
+  reasoning_tag: think
 
 - name: gemini/gemini-1.5-flash-002
 
@@ -457,6 +599,9 @@ cog.out("```\n")
 - name: gemini/gemini-exp-1206
   edit_format: diff
   use_repo_map: true
+
+- name: gemini/gemma-3-27b-it
+  use_system_prompt: false
 
 - name: gpt-3.5-turbo
   weak_model_name: gpt-4o-mini
@@ -532,6 +677,16 @@ cog.out("```\n")
   use_repo_map: true
   reminder: sys
 
+- name: gpt-4.5-preview
+  edit_format: diff
+  weak_model_name: gpt-4o-mini
+  use_repo_map: true
+  lazy: true
+  reminder: sys
+  examples_as_sys_msg: true
+  editor_model_name: gpt-4o
+  editor_edit_format: editor-diff
+
 - name: gpt-4o
   edit_format: diff
   weak_model_name: gpt-4o-mini
@@ -567,6 +722,18 @@ cog.out("```\n")
   weak_model_name: groq/llama3-8b-8192
   examples_as_sys_msg: true
 
+- name: groq/qwen-qwq-32b
+  edit_format: diff
+  weak_model_name: groq/qwen-2.5-coder-32b
+  use_repo_map: true
+  extra_params:
+    max_tokens: 128000
+    top_p: 0.95
+  use_temperature: 0.6
+  editor_model_name: groq/qwen-2.5-coder-32b
+  editor_edit_format: editor-diff
+  reasoning_tag: think
+
 - name: o1
   edit_format: diff
   weak_model_name: gpt-4o-mini
@@ -576,6 +743,8 @@ cog.out("```\n")
   editor_model_name: gpt-4o
   editor_edit_format: editor-diff
   system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
 
 - name: o1-mini
   weak_model_name: gpt-4o-mini
@@ -602,6 +771,18 @@ cog.out("```\n")
   editor_model_name: gpt-4o
   editor_edit_format: editor-diff
   system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
+
+- name: openai/gpt-4.5-preview
+  edit_format: diff
+  weak_model_name: gpt-4o-mini
+  use_repo_map: true
+  lazy: true
+  reminder: sys
+  examples_as_sys_msg: true
+  editor_model_name: openai/gpt-4o
+  editor_edit_format: editor-diff
 
 - name: openai/gpt-4o
   edit_format: diff
@@ -642,6 +823,8 @@ cog.out("```\n")
   editor_model_name: openai/gpt-4o
   editor_edit_format: editor-diff
   system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
 
 - name: openai/o1-mini
   weak_model_name: openai/gpt-4o-mini
@@ -668,6 +851,8 @@ cog.out("```\n")
   editor_model_name: gpt-4o
   editor_edit_format: editor-diff
   system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
 
 - name: openrouter/anthropic/claude-3-opus
   edit_format: diff
@@ -696,11 +881,56 @@ cog.out("```\n")
   editor_model_name: openrouter/anthropic/claude-3.5-sonnet:beta
   editor_edit_format: editor-diff
 
+- name: openrouter/anthropic/claude-3.7-sonnet
+  edit_format: diff
+  weak_model_name: openrouter/anthropic/claude-3-5-haiku
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: openrouter/anthropic/claude-3.7-sonnet
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
+- name: openrouter/anthropic/claude-3.7-sonnet:beta
+  edit_format: diff
+  weak_model_name: openrouter/anthropic/claude-3-5-haiku
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: openrouter/anthropic/claude-3.7-sonnet
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
+
+- name: openrouter/cohere/command-a-03-2025
+  examples_as_sys_msg: true
+
 - name: openrouter/deepseek/deepseek-chat
   edit_format: diff
   use_repo_map: true
   reminder: sys
   examples_as_sys_msg: true
+
+- name: openrouter/deepseek/deepseek-chat:free
+  edit_format: diff
+  weak_model_name: openrouter/deepseek/deepseek-chat:free
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    max_tokens: 8192
+  caches_by_default: true
+  use_temperature: false
+  editor_model_name: openrouter/deepseek/deepseek-chat:free
+  editor_edit_format: editor-diff
 
 - name: openrouter/deepseek/deepseek-coder
   edit_format: diff
@@ -715,8 +945,8 @@ cog.out("```\n")
   examples_as_sys_msg: true
   extra_params:
     max_tokens: 8192
+    include_reasoning: true
   caches_by_default: true
-  use_temperature: false
   editor_model_name: openrouter/deepseek/deepseek-chat
   editor_edit_format: editor-diff
 
@@ -744,6 +974,12 @@ cog.out("```\n")
   editor_model_name: openrouter/deepseek/deepseek-r1:free
   editor_edit_format: editor-diff
 
+- name: openrouter/google/gemma-3-27b-it
+  use_system_prompt: false
+
+- name: openrouter/google/gemma-3-27b-it:free
+  use_system_prompt: false
+
 - name: openrouter/meta-llama/llama-3-70b-instruct
   edit_format: diff
   weak_model_name: openrouter/meta-llama/llama-3-70b-instruct
@@ -767,6 +1003,8 @@ cog.out("```\n")
   editor_model_name: openrouter/openai/gpt-4o
   editor_edit_format: editor-diff
   system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
 
 - name: openrouter/openai/o1-mini
   weak_model_name: openrouter/openai/gpt-4o-mini
@@ -795,6 +1033,19 @@ cog.out("```\n")
   editor_model_name: openrouter/openai/gpt-4o
   editor_edit_format: editor-diff
   system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
+
+- name: openrouter/openai/o3-mini-high
+  edit_format: diff
+  weak_model_name: openrouter/openai/gpt-4o-mini
+  use_repo_map: true
+  use_temperature: false
+  editor_model_name: openrouter/openai/gpt-4o
+  editor_edit_format: editor-diff
+  system_prompt_prefix: 'Formatting re-enabled. '
+  accepts_settings:
+  - reasoning_effort
 
 - name: openrouter/qwen/qwen-2.5-coder-32b-instruct
   edit_format: diff
@@ -802,6 +1053,18 @@ cog.out("```\n")
   use_repo_map: true
   editor_model_name: openrouter/qwen/qwen-2.5-coder-32b-instruct
   editor_edit_format: editor-diff
+
+- name: vertex_ai-anthropic_models/vertex_ai/claude-3-7-sonnet@20250219
+  edit_format: diff
+  weak_model_name: vertex_ai/claude-3-5-haiku@20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    max_tokens: 64000
+  editor_model_name: vertex_ai-anthropic_models/vertex_ai/claude-3-7-sonnet@20250219
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
 
 - name: vertex_ai/claude-3-5-haiku@20241022
   edit_format: diff
@@ -829,6 +1092,18 @@ cog.out("```\n")
     max_tokens: 8192
   editor_model_name: vertex_ai/claude-3-5-sonnet@20240620
   editor_edit_format: editor-diff
+
+- name: vertex_ai/claude-3-7-sonnet@20250219
+  edit_format: diff
+  weak_model_name: vertex_ai/claude-3-5-haiku@20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    max_tokens: 64000
+  editor_model_name: vertex_ai/claude-3-7-sonnet@20250219
+  editor_edit_format: editor-diff
+  accepts_settings:
+  - thinking_tokens
 
 - name: vertex_ai/claude-3-opus@20240229
   edit_format: diff
