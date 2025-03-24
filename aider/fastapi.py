@@ -177,10 +177,8 @@ def get_coder(session_id: str = "default", workspace_dir: str = None):
             coder.stream = True
             coder.pretty = False
             
-            # 初始化git仓库（如果需要）
-            if not os.path.exists(os.path.join(current_dir, '.git')):
-                coder.init_git()
-                logger.info("已初始化git仓库")
+            # 注意：不需要手动初始化git仓库，Coder初始化时会自动处理
+            # 在cli_main中已经处理了git相关的初始化
             
             coder_instances[session_id] = coder
             logger.info(f"已创建并缓存Coder实例: {session_id}")
