@@ -12,6 +12,33 @@
     --gray: #ADB5BD;
     --code-bg: #282a36;
     --terminal-green: #14b014;
+    
+    /* Typography variables */
+    --heading-line-height: 1.2;
+    --body-line-height: 1.7;
+    --paragraph-spacing: 1.6rem;
+    --heading-spacing: 1.8rem;
+    
+    /* Typographic scale */
+    --text-xs: 0.75rem;    /* 12px */
+    --text-sm: 0.875rem;   /* 14px */
+    --text-base: 1rem;     /* 16px */
+    --text-md: 1.125rem;   /* 18px */
+    --text-lg: 1.25rem;    /* 20px */
+    --text-xl: 1.5rem;     /* 24px */
+    --text-2xl: 1.875rem;  /* 30px */
+    --text-3xl: 2.25rem;   /* 36px */
+    --text-4xl: 3rem;      /* 48px */
+    
+    /* Spacing rhythm values */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
 }
 
 * {
@@ -20,11 +47,40 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: var(--text-4xl);
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+h2 {
+    font-size: var(--text-2xl);
+    line-height: 1.2;
+}
+
+h3 {
+    font-size: var(--text-xl);
+    line-height: 1.3;
+}
+
 body {
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    line-height: var(--body-line-height);
     color: var(--dark);
     background-color: var(--light);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
@@ -51,7 +107,7 @@ nav {
 
 .logo {
     font-size: 1.8rem;
-    font-weight: 700;
+    font-weight: 600;
     font-family: 'GlassTTYVT220', monospace;
     color: var(--terminal-green);
     text-decoration: none;
@@ -68,6 +124,9 @@ nav {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s;
+    font-size: var(--text-sm);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
 }
 
 .nav-links a:hover {
@@ -134,18 +193,20 @@ nav {
 
 .hero h1 {
     font-size: 2.5rem;
-    margin-bottom: 24px;
+    margin-bottom: var(--heading-spacing);
     color: var(--dark);
     text-align: left;
-    line-height: 1.2;
+    line-height: var(--heading-line-height);
+    font-weight: 800;
+    letter-spacing: -0.75px;
 }
 
 .hero p {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     max-width: 90%;
-    margin: 0 0 32px;
+    margin: 0 0 var(--paragraph-spacing);
     color: #495057;
-    line-height: 1.6;
+    line-height: var(--body-line-height);
     font-weight: 400;
 }
 
@@ -221,9 +282,12 @@ nav {
 
 .section-title {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: var(--heading-spacing);
     font-size: 2.5rem;
     color: var(--dark);
+    font-weight: 700;
+    line-height: var(--heading-line-height);
+    letter-spacing: -0.5px;
 }
 
 .feature-grid {
@@ -237,7 +301,7 @@ nav {
     border-radius: 8px;
     padding: 30px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
     border-left: 3px solid var(--primary);
     display: block;
     color: inherit;
@@ -247,7 +311,14 @@ nav {
 
 .feature-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    background-color: rgba(76, 110, 245, 0.03);
+}
+
+.feature-card p {
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: rgba(33, 37, 41, 0.9);
 }
 
 .feature-card-header {
@@ -258,22 +329,42 @@ nav {
 }
 
 .feature-icon {
-    font-size: 1.8rem;
-    color: var(--primary);
-    margin-right: 12px;
+    font-size: 28px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    border-radius: 10px;
+    background: rgba(18, 184, 134, 0.1);
+    color: var(--secondary);
+    margin-right: 14px;
+    flex-shrink: 0;
+    transition: transform 0.3s, background 0.3s;
+    transform: scale(1.1);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.25);
+    background: rgba(18, 184, 134, 0.2);
+    color: var(--secondary);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.15);
+    background: rgba(18, 184, 134, 0.2);
+    color: var(--secondary);
 }
 
 .feature-title {
-    font-size: 1.3rem;
+    font-size: var(--text-lg);
     color: var(--dark);
     margin: 0;
     position: relative;
-    padding-bottom: 12px;
+    padding-bottom: var(--space-3);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
 }
 
 .feature-title::after {
@@ -291,16 +382,24 @@ nav {
     background-color: #f8f9fb;
 }
 
+code, pre, .code-block {
+    font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', Consolas, Monaco, 'Andale Mono', monospace;
+    font-feature-settings: "liga" 1, "calt" 1; /* Enable ligatures */
+    letter-spacing: -0.025em;
+    font-size: 0.95em;
+}
+
 .code-block {
     background-color: var(--code-bg);
     border-radius: 8px;
-    padding: 20px;
+    padding: 1.5rem;
     color: white;
-    font-family: monospace;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: 1.5;
-    margin: 20px 0;
+    margin: 1.5rem 0;
     overflow-x: auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    tab-size: 2;
 }
 
 .testimonials {
@@ -326,12 +425,16 @@ nav {
 }
 
 .testimonial-text {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
     font-style: italic;
     color: #495057;
     position: relative;
     z-index: 1;
     padding: 0 10px;
+    font-size: 1.1rem;
+    line-height: var(--body-line-height);
+    text-wrap: balance;
+    hanging-punctuation: first;
 }
 
 .testimonial-text::before,
@@ -364,6 +467,7 @@ nav {
 .testimonial-author {
     font-weight: 600;
     color: var(--dark);
+    font-size: 0.95rem;
 }
 
 .testimonial-author a {
@@ -405,10 +509,13 @@ nav {
 
 .info-column-title {
     font-size: 1.5rem;
-    margin-bottom: 15px;
+    margin-bottom: 1.2rem;
     color: var(--dark);
     position: relative;
     padding-bottom: 12px;
+    font-weight: 600;
+    letter-spacing: -0.25px;
+    line-height: var(--heading-line-height);
 }
 
 .info-column-title::after {
@@ -423,8 +530,9 @@ nav {
 
 .info-column-desc {
     color: #495057;
-    margin-bottom: 20px;
-    font-size: 1rem;
+    margin-bottom: 1.4rem;
+    font-size: 1.05rem;
+    line-height: var(--body-line-height);
 }
 
 .info-list {
@@ -520,12 +628,15 @@ footer {
     height: 28px;
     border-radius: 4px;
     overflow: hidden;
-    font-size: 0.85rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     line-height: 1;
     text-decoration: none;
     transition: transform 0.2s;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 .github-badge:hover {
@@ -565,16 +676,23 @@ footer {
 }
 
 .badge-tokens .badge-value {
-    background-color: #e74c3c;
-}
-
-.badge-coded .badge-value {
     background-color: #3498db;
 }
 
+.badge-coded .badge-value {
+    background-color: #e74c3c;
+}
+
 @media (max-width: 992px) {
+    :root {
+        --heading-line-height: 1.25;
+        --body-line-height: 1.65;
+        --paragraph-spacing: 1.4rem;
+        --heading-spacing: 1.6rem;
+    }
+    
     body {
-        font-size: 0.95rem;
+        font-size: 15px;
     }
     
     nav {
@@ -608,18 +726,19 @@ footer {
     }
     
     .hero h1 {
-        font-size: 2.2rem;
+        font-size: 2.4rem;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: var(--heading-spacing);
         width: 100%;
     }
     
     .hero p {
-        font-size: 1rem;
+        font-size: 1.15rem;
         margin-left: auto;
         margin-right: auto;
         max-width: 100%;
         text-align: center;
+        margin-bottom: var(--paragraph-spacing);
     }
     
     .buttons {
@@ -706,9 +825,40 @@ footer {
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
+    :root {
+        /* Adjust scale for mobile */
+        --text-4xl: 2.5rem;
+        --text-2xl: 1.75rem;
+        --text-xl: 1.25rem;
+    }
+    
     body {
-        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .feature-card p {
+        font-size: 0.9375rem;
+    }
+    
+    /* Optimize testimonial display on mobile */
+    .testimonial-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        text-wrap: pretty; /* Modern browsers will balance text */
+    }
+}
+
+@media (max-width: 576px) {
+    :root {
+        --heading-line-height: 1.3;
+        --body-line-height: 1.6;
+        --paragraph-spacing: 1.2rem;
+        --heading-spacing: 1.4rem;
+    }
+    
+    body {
+        font-size: 14px;
     }
     
     .hero {

@@ -7,10 +7,16 @@ layout: none
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aider - AI Pair Programming in Your Terminal</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap&text=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,/()%25&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap&display=fallback">
     <link rel="stylesheet" href="/assets/home.css">
     <!-- Add Prism.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <!-- Material Design Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
 </head>
 <body>
     <header>
@@ -20,7 +26,7 @@ layout: none
                 <div class="nav-links">
                     <a href="#features">Features</a>
                     <a href="#getting-started">Getting Started</a>
-                    <a href="/docs/install.html">Documentation</a>
+                    <a href="/docs/">Documentation</a>
                     <a href="https://discord.gg/Tv2uQnR88V">Discord</a>
                     <a href="https://github.com/Aider-AI/aider">GitHub</a>
                 </div>
@@ -41,7 +47,7 @@ layout: none
                     
                     <div class="buttons">
                         <a href="#getting-started" class="btn btn-primary">Get Started</a>
-                        <a href="/docs/install.html" class="btn btn-secondary">Documentation</a>
+                        <a href="/docs/" class="btn btn-secondary">Documentation</a>
                     </div>
                 </div>
                 
@@ -79,7 +85,7 @@ cog.out(text)
 </a>
 <a href="/HISTORY.html" class="github-badge badge-coded" title="Percentage of the new code in Aider's last release written by Aider itself">
     <span class="badge-label">🔄 Singularity</span>
-    <span class="badge-value">72%</span>
+    <span class="badge-value">65%</span>
 </a>
 <!--[[[end]]]-->  
             </div>
@@ -92,7 +98,7 @@ cog.out(text)
             <div class="feature-grid">
                 <a href="/docs/llms.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">🧠</div>
+                        <i class="mdi mdi-brain feature-icon"></i>
                         <h3 class="feature-title">
                             Cloud and local LLMs
                         </h3>
@@ -101,7 +107,7 @@ cog.out(text)
                 </a>
                 <a href="/docs/repomap.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">🗺️</div>
+                        <i class="mdi mdi-map-outline feature-icon"></i>
                         <h3 class="feature-title">Maps your codebase</h3>
                     </div>
                     <p>
@@ -111,7 +117,7 @@ cog.out(text)
                 </a>
                 <a href="/docs/languages.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon" style="font-family: monospace; font-weight: bold; font-size: 1.5rem;">&lt;/&gt;</div>
+                        <i class="mdi mdi-code-tags feature-icon"></i>
                         <h3 class="feature-title">100+ code languages</h3>
                     </div>
                     <p>
@@ -122,7 +128,7 @@ cog.out(text)
                 </a>
                 <a href="/docs/git.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">🔀</div>
+                        <i class="mdi mdi-source-branch feature-icon"></i>
                         <h3 class="feature-title">Git integration</h3>
                     </div>
                     <p>
@@ -134,7 +140,7 @@ cog.out(text)
                 </a>
                 <a href="/docs/usage/watch.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">🖥️</div>
+                        <i class="mdi mdi-monitor feature-icon"></i>
                         <h3 class="feature-title">In your IDE</h3>
                     </div>
                     <p>
@@ -145,7 +151,7 @@ cog.out(text)
                 </a>
                 <a href="/docs/usage/images-urls.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">🖼️</div>
+                        <i class="mdi mdi-image-multiple feature-icon"></i>
                         <h3 class="feature-title">Images & web pages</h3>
                     </div>
                     <p>
@@ -156,7 +162,7 @@ cog.out(text)
                 </a>
                 <a href="/docs/usage/voice.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">🎤</div>
+                        <i class="mdi mdi-microphone feature-icon"></i>
                         <h3 class="feature-title">Voice-to-code</h3>
                     </div>
                     <p>
@@ -167,7 +173,7 @@ cog.out(text)
                 </a>
                 <a href="/docs/usage/lint-test.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">✅</div>
+                        <i class="mdi mdi-check-all feature-icon"></i>
                         <h3 class="feature-title">Linting & testing</h3>
                     </div>
                     <p>
@@ -177,12 +183,13 @@ cog.out(text)
                 </a>
                 <a href="/docs/usage/copypaste.html" class="feature-card">
                     <div class="feature-card-header">
-                        <div class="feature-icon">📋</div>
+                        <i class="mdi mdi-content-copy feature-icon"></i>
                         <h3 class="feature-title">Copy/paste to web chat</h3>
                     </div>
                     <p>
-                        Work with any LLM via its web chat interface.
-                        Aider streamlines copy/pasting code context and edits
+                        Aider works best with LLM APIs,
+                        but it can also work an LLM via its web chat interface.
+                        Aider streamlines copy/pasting code
                         back and forth with a browser.
                     </p>
                 </a>

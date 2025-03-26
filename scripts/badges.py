@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import os
 import sys
+import time
+from datetime import datetime
 
 import requests
 import yaml
 from dotenv import load_dotenv
+from google.cloud import bigquery
+from google.oauth2 import service_account
 
 TOKENS_PER_WEEK = "15B"
 
@@ -17,11 +22,153 @@ TOKENS_WEEKLY_TOOLTIP = "Number of tokens processed weekly by Aider users"
 OPENROUTER_TOOLTIP = "Aider's ranking among applications on the OpenRouter platform"
 SINGULARITY_TOOLTIP = "Percentage of the new code in Aider's last release written by Aider itself"
 
+# Cache settings
+CACHE_DIR = os.path.expanduser("~/.cache/aider-badges")
+CACHE_DURATION = 24 * 60 * 60  # 24 hours in seconds
 
-def get_total_downloads(api_key, package_name="aider-chat"):
+
+def ensure_cache_dir():
+    """Create the cache directory if it doesn't exist"""
+    os.makedirs(CACHE_DIR, exist_ok=True)
+
+
+def get_cache_path(package_name):
+    """Get the path to the cache file for a package"""
+    return os.path.join(CACHE_DIR, f"{package_name}_downloads.json")
+
+
+def read_from_cache(package_name):
     """
-    Fetch total downloads for a Python package from pepy.tech API
+    Read download statistics from cache if available and not expired
+    Returns (downloads, is_valid) tuple where is_valid is True if cache is valid
     """
+    cache_path = get_cache_path(package_name)
+
+    if not os.path.exists(cache_path):
+        return None, False
+
+    try:
+        with open(cache_path, "r") as f:
+            cache_data = json.load(f)
+
+        # Check if cache is expired
+        timestamp = cache_data.get("timestamp", 0)
+        current_time = time.time()
+
+        if current_time - timestamp > CACHE_DURATION:
+            return None, False
+
+        return cache_data.get("downloads"), True
+    except Exception as e:
+        print(f"Error reading from cache: {e}", file=sys.stderr)
+        return None, False
+
+
+def write_to_cache(package_name, downloads):
+    """Write download statistics to cache"""
+    cache_path = get_cache_path(package_name)
+
+    try:
+        ensure_cache_dir()
+        cache_data = {
+            "downloads": downloads,
+            "timestamp": time.time(),
+            "datetime": datetime.now().isoformat(),
+        }
+
+        with open(cache_path, "w") as f:
+            json.dump(cache_data, f)
+
+        return True
+    except Exception as e:
+        print(f"Error writing to cache: {e}", file=sys.stderr)
+        return False
+
+
+def get_downloads_from_bigquery(credentials_path=None, package_name="aider-chat"):
+    """
+    Fetch download statistics for a package from Google BigQuery PyPI dataset
+    Uses a 24-hour cache to avoid unnecessary API calls
+    """
+    # Check if we have a valid cached value
+    cached_downloads, is_valid = read_from_cache(package_name)
+    if is_valid:
+        print(f"Using cached download statistics for {package_name} (valid for 24 hours)")
+        return cached_downloads
+
+    print(f"Cache invalid or expired, fetching fresh download statistics for {package_name}")
+
+    try:
+        # Initialize credentials if path provided
+        credentials = None
+        if credentials_path:
+            credentials = service_account.Credentials.from_service_account_file(
+                credentials_path, scopes=["https://www.googleapis.com/auth/cloud-platform"]
+            )
+
+        # Create a client
+        client = bigquery.Client(credentials=credentials)
+
+        # Query to get total downloads for the package, excluding CI/CD systems
+        query = f"""
+            SELECT COUNT(*) as total_downloads
+            FROM `bigquery-public-data.pypi.file_downloads`
+            WHERE file.project = '{package_name}'
+            AND NOT (
+                -- Exclude common CI/CD systems based on installer name patterns
+                LOWER(details.installer.name) LIKE '%github%' OR
+                LOWER(details.installer.name) LIKE '%travis%' OR
+                LOWER(details.installer.name) LIKE '%circle%' OR
+                LOWER(details.installer.name) LIKE '%jenkins%' OR
+                LOWER(details.installer.name) LIKE '%gitlab%' OR
+                LOWER(details.installer.name) LIKE '%azure%' OR
+                LOWER(details.installer.name) LIKE '%ci%' OR
+                LOWER(details.installer.name) LIKE '%cd%' OR
+                LOWER(details.installer.name) LIKE '%bot%' OR
+                LOWER(details.installer.name) LIKE '%build%'
+            )
+        """
+
+        # Execute the query
+        query_job = client.query(query)
+        results = query_job.result()
+
+        # Get the first (and only) row
+        for row in results:
+            downloads = row.total_downloads
+            # Write the result to cache
+            write_to_cache(package_name, downloads)
+            return downloads
+
+        return 0
+    except Exception as e:
+        print(f"Error fetching download statistics from BigQuery: {e}", file=sys.stderr)
+        # If there was an error but we have a cached value, use it even if expired
+        if cached_downloads is not None:
+            print("Using expired cached data due to BigQuery error")
+            return cached_downloads
+        return None
+
+
+def get_total_downloads(
+    api_key=None, package_name="aider-chat", use_bigquery=False, credentials_path=None
+):
+    """
+    Fetch total downloads for a Python package
+
+    If use_bigquery is True, fetches from BigQuery.
+    Otherwise uses pepy.tech API (requires api_key).
+    """
+    if use_bigquery:
+        print(f"Using BigQuery to fetch download statistics for {package_name}")
+        return get_downloads_from_bigquery(credentials_path, package_name)
+
+    # Fall back to pepy.tech API
+    print(f"Using pepy.tech API to fetch download statistics for {package_name}")
+    if not api_key:
+        print("API key not provided for pepy.tech", file=sys.stderr)
+        sys.exit(1)
+
     url = f"https://api.pepy.tech/api/v2/projects/{package_name}"
     headers = {"X-API-Key": api_key}
 
@@ -34,7 +181,7 @@ def get_total_downloads(api_key, package_name="aider-chat"):
 
         return total_downloads
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching download statistics: {e}", file=sys.stderr)
+        print(f"Error fetching download statistics from pepy.tech: {e}", file=sys.stderr)
         sys.exit(1)
 
 
@@ -140,11 +287,11 @@ src="https://img.shields.io/github/stars/Aider-AI/aider?style=flat-square&logo=g
   <a href="https://pypi.org/project/aider-chat/"><img alt="PyPI Downloads" title="{PYPI_DOWNLOADS_TOOLTIP}"
 src="https://img.shields.io/badge/📦%20Installs-{downloads_formatted}-2ecc71?style=flat-square&labelColor=555555"/></a>
   <img alt="Tokens per week" title="{TOKENS_WEEKLY_TOOLTIP}"
-src="https://img.shields.io/badge/📈%20Tokens%2Fweek-{TOKENS_PER_WEEK}-e74c3c?style=flat-square&labelColor=555555"/>
+src="https://img.shields.io/badge/📈%20Tokens%2Fweek-{TOKENS_PER_WEEK}-3498db?style=flat-square&labelColor=555555"/>
   <a href="https://openrouter.ai/"><img alt="OpenRouter Ranking" title="{OPENROUTER_TOOLTIP}"
 src="https://img.shields.io/badge/🏆%20OpenRouter-Top%2020-9b59b6?style=flat-square&labelColor=555555"/></a>
   <a href="https://aider.chat/HISTORY.html"><img alt="Singularity" title="{SINGULARITY_TOOLTIP}"
-src="https://img.shields.io/badge/🔄%20Singularity-{aider_percent_rounded}%25-3498db?style=flat-square&labelColor=555555"/></a>"""  # noqa
+src="https://img.shields.io/badge/🔄%20Singularity-{aider_percent_rounded}%25-e74c3c?style=flat-square&labelColor=555555"/></a>"""  # noqa
 
     return markdown
 
@@ -156,17 +303,27 @@ def get_badges_md():
     # Load environment variables from .env file
     load_dotenv()
 
-    # Get API key from environment variable
-    api_key = os.environ.get("PEPY_API_KEY")
-    if not api_key:
-        print(
-            "API key not provided. Please set PEPY_API_KEY environment variable",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    # Check if we should use BigQuery and get credentials path
+    bigquery_env = os.environ.get("USE_BIGQUERY", "false")
+    use_bigquery = bigquery_env.lower() in ("true", "1", "yes") or os.path.exists(bigquery_env)
+    credentials_path = bigquery_env if os.path.exists(bigquery_env) else None
+
+    # Get API key from environment variable if not using BigQuery
+    api_key = None
+    if not use_bigquery:
+        api_key = os.environ.get("PEPY_API_KEY")
+        if not api_key:
+            print(
+                (
+                    "API key not provided and BigQuery not enabled. Please set PEPY_API_KEY"
+                    " environment variable"
+                ),
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     # Get PyPI downloads for the default package
-    total_downloads = get_total_downloads(api_key, "aider-chat")
+    total_downloads = get_total_downloads(api_key, "aider-chat", use_bigquery, credentials_path)
 
     # Get GitHub stars for the default repo
     stars = get_github_stars("paul-gauthier/aider")
@@ -185,17 +342,27 @@ def get_badges_html():
     # Load environment variables from .env file
     load_dotenv()
 
-    # Get API key from environment variable
-    api_key = os.environ.get("PEPY_API_KEY")
-    if not api_key:
-        print(
-            "API key not provided. Please set PEPY_API_KEY environment variable",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    # Check if we should use BigQuery and get credentials path
+    bigquery_env = os.environ.get("USE_BIGQUERY", "false")
+    use_bigquery = bigquery_env.lower() in ("true", "1", "yes") or os.path.exists(bigquery_env)
+    credentials_path = bigquery_env if os.path.exists(bigquery_env) else None
+
+    # Get API key from environment variable if not using BigQuery
+    api_key = None
+    if not use_bigquery:
+        api_key = os.environ.get("PEPY_API_KEY")
+        if not api_key:
+            print(
+                (
+                    "API key not provided and BigQuery not enabled. Please set PEPY_API_KEY"
+                    " environment variable"
+                ),
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     # Get PyPI downloads for the default package
-    total_downloads = get_total_downloads(api_key, "aider-chat")
+    total_downloads = get_total_downloads(api_key, "aider-chat", use_bigquery, credentials_path)
 
     # Get GitHub stars for the default repo
     stars = get_github_stars("paul-gauthier/aider")
@@ -247,6 +414,9 @@ def main():
     # Load environment variables from .env file
     load_dotenv()
 
+    # Ensure cache directory exists
+    ensure_cache_dir()
+
     parser = argparse.ArgumentParser(description="Get total downloads and GitHub stars for aider")
     parser.add_argument(
         "--api-key",
@@ -264,19 +434,53 @@ def main():
         help="GitHub repository (default: paul-gauthier/aider)",
     )
     parser.add_argument("--markdown", action="store_true", help="Generate markdown badges block")
+    parser.add_argument(
+        "--use-bigquery",
+        action="store_true",
+        help="Use BigQuery to fetch download statistics instead of pepy.tech",
+    )
+    parser.add_argument(
+        "--credentials-path", help="Path to Google Cloud service account credentials JSON file"
+    )
     args = parser.parse_args()
 
-    # Get API key from args or environment variable (which may be loaded from .env)
-    api_key = args.api_key or os.environ.get("PEPY_API_KEY")
-    if not api_key:
+    # Determine whether to use BigQuery and get credentials path
+    bigquery_env = os.environ.get("USE_BIGQUERY", "false")
+    use_bigquery = (
+        args.use_bigquery
+        or bigquery_env.lower() in ("true", "1", "yes")
+        or os.path.exists(bigquery_env)
+    )
+    credentials_path = args.credentials_path or (
+        bigquery_env if os.path.exists(bigquery_env) else None
+    )
+
+    # Check for required parameters
+    api_key = None
+    if not use_bigquery:
+        # Get API key from args or environment variable
+        api_key = args.api_key or os.environ.get("PEPY_API_KEY")
+        if not api_key:
+            print(
+                (
+                    "API key not provided and BigQuery not enabled. Please set PEPY_API_KEY"
+                    " environment variable, use --api-key, or enable BigQuery with --use-bigquery"
+                ),
+                file=sys.stderr,
+            )
+            sys.exit(1)
+    elif use_bigquery and not credentials_path and not args.credentials_path:
         print(
-            "API key not provided. Please set PEPY_API_KEY environment variable or use --api-key",
+            (
+                "BigQuery enabled but no credentials provided. Please set"
+                " USE_BIGQUERY to path of credentials file or use --credentials-path"
+            ),
             file=sys.stderr,
         )
-        sys.exit(1)
+        # Continue execution - BigQuery might work without explicit credentials in some environments
 
     # Get PyPI downloads
-    total_downloads = get_total_downloads(api_key, args.package)
+    total_downloads = get_total_downloads(api_key, args.package, use_bigquery, credentials_path)
     print(f"Total downloads for {args.package}: {total_downloads:,}")
 
     # Get GitHub stars
@@ -287,11 +491,6 @@ def main():
     # Get Aider contribution percentage in latest release
     percentage, version = get_latest_release_aider_percentage()
     print(f"Aider wrote {percentage:.2f}% of code in the LATEST release ({version})")
-
-    # Generate and print badges markdown
-    badges_md = generate_badges_md(total_downloads, stars, percentage)
-    print("\nBadges markdown:\n")
-    print(badges_md)
 
 
 if __name__ == "__main__":
