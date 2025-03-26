@@ -1,5 +1,30 @@
 # 发布历史
 
+### Aider v0.79.0
+
+- 添加了对 Gemini 2.5 Pro 模型的支持。
+- 添加了对 DeepSeek V3 0324 模型的支持。
+- 添加了新的 `/context` 命令，可自动识别需要为特定请求编辑的文件。
+- 添加了 `/edit` 作为 `/editor` 命令的别名。
+- 为 Claude 3.7 Sonnet 模型添加了"过度热情"模式，尝试让其在请求范围内工作。
+- Aider 编写了此版本 65% 的代码。
+
+### Aider v0.78.0
+
+- 添加了对 OpenRouter Sonnet 3.7 思考令牌的支持。
+- 由 csala 添加了在模型类型之间切换的命令：使用 `/editor-model` 切换到编辑器模型，使用 `/weak-model` 切换到弱模型。
+- 添加了模型设置验证，以忽略模型不支持的 `--reasoning-effort` 和 `--thinking-tokens`。
+- 添加了 `--check-model-accepts-settings` 标志（默认值：true）以强制使用不支持的模型设置。
+- 在模型设置数据中注明了哪些模型支持 reasoning_effort 和 thinking_tokens 设置。
+- 使用 NoInsetMarkdown 改进了 markdown 输出中代码块的渲染，增加了更好的内边距。
+- 添加了 `--git-commit-verify` 标志（默认值：False）来控制是否绕过 git commit 钩子。
+- 由 shladnik 修复了 `/ask`、`/code` 和 `/architect` 命令的自动完成功能。
+- 由 Marco Mayer 添加了在多行模式下处于 vi 正常/导航模式时按回车键的类 vi 行为。
+- 由 lentil32 添加了对 Bedrock 模型的 AWS_PROFILE 支持，允许使用 AWS 配置文件而不是显式凭证。
+- 由 mopemope 增强了 `--aiderignore` 参数以解析绝对和相对路径。
+- 改进了平台信息处理，优雅地处理检索错误。
+- Aider 编写了此版本 92% 的代码。
+
 ### 主分支
 
 - 添加了模型设置验证，以忽略模型不支持的 `--reasoning-effort` 和 `--thinking-tokens`。
