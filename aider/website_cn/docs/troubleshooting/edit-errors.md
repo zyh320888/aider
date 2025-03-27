@@ -22,7 +22,7 @@ nav_order: 10
 
 ## 选用更强大的模型
 
-优先考虑使用 GPT-4o（推荐）、Claude 3.5 Sonnet、DeepSeek V3 或 DeepSeek R1 等高性能模型。这些模型在格式遵循和代码理解方面表现最佳。
+优先考虑使用 GPT-4o、o3-mini、Claude 3.7 Sonnet、DeepSeek V3 或 DeepSeek R1 等高性能模型。这些模型在格式遵循和代码理解方面表现最佳。
 
 能力较弱的模型（特别是本地部署的小模型）往往难以严格遵守系统提示的格式要求。大多数本地模型仅能勉强配合 aider 工作，编辑错误可能难以完全避免。
 
@@ -32,7 +32,7 @@ nav_order: 10
 - [Ollama 的上下文窗口设置](https://aider.chat/docs/llms/ollama.html#setting-the-context-window-size)：默认值过小，超限时会静默截断数据
 - 量化模型因能力受限，更易出现编辑格式问题
 
-## 切换完整编辑格式
+## 尝试完整编辑格式
 
 如果正在使用其他编辑格式，可尝试改用完整文件编辑格式：
 ```bash

@@ -3,59 +3,55 @@ parent: 故障排除
 nav_order: 28
 ---
 
-# Dependency versions
+# 依赖版本问题
 
-Aider expects to be installed with the
-correct versions of all of its required dependencies.
+Aider 需要安装正确版本的所有必需依赖项才能正常工作。
 
-If you've been linked to this doc from a GitHub issue, 
-or if aider is reporting `ImportErrors`
-it is likely that your
-aider install is using incorrect dependencies.
+如果您是从 GitHub 问题链接到此文档，
+或者 aider 报告 `ImportErrors` 错误，
+很可能是您的 aider 安装使用了不正确的依赖项。
 
 
-## Avoid package conflicts
+## 避免包冲突
 
-If you are using aider to work on a python project, sometimes your project will require
-specific versions of python packages which conflict with the versions that aider
-requires.
-If this happens, you may see errors like these when running pip installs:
+如果您正在使用 aider 处理 Python 项目，有时您的项目可能需要
+特定版本的 Python 包，而这些版本与 aider 所需的版本冲突。
+如果发生这种情况，您可能会在运行 pip 安装时看到类似的错误：
 
 ```
 aider-chat 0.23.0 requires somepackage==X.Y.Z, but you have somepackage U.W.V which is incompatible.
 ```
 
-## Install with aider-install, uv or pipx
+## 使用 aider-install、uv 或 pipx 安装
 
-If you are having dependency problems you should consider
-[installing aider using aider-install, uv or pipx](/docs/install.html).
-This will ensure that aider is installed in its own python environment,
-with the correct set of dependencies.
+如果您遇到依赖问题，建议考虑
+[使用 aider-install、uv 或 pipx 安装 aider](/docs/install.html)。
+这将确保 aider 安装在自己的 Python 环境中，
+并拥有正确的依赖集。
 
-## Package managers like Homebrew, AUR, ports
+## 包管理器如 Homebrew、AUR、ports
 
-Package managers often install aider with the wrong dependencies, leading
-to import errors and other problems.
+包管理器通常会安装带有错误依赖项的 aider，导致
+导入错误和其他问题。
 
-It is recommended to
-[install aider using aider-install, uv or pipx](/docs/install.html).
+推荐
+[使用 aider-install、uv 或 pipx 安装 aider](/docs/install.html)。
 
 
-## Dependency versions matter
+## 依赖版本很重要
 
-Aider pins its dependencies and is tested to work with those specific versions.
-If you are installing aider directly with pip
-you should be careful about upgrading or downgrading the python packages that
-aider uses.
+Aider 锁定其依赖项并经过测试以确保与这些特定版本兼容。
+如果您直接使用 pip 安装 aider，
+在升级或降级 aider 使用的 Python 包时应该格外小心。
 
-In particular, be careful with the packages with pinned versions 
-noted at the end of
-[aider's requirements.in file](https://github.com/Aider-AI/aider/blob/main/requirements/requirements.in).
-These versions are pinned because aider is known not to work with the
-latest versions of these libraries.
+特别注意
+[aider 的 requirements.in 文件](https://github.com/Aider-AI/aider/blob/main/requirements/requirements.in)
+末尾标注的固定版本包。
+这些版本之所以固定，是因为 aider 已知无法与
+这些库的最新版本一起工作。
 
-Also be wary of upgrading `litellm`, as it changes versions frequently
-and sometimes introduces bugs or backwards incompatible changes.
+同样要谨慎升级 `litellm`，因为它经常更改版本
+并有时会引入错误或不向后兼容的更改。
 
 ## Replit
 
