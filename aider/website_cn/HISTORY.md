@@ -7,11 +7,10 @@ description: Release notes and stats on aider writing its own code.
 
 # Release history
 
-{% include blame.md %}
+Aider 编写了其大部分代码，通常每个版本中的新代码有 70-80% 是由 Aider 自身编写的。
+这些[统计数据基于 aider 仓库的 git 提交历史](/docs/faq.html#how-are-the-aider-wrote-xx-of-code-stats-computed)。
 
-The above 
-[stats are based on the git commit history](/docs/faq.html#how-are-the-aider-wrote-xx-of-code-stats-computed)
-of the aider repo.
+{% include blame.md %}
 
 ## Release notes
 
@@ -23,1152 +22,1263 @@ cog.out(text)
 ]]]-->
 
 
+### Aider v0.79.0
+
+- 添加了对 Gemini 2.5 Pro 模型的支持。
+- 添加了对 DeepSeek V3 0324 模型的支持。
+- 新增 `/context` 命令，可自动识别需要为特定请求编辑的文件。
+- 为 `/editor` 命令添加了 `/edit` 别名。
+- 为 Claude 3.7 Sonnet 模型添加了"过度热情"模式，以尝试让其在请求范围内工作。
+- Aider 在此版本中编写了 65% 的代码。
+
+### Aider v0.78.0
+
+- 为 OpenRouter Sonnet 3.7 添加了思考令牌支持。
+- 添加了切换模型类型的命令：由 csala 贡献的 `/editor-model` 用于编辑器模型，`/weak-model` 用于弱模型。
+- 添加了模型设置验证，如果模型不支持，则忽略 `--reasoning-effort` 和 `--thinking-tokens`。
+- 添加了 `--check-model-accepts-settings` 标志（默认：true）以强制使用不受支持的模型设置。
+- 在模型设置数据中注明了哪些模型支持 reasoning_effort 和 thinking_tokens 设置。
+- 使用 NoInsetMarkdown 改进了 markdown 输出中的代码块渲染，提供更好的内边距。
+- 添加了 `--git-commit-verify` 标志（默认：False）以控制是否绕过 git 提交钩子。
+- 由 shladnik 修复了 `/ask`、`/code` 和 `/architect` 命令的自动完成功能。
+- 由 Marco Mayer 添加了在多行模式下处于 vi 正常/导航模式时按 enter 键的类 vi 行为。
+- 由 lentil32 为 Bedrock 模型添加了 AWS_PROFILE 支持，允许使用 AWS 配置文件而不是显式凭证。
+- 由 mopemope 增强了 `--aiderignore` 参数，可以解析绝对和相对路径。
+- 改进了平台信息处理，优雅地处理检索错误。
+- Aider 在此版本中编写了 92% 的代码。
+
+### Aider v0.77.1
+
+- 更新依赖以获取 litellm 对 Ollama 的修复。
+- 添加了对 `openrouter/google/gemma-3-27b-it` 模型的支持。
+- 更新了帮助文档的排除模式。
+
+### Aider v0.77.0
+
+- 通过采用 [tree-sitter-language-pack](https://github.com/Goldziher/tree-sitter-language-pack/) 大幅提升了[支持的编程语言](https://aider.chat/docs/languages.html)。
+  - 130 种新语言支持 linter。
+  - 20 种新语言支持 repo-map。
+- 添加了 `/think-tokens` 命令，可以设置思考令牌预算，支持人类可读格式（8k、10.5k、0.5M）。
+- 添加了 `/reasoning-effort` 命令，控制模型推理水平。
+- 在不带参数调用时，`/think-tokens` 和 `/reasoning-effort` 命令会显示当前设置。
+- 在模型信息中显示思考令牌预算和推理努力程度。
+- 将 `--thinking-tokens` 参数更改为接受带有人类可读格式的字符串值。
+- 添加了 `--auto-accept-architect` 标志（默认：true），无需确认即可自动接受架构师编码器格式的更改。
+- 添加了对 `cohere_chat/command-a-03-2025` 和 `gemini/gemma-3-27b-it` 的支持。
+- 裸 `/drop` 命令现在保留通过 args.read 提供的原始只读文件。
+- 修复了一个错误：即使在命令行中已指定默认模型，过时的 `--shortcut` 开关也会设置默认模型。
+- 改进了 AutoCompleter，要求至少 3 个字符才能自动完成，以减少干扰。
+- Aider 在此版本中编写了 72% 的代码。
+
+### Aider v0.76.2
+
+- 修复了加载模型缓存文件时处理 JSONDecodeError 的问题。
+- 修复了检索 git 用户配置时处理 GitCommandError 的问题。
+- Aider 在此版本中编写了 75% 的代码。
+
+### Aider v0.76.1
+
+- 由 Yutaka Matsubara 添加了 ignore_permission_denied 选项到文件观察器，防止访问受限文件时出错。
+- Aider 在此版本中编写了 0% 的代码。
+
+### Aider v0.76.0
+
+- 改进了对思考/推理模型的支持：
+  - 添加了 `--thinking-tokens` CLI 选项，控制支持思考的模型的令牌预算。
+  - 显示 LLM 返回的思考/推理内容。
+  - 增强了对推理标签的处理，以更好地清理模型响应。
+  - 为 `remove_reasoning` 设置添加了弃用警告，现已被 `reasoning_tag` 取代。
+- Aider 现在会在完成最后一个请求并需要您输入时通知您：
+  - 添加了 [LLM 响应就绪时的通知](https://aider.chat/docs/usage/notifications.html)，使用 `--notifications` 标志。
+  - 使用 `--notifications-command` 指定桌面通知命令。
+- 添加了对 QWQ 32B 的支持。
+- 切换到 `tree-sitter-language-pack` 以获取 tree sitter 支持。
+- 改进了对用户输入提示中 EOF（Ctrl+D）的错误处理。
+- 添加了辅助函数，确保十六进制颜色值有 # 前缀。
+- 修复了读取已暂存文件时处理 Git 错误的问题。
+- 改进了模型信息请求的 SSL 验证控制。
+- 使用更清晰的警告消息改进了空 LLM 响应处理。
+- 由 Akira Komamura 修复了 Git 身份检索，以尊重全局配置。
+- 主动提供安装 Bedrock 和 Vertex AI 模型的依赖项。
+- 弃用模型快捷参数（如 --4o、--opus），转而使用 --model 标志。
+- Aider 在此版本中编写了 85% 的代码。
+
+### Aider v0.75.3
+
+- 支持 OpenRouter 上的 V3 免费版：`--model openrouter/deepseek/deepseek-chat:free`。
+
+### Aider v0.75.2
+
+- 添加了对 OpenRouter、Bedrock 和 Vertex AI 上 Claude 3.7 Sonnet 模型的支持。
+- 将 OpenRouter 上的默认模型更新为 Claude 3.7 Sonnet。
+- 添加了对 GPT-4.5-preview 模型的支持。
+- 添加了对 OpenRouter 上 Claude 3.7 Sonnet:beta 的支持。
+- 修复了 weak_model_name 模式，使其与某些模型的主模型名称模式匹配。
+
+### Aider v0.75.1
+
+- 添加了对 `openrouter/anthropic/claude-3.7-sonnet` 的支持。
+
+### Aider v0.75.0
+
+- 对 Claude 3.7 Sonnet 的基本支持
+  - 使用 `--model sonnet` 使用新的 3.7
+  - 思考支持即将推出。
+- 修复了 `/editor` 命令的错误。
+- Aider 在此版本中编写了 46% 的代码。
+
+### Aider v0.74.3
+
+- 降级 streamlit 依赖以避免线程错误。
+- 添加了对 tree-sitter 语言包的支持。
+- 添加了 openrouter/o3-mini-high 模型配置。
+- 由 Lucas Shadler 为 Kotlin 项目支持添加了 build.gradle.kts 到特殊文件。
+
 ### Aider v0.74.2
 
-- Prevent more than one cache warming thread from becoming active.
-- Fixed continuation prompt ". " for multiline input.
-- Added HCL (Terraform) syntax support, by Warren Krewenki.
+- 防止多个缓存预热线程同时激活。
+- 修复了多行输入的续行提示符 ". "。
+- 由 Warren Krewenki 添加了 HCL (Terraform) 语法支持。
 
 ### Aider v0.74.1
 
-- Have o1 & o3-mini generate markdown by sending the magic "Formatting re-enabled." string.
-- Bugfix for multi-line inputs, which should not include the ". " continuation prompt.
+- 通过发送魔术字符串 "Formatting re-enabled." 使 o1 和 o3-mini 生成 markdown。
+- 修复了多行输入的 bug，不应包含 ". " 续行提示符。
 
 ### Aider v0.74.0
 
-- Dynamically changes the Ollama context window to hold the current chat.
-- Better support for o3-mini, DeepSeek V3 & R1, o1-mini, o1 especially via third-party API providers.
-- Remove `<think>` tags from R1 responses for commit messages (and other weak model uses).
-- Can now specify `use_temperature: <float>` in model settings, not just true/false.
-- The full docker container now includes `boto3` for Bedrock.
-- Docker containers now set `HOME=/app` which is the normal project mount-point, to persist `~/.aider`.
-- Bugfix to prevent creating incorrect filenames like `python`, `php`, etc.
-- Bugfix for `--timeout`
-- Bugfix so that `/model` now correctly reports that the weak model is not changed.
-- Bugfix so that multi-line mode persists through ^C at confirmation prompts.
-- Watch files now fully ignores top-level directories named in ignore files, to reduce the chance of hitting OS watch limits. Helpful to ignore giant subtrees like `node_modules`.
-- Fast startup with more providers and when model metadata provided in local files.
-- Improved .gitignore handling:
-  - Honor ignores already in effect regardless of how they've been configured.
-  - Check for .env only when the file exists.
-- Yes/No prompts now accept All/Skip as alias for Y/N even when not processing a group of confirmations.
-- Aider wrote 77% of the code in this release.
+- 动态更改 Ollama 上下文窗口以容纳当前聊天。
+- 更好地支持 o3-mini、DeepSeek V3 和 R1、o1-mini、o1，特别是通过第三方 API 提供商。
+- 从 R1 响应中删除 `<think>` 标签，用于提交消息（和其他弱模型用途）。
+- 现在可以在模型设置中指定 `use_temperature: <float>`，而不仅仅是 true/false。
+- 完整的 docker 容器现在包含用于 Bedrock 的 `boto3`。
+- Docker 容器现在将 `HOME=/app` 设置为正常的项目挂载点，以保留 `~/.aider`。
+- 修复了创建不正确文件名（如 `python`、`php` 等）的错误。
+- 修复了 `--timeout` 的问题。
+- 修复了 `/model` 现在正确报告弱模型未更改的问题。
+- 修复了多行模式在确认提示时按 ^C 后仍然保持的问题。
+- 观察文件现在完全忽略忽略文件中命名的顶级目录，以减少触及操作系统观察限制的可能性。有助于忽略像 `node_modules` 这样的巨型子树。
+- 当在本地文件中提供模型元数据时，启动更快速。
+- 改进了 .gitignore 处理：
+  - 无论如何配置，都遵守已经生效的忽略规则。
+  - 仅在文件存在时检查 .env。
+- 在处理一组确认时，Yes/No 提示现在接受 All/Skip 作为 Y/N 的别名。
+- Aider 在此版本中编写了 77% 的代码。
 
 ### Aider v0.73.0
 
-- Full support for o3-mini: `aider --model o3-mini`
-- New `--reasoning-effort` argument: low, medium, high.
-- Improved handling of context window size limits, with better messaging and Ollama-specific guidance.
-- Added support for removing model-specific reasoning tags from responses with `remove_reasoning: tagname` model setting.
-- Auto-create parent directories when creating new files, by xqyz.
-- Support for R1 free on OpenRouter: `--model openrouter/deepseek/deepseek-r1:free`
-- Aider wrote 69% of the code in this release.
+- 全面支持 o3-mini：`aider --model o3-mini`
+- 新的 `--reasoning-effort` 参数：low、medium、high。
+- 改进了上下文窗口大小限制的处理，提供更好的消息和 Ollama 特定指导。
+- 使用 `remove_reasoning: tagname` 模型设置添加了从响应中删除特定模型推理标签的支持。
+- 由 xqyz 添加了在创建新文件时自动创建父目录的功能。
+- 支持 OpenRouter 上的 R1 免费版：`--model openrouter/deepseek/deepseek-r1:free`
+- Aider 在此版本中编写了 69% 的代码。
 
 ### Aider v0.72.3
 
-- Enforce user/assistant turn order to avoid R1 errors, by miradnanali.
-- Case-insensitive model name matching while preserving original case.
+- 由 miradnanali 强制用户/助手交替顺序，避免 R1 错误。
+- 不区分大小写的模型名称匹配，同时保留原始大小写。
 
 ### Aider v0.72.2
-- Harden against user/assistant turn order problems which cause R1 errors.
+- 加强防范用户/助手交替顺序问题，这些问题会导致 R1 错误。
 
 ### Aider v0.72.1
-- Fix model metadata for `openrouter/deepseek/deepseek-r1`
+- 修复 `openrouter/deepseek/deepseek-r1` 的模型元数据。
 
 ### Aider v0.72.0
-- Support for DeepSeek R1.
-  - Use shortcut: `--model r1`
-  - Also via OpenRouter: `--model openrouter/deepseek/deepseek-r1`
-- Added Kotlin syntax support to repo map, by Paul Walker.
-- Added `--line-endings` for file writing, by Titusz Pan.
-- Added examples_as_sys_msg=True for GPT-4o models, improves benchmark scores.
-- Bumped all dependencies, to pick up litellm support for o1 system messages.
-- Bugfix for turn taking when reflecting lint/test errors.
-- Aider wrote 52% of the code in this release.
+- 支持 DeepSeek R1。
+  - 使用快捷方式：`--model r1`
+  - 也可通过 OpenRouter：`--model openrouter/deepseek/deepseek-r1`
+- 由 Paul Walker 添加了 Kotlin 语法对仓库映射的支持。
+- 由 Titusz Pan 添加了 `--line-endings` 用于文件写入。
+- 为 GPT-4o 模型添加了 examples_as_sys_msg=True，提高基准分数。
+- 更新了所有依赖项，以获取 litellm 对 o1 系统消息的支持。
+- 修复了在反映 lint/test 错误时的轮流问题。
+- Aider 在此版本中编写了 52% 的代码。
 
 ### Aider v0.71.1
 
-- Fix permissions issue in Docker images.
-- Added read-only file announcements.
-- Bugfix: ASCII fallback for unicode errors.
-- Bugfix: integer indices for list slicing in repomap calculations.
+- 修复了 Docker 镜像中的权限问题。
+- 添加了只读文件通知。
+- 修复：Unicode 错误的 ASCII 回退。
+- 修复：repomap 计算中的整数索引用于列表切片。
 
 ### Aider v0.71.0
 
-- Prompts to help DeepSeek work better when alternating between `/ask` and `/code`.
-- Streaming pretty LLM responses is smoother and faster for long replies.
-- Streaming automatically turns of for model that don't support it
-  - Can now switch to/from `/model o1` and a streaming model
-- Pretty output remains enabled even when editing files with triple-backtick fences
-- Bare `/ask`, `/code` and `/architect` commands now switch the chat mode.
-- Increased default size of the repomap.
-- Increased max chat history tokens limit from 4k to 8k.
-- Turn off fancy input and watch files if terminal is dumb.
-- Added support for custom voice format and input device settings.
-- Disabled Streamlit email prompt, by apaz-cli.
-- Docker container runs as non-root user.
-- Fixed lint command handling of nested spaced strings, by Aaron Weisberg.
-- Added token count feedback when adding command output to chat.
-- Improved error handling for large audio files with automatic format conversion.
-- Improved handling of git repo index errors, by Krazer.
-- Improved unicode handling in console output with ASCII fallback.
-- Added AssertionError, AttributeError to git error handling.
-- Aider wrote 60% of the code in this release.
+- 添加了帮助 DeepSeek 在 `/ask` 和 `/code` 之间交替时更好地工作的提示。
+- 流式处理漂亮的 LLM 响应更流畅、更快速，尤其是对于长回复。
+- 对不支持流式处理的模型自动关闭流式处理
+  - 现在可以在 `/model o1` 和支持流式处理的模型之间切换
+- 即使在编辑带有三反引号围栏的文件时，漂亮输出仍然保持启用
+- 裸 `/ask`、`/code` 和 `/architect` 命令现在会切换聊天模式。
+- 增加了 repomap 的默认大小。
+- 将聊天历史记录令牌限制从 4k 增加到 8k。
+- 如果终端很简陋，则关闭花哨输入和监视文件。
+- 添加了对自定义语音格式和输入设备设置的支持。
+- 由 apaz-cli 禁用 Streamlit 电子邮件提示。
+- Docker 容器现在以非 root 用户运行。
+- 由 Aaron Weisberg 修复了 lint 命令处理嵌套空格字符串的问题。
+- 添加了将命令输出添加到聊天时的令牌计数反馈。
+- 改进了大型音频文件的错误处理，支持自动格式转换。
+- 由 Krazer 改进了 git 仓库索引错误的处理。
+- 通过 ASCII 回退改进了控制台输出中的 Unicode 处理。
+- 将 AssertionError、AttributeError 添加到 git 错误处理。
+- Aider 在此版本中编写了 60% 的代码。
 
 ### Aider v0.70.0
 
-- Full support for o1 models.
-- Watch files now honors `--subtree-only`, and only watches that subtree.
-- Improved prompting for watch files, to work more reliably with more models.
-- New install methods via uv, including one-liners.
-- Support for openrouter/deepseek/deepseek-chat model.
-- Better error handling when interactive commands are attempted via `/load` or `--load`.
-- Display read-only files with abs path if its shorter than rel path.
-- Ask 10% of users to opt-in to analytics.
-- Bugfix for auto-suggest.
-- Gracefully handle unicode errors in git path names.
-- Aider wrote 74% of the code in this release.
+- 全面支持 o1 模型。
+- 监视文件现在遵循 `--subtree-only`，只监视该子树。
+- 改进了监视文件的提示，使其与更多模型更可靠地工作。
+- 通过 uv 新增安装方法，包括一键安装。
+- 支持 openrouter/deepseek/deepseek-chat 模型。
+- 当通过 `/load` 或 `--load` 尝试交互式命令时，提供更好的错误处理。
+- 如果绝对路径比相对路径短，则使用绝对路径显示只读文件。
+- 询问 10% 的用户是否选择加入分析。
+- 修复了自动建议的 bug。
+- 优雅地处理 git 路径名中的 Unicode 错误。
+- Aider 在此版本中编写了 74% 的代码。
 
 ### Aider v0.69.1
 
-- Fix for gemini model names in model metadata.
-- Show hints about AI! and AI? when user makes AI comments.
-- Support for running without git installed.
-- Improved environment variable setup messages on Windows.
+- 修复了模型元数据中的 gemini 模型名称。
+- 当用户发表 AI 评论时，显示有关 AI! 和 AI? 的提示。
+- 支持在未安装 git 的情况下运行。
+- 改进了 Windows 上的环境变量设置消息。
 
 ### Aider v0.69.0
 
-- [Watch files](https://aider.chat/docs/usage/watch.html) improvements:
-  - Use `# ... AI?` comments to trigger aider and ask questions about your code.
-  - Now watches *all* files, not just certain source files.
-  - Use `# AI comments`, `// AI comments`, or `-- AI comments` to give aider instructions in any text file.
-- Full support for Gemini Flash 2.0 Exp:
-  - `aider --model flash` or `aider --model gemini/gemini-2.0-flash-exp`
-- [New `--multiline` flag and `/multiline-mode` command](https://aider.chat/docs/usage/commands.html#entering-multi-line-chat-messages) makes ENTER a soft newline and META-ENTER send the message, by @miradnanali.
-- `/copy-context <instructions>` now takes optional "instructions" when [copying code context to the clipboard](https://aider.chat/docs/usage/copypaste.html#copy-aiders-code-context-to-your-clipboard-paste-into-the-web-ui).
-- Improved clipboard error handling with helpful requirements install info.
-- Ask 5% of users if they want to opt-in to analytics.
-- `/voice` now lets you edit the transcribed text before sending.
-- Disabled auto-complete in Y/N prompts.
-- Aider wrote 68% of the code in this release.
+- [监视文件](https://aider.chat/docs/usage/watch.html)改进：
+  - 使用 `# ... AI?` 注释触发 aider 并询问有关代码的问题。
+  - 现在监视*所有*文件，而不仅仅是某些源文件。
+  - 在任何文本文件中使用 `# AI comments`、`// AI comments` 或 `-- AI comments` 给 aider 指令。
+- 全面支持 Gemini Flash 2.0 Exp：
+  - `aider --model flash` 或 `aider --model gemini/gemini-2.0-flash-exp`
+- 由 @miradnanali 添加的[新 `--multiline` 标志和 `/multiline-mode` 命令](https://aider.chat/docs/usage/commands.html#entering-multi-line-chat-messages)使 ENTER 成为软换行，META-ENTER 发送消息。
+- `/copy-context <instructions>` 现在在[将代码上下文复制到剪贴板](https://aider.chat/docs/usage/copypaste.html#copy-aiders-code-context-to-your-clipboard-paste-into-the-web-ui)时接受可选的"说明"。
+- 改进了剪贴板错误处理，提供有用的需求安装信息。
+- 询问 5% 的用户是否选择加入分析。
+- `/voice` 现在允许在发送前编辑转录文本。
+- 在 Y/N 提示中禁用自动完成。
+- Aider 在此版本中编写了 68% 的代码。
 
 ### Aider v0.68.0
 
-- [Aider works with LLM web chat UIs](https://aider.chat/docs/usage/copypaste.html).
-  - New `--copy-paste` mode.
-  - New `/copy-context` command.
-- [Set API keys and other environment variables for all providers from command line or yaml conf file](https://aider.chat/docs/config/aider_conf.html#storing-llm-keys).
-  - New `--api-key provider=key` setting.
-  - New `--set-env VAR=value` setting.
-- Added bash and zsh support to `--watch-files`.
-- Better error messages when missing dependencies for Gemini and Bedrock models.
-- Control-D now properly exits the program.
-- Don't count token costs when API provider returns a hard error.
-- Bugfix so watch files works with files that don't have tree-sitter support.
-- Bugfix so o1 models can be used as weak model.
-- Updated shell command prompt.
-- Added docstrings for all Coders.
-- Reorganized command line arguments with improved help messages and grouping.
-- Use the exact `sys.python` for self-upgrades.
-- Added experimental Gemini models.
-- Aider wrote 71% of the code in this release.
+- [Aider 可与 LLM Web 聊天界面配合使用](https://aider.chat/docs/usage/copypaste.html)。
+  - 新的 `--copy-paste` 模式。
+  - 新的 `/copy-context` 命令。
+- [从命令行或 yaml 配置文件设置所有提供商的 API 密钥和其他环境变量](https://aider.chat/docs/config/aider_conf.html#storing-llm-keys)。
+  - 新的 `--api-key provider=key` 设置。
+  - 新的 `--set-env VAR=value` 设置。
+- 为 `--watch-files` 添加了 bash 和 zsh 支持。
+- 缺少 Gemini 和 Bedrock 模型依赖项时，提供更好的错误消息。
+- Control-D 现在正确退出程序。
+- 当 API 提供商返回硬错误时，不计算令牌成本。
+- 修复了监视文件对没有 tree-sitter 支持的文件也能正常工作的 bug。
+- 修复了 o1 模型可以用作弱模型的 bug。
+- 更新了 shell 命令提示。
+- 为所有 Coders 添加了文档字符串。
+- 重新组织了命令行参数，改进了帮助消息和分组。
+- 使用确切的 `sys.python` 进行自我升级。
+- 添加了实验性 Gemini 模型。
+- Aider 在此版本中编写了 71% 的代码。
 
 ### Aider v0.67.0
 
-- [Use aider in your IDE or editor](https://aider.chat/docs/usage/watch.html).
-  - Run `aider --watch-files` and it will watch for instructions you add to your source files.
-  - One-liner `# ...` or `// ...` comments that start or end with "AI" are instructions to aider.
-  - When aider sees "AI!" it reads and follows all the instructions in AI comments.
-- Support for new Amazon Bedrock Nova models.
-- When `/run` or `/test` have non-zero exit codes, pre-fill "Fix that" into the next message prompt.
-- `/diff` now invokes `git diff` to use your preferred diff tool.
-- Added Ctrl-Z support for process suspension.
-- Spinner now falls back to ASCII art if fancy symbols throw unicode errors.
-- `--read` now expands `~` home dirs.
-- Enabled exception capture in analytics.
-- [Aider wrote 61% of the code in this release.](https://aider.chat/HISTORY.html)
+- [在您的 IDE 或编辑器中使用 aider](https://aider.chat/docs/usage/watch.html)。
+  - 运行 `aider --watch-files`，它将监视您添加到源文件中的指令。
+  - 一行 `# ...` 或 `// ...` 注释，以 "AI" 开头或结尾的是给 aider 的指令。
+  - 当 aider 看到 "AI!" 时，它会读取并遵循 AI 注释中的所有指令。
+- 支持新的 Amazon Bedrock Nova 模型。
+- 当 `/run` 或 `/test` 有非零退出代码时，在下一条消息提示中预填 "Fix that"。
+- `/diff` 现在调用 `git diff` 使用您首选的差异工具。
+- 添加了对进程暂停的 Ctrl-Z 支持。
+- 如果花哨符号引发 unicode 错误，spinner 现在会回退到 ASCII 艺术。
+- `--read` 现在扩展 `~` 家目录。
+- 在分析中启用异常捕获。
+- [Aider 在此版本中编写了 61% 的代码。](https://aider.chat/HISTORY.html)
 
 ### Aider v0.66.0
 
-- PDF support for Sonnet and Gemini models.
-- Added `--voice-input-device` to select audio input device for voice recording, by @preynal.
-- Added `--timeout` option to configure API call timeouts.
-- Set cwd to repo root when running shell commands.
-- Added Ctrl-Up/Down keyboard shortcuts for per-message history navigation.
-- Improved error handling for failed .gitignore file operations.
-- Improved error handling for input history file permissions.
-- Improved error handling for analytics file access.
-- Removed spurious warning about disabling pretty in VSCode.
-- Removed broken support for Dart.
-- Bugfix when scraping URLs found in chat messages.
-- Better handling of __version__ import errors.
-- Improved `/drop` command to support substring matching for non-glob patterns.
-- Aider wrote 82% of the code in this release.
+- 为 Sonnet 和 Gemini 模型提供 PDF 支持。
+- 由 @preynal 添加了 `--voice-input-device` 以选择语音录制的音频输入设备。
+- 添加了 `--timeout` 选项来配置 API 调用超时。
+- 运行 shell 命令时将 cwd 设置为仓库根目录。
+- 添加了 Ctrl-Up/Down 键盘快捷键，用于按消息历史记录导航。
+- 改进了对失败的 .gitignore 文件操作的错误处理。
+- 改进了输入历史文件权限的错误处理。
+- 改进了分析文件访问的错误处理。
+- 删除了关于在 VSCode 中禁用 pretty 的虚假警告。
+- 删除了对 Dart 的损坏支持。
+- 修复了在聊天消息中发现 URL 时的错误。
+- 更好地处理 __version__ 导入错误。
+- 改进了 `/drop` 命令，支持非 glob 模式的子字符串匹配。
+- Aider 在此版本中编写了 82% 的代码。
 
 ### Aider v0.65.1
 
-- Bugfix to `--alias`.
+- 修复了 `--alias` 的错误。
 
 ### Aider v0.65.0
 
-- Added `--alias` config to define [custom model aliases](https://aider.chat/docs/config/model-aliases.html).
-- Added `--[no-]detect-urls` flag to disable detecting and offering to scrape URLs found in the chat.
-- Ollama models now default to an 8k context window.
-- Added [RepoMap support for Dart language](https://aider.chat/docs/languages.html) by @malkoG.
-- Ask 2.5% of users if they want to opt-in to [analytics](https://aider.chat/docs/more/analytics.html).
-- Skip suggesting files that share names with files already in chat.
-- `/editor` returns and prefill the file content into the prompt, so you can use `/editor` to compose messages that start with `/commands`, etc.
-- Enhanced error handling for analytics.
-- Improved handling of UnknownEditFormat exceptions with helpful documentation links.
-- Bumped dependencies to pick up grep-ast 0.4.0 for Dart language support.
-- Aider wrote 81% of the code in this release.
+- 添加了 `--alias` 配置，用于定义[自定义模型别名](https://aider.chat/docs/config/model-aliases.html)。
+- 添加了 `--[no-]detect-urls` 标志，用于禁用检测和提供爬取聊天中发现的 URL。
+- Ollama 模型现在默认使用 8k 上下文窗口。
+- 由 @malkoG 添加了 [Dart 语言的 RepoMap 支持](https://aider.chat/docs/languages.html)。
+- 询问 2.5% 的用户是否选择加入[分析](https://aider.chat/docs/more/analytics.html)。
+- 跳过建议那些与聊天中已有文件同名的文件。
+- `/editor` 返回并在提示中预填文件内容，因此您可以使用 `/editor` 撰写以 `/commands` 等开头的消息。
+- 增强了分析的错误处理。
+- 改进了 UnknownEditFormat 异常的处理，提供有用的文档链接。
+- 更新依赖以获取 grep-ast 0.4.0 对 Dart 语言的支持。
+- Aider 在此版本中编写了 81% 的代码。
 
 ### Aider v0.64.1
 
-- Disable streaming for o1 on OpenRouter.
+- 禁用 OpenRouter 上 o1 的流式处理。
 
 ### Aider v0.64.0
 
-- Added [`/editor` command](https://aider.chat/docs/usage/commands.html) to open system editor for writing prompts, by @thehunmonkgroup.
-- Full support for `gpt-4o-2024-11-20`.
-- Stream o1 models by default.
-- `/run` and suggested shell commands are less mysterious and now confirm that they "Added XX lines of output to the chat."
-- Ask 1% of users if they want to opt-in to [analytics](https://aider.chat/docs/more/analytics.html).
-- Added support for [optional multiline input tags](https://aider.chat/docs/usage/commands.html#entering-multi-line-chat-messages) with matching closing tags.
-- Improved [model settings configuration](https://aider.chat/docs/config/adv-model-settings.html#global-extra-params) with support for global `extra_params` for `litellm.completion()`.
-- Architect mode now asks to add files suggested by the LLM.
-- Fixed bug in fuzzy model name matching.
-- Added Timeout exception to handle API provider timeouts.
-- Added `--show-release-notes` to control release notes display on first run of new version.
-- Save empty dict to cache file on model metadata download failure, to delay retry.
-- Improved error handling and code formatting.
-- Aider wrote 74% of the code in this release.
+- 由 @thehunmonkgroup 添加了 [`/editor` 命令](https://aider.chat/docs/usage/commands.html)，用于打开系统编辑器编写提示。
+- 全面支持 `gpt-4o-2024-11-20`。
+- 默认情况下流式处理 o1 模型。
+- `/run` 和建议的 shell 命令现在不那么神秘，会确认它们"将 XX 行输出添加到聊天中"。
+- 询问 1% 的用户是否选择加入[分析](https://aider.chat/docs/more/analytics.html)。
+- 添加了支持[可选多行输入标签](https://aider.chat/docs/usage/commands.html#entering-multi-line-chat-messages)及其匹配的闭合标签。
+- 改进了[模型设置配置](https://aider.chat/docs/config/adv-model-settings.html#global-extra-params)，支持 `litellm.completion()` 的全局 `extra_params`。
+- 架构师模式现在会询问是否添加 LLM 建议的文件。
+- 修复了模糊模型名称匹配中的错误。
+- 添加了 Timeout 异常来处理 API 提供商超时。
+- 添加了 `--show-release-notes` 控制在新版本首次运行时显示发行说明。
+- 在模型元数据下载失败时保存空字典到缓存文件，以延迟重试。
+- 改进了错误处理和代码格式化。
+- Aider 在此版本中编写了 74% 的代码。
 
 ###  Aider v0.63.2
 
-- Fixed bug in fuzzy model name matching when litellm provider info is missing.
-- Modified model metadata file loading to allow override of resource file.
-- Allow recursive loading of dirs using `--read`.
-- Updated dependency versions to pick up litellm fix for ollama models.
-- Added exponential backoff retry when writing files to handle editor file locks.
-- Updated Qwen 2.5 Coder 32B model configuration.
+- 修复了当 litellm 提供商信息缺失时，模糊模型名称匹配中的错误。
+- 修改了模型元数据文件加载，允许覆盖资源文件。
+- 允许使用 `--read` 递归加载目录。
+- 更新了依赖版本以获取 litellm 对 ollama 模型的修复。
+- 添加了指数退避重试，在处理编辑器文件锁时写入文件。
+- 更新了 Qwen 2.5 Coder 32B 模型配置。
 
 ### Aider v0.63.1
 
-- Fixed bug in git ignored file handling.
-- Improved error handling for git operations.
+- 修复了 git ignored file handling.
+- 改进了 git operations 的错误处理。
 
 ### Aider v0.63.0
 
-- Support for Qwen 2.5 Coder 32B.
-- `/web` command just adds the page to the chat, without triggering an LLM response.
-- Improved prompting for the user's preferred chat language.
-- Improved handling of LiteLLM exceptions.
-- Bugfix for double-counting tokens when reporting cache stats.
-- Bugfix for the LLM creating new files.
-- Other small bug fixes.
-- Aider wrote 55% of the code in this release.
+- 支持 Qwen 2.5 Coder 32B.
+- `/web` 命令只是将页面添加到聊天中，不会触发 LLM 响应。
+- 改进了用户首选聊天语言的提示。
+- 改进了 LiteLLM exceptions 的处理。
+- 修复了在报告缓存统计时重复计算令牌的问题。
+- 修复了 LLM 创建新文件的问题。
+- 其他小错误修复。
+- Aider 在此版本中编写了 55% 的代码。
 
 ### Aider v0.62.0
 
-- Full support for Claude 3.5 Haiku
-  - Scored 75% on [aider's code editing leaderboard](https://aider.chat/docs/leaderboards/).
-  - Almost as good as Sonnet at much lower cost.
-  - Launch with `--haiku` to use it.
-- Easily apply file edits from ChatGPT, Claude or other web apps
-  - Chat with ChatGPT or Claude via their web app. 
-  - Give it your source files and ask for the changes you want.
-  - Use the web app's "copy response" button to copy the entire reply from the LLM.
-  - Run `aider --apply-clipboard-edits file-to-edit.js`.
-  - Aider will edit your file with the LLM's changes.
-- Bugfix for creating new files.
-- Aider wrote 84% of the code in this release.  
+- 全面支持 Claude 3.5 Haiku
+  - 在 [aider 的代码编辑排行榜](https://aider.chat/docs/leaderboards/) 上得分 75%。
+  - 几乎与 Sonnet 一样好，但成本低得多。
+  - 使用 `--haiku` 启动它。
+- 轻松应用来自 ChatGPT、Claude 或其他 web 应用的文件编辑
+  - 通过其 web 应用与 ChatGPT 或 Claude 聊天。
+  - 给它您的源文件并请求所需的更改。
+  - 使用 web 应用的"复制响应"按钮复制 LLM 的整个回复。
+  - 运行 `aider --apply-clipboard-edits file-to-edit.js`。
+  - Aider 将用 LLM 的更改编辑您的文件。
+- 修复了创建新文件的 bug。
+- Aider 在此版本中编写了 84% 的代码。  
 
 ### Aider v0.61.0
 
-- Load and save aider slash-commands to files:
-  - `/save <fname>` command will make a file of `/add` and `/read-only` commands that recreate the current file context in the chat.
-  - `/load <fname>` will replay the commands in the file.
-  - You can use `/load` to run any arbitrary set of slash-commands, not just `/add` and `/read-only`.
-  - Use `--load <fname>` to run a list of commands on launch, before the interactive chat begins.
-- Anonymous, opt-in [analytics](https://aider.chat/docs/more/analytics.html) with no personal data sharing.
-- Aider follows litellm's `supports_vision` attribute to enable image support for models.
-- Bugfix for when diff mode flexibly handles the model using the wrong filename.
-- Displays filenames in sorted order for `/add` and `/read-only`.
-- New `--no-fancy-input` switch disables prompt toolkit input, now still available with `--no-pretty`.
-- Override browser config with `--no-browser` or `--no-gui`.
-- Offer to open documentation URLs when errors occur.
-- Properly support all o1 models, regardless of provider.
-- Improved layout of filenames above input prompt.
-- Better handle corrupted repomap tags cache.
-- Improved handling of API errors, especially when accessing the weak model.
-- Aider wrote 68% of the code in this release.
+- 加载和保存 aider 斜杠命令到文件：
+  - `/save <fname>` 命令将创建一个包含 `/add` 和 `/read-only` 命令的文件，以在聊天中重新创建当前文件上下文。
+  - `/load <fname>` 将重播文件中的命令。
+  - 您可以使用 `/load` 运行任意一组斜杠命令，而不仅仅是 `/add` 和 `/read-only`。
+  - 使用 `--load <fname>` 在启动时运行命令列表，然后再开始交互式聊天。
+- 匿名、选择性加入的[分析](https://aider.chat/docs/more/analytics.html)，不共享个人数据。
+- Aider 遵循 litellm 的 `supports_vision` 属性为模型启用图像支持。
+- 修复了差异模式灵活处理模型使用错误文件名的情况。
+- 以排序顺序显示 `/add` 和 `/read-only` 的文件名。
+- 新的 `--no-fancy-input` 开关禁用提示工具包输入，现在仍可通过 `--no-pretty` 使用。
+- 使用 `--no-browser` 或 `--no-gui` 覆盖浏览器配置。
+- 在发生错误时提供打开文档 URL 的选项。
+- 正确支持所有 o1 模型，无论提供商如何。
+- 改进了输入提示上方文件名的布局。
+- 更好地处理损坏的 repomap 标签缓存。
+- 改进了 API 错误的处理，特别是在访问弱模型时。
+- Aider 在此版本中编写了 68% 的代码。
 
 ### Aider v0.60.1
 
-- Enable image support for Sonnet 10/22.
-- Display filenames in sorted order.
+- 为 Sonnet 10/22 启用图像支持。
+- 以排序顺序显示文件名。
 
 ### Aider v0.60.0
 
-- Full support for Sonnet 10/22, the new SOTA model on aider's code editing benchmark.
-  - Aider uses Sonnet 10/22 by default.
-- Improved formatting of added and read-only files above chat prompt, by @jbellis.
-- Improved support for o1 models by more flexibly parsing their nonconforming code edit replies.
-- Corrected diff edit format prompt that only the first match is replaced.
-- Stronger whole edit format prompt asking for clean file names.
-- Now offers to add `.env` to the `.gitignore` file.
-- Ships with a small model metadata json file to handle models not yet updated in litellm.
-- Model settings for o1 models on azure.
-- Bugfix to properly include URLs in `/help` RAG results.
-- Aider wrote 49% of the code in this release.
+- 完全支持 Sonnet 10/22，这是 aider 代码编辑基准测试中的最新技术水平模型。
+  - Aider 默认使用 Sonnet 10/22。
+- 由 @jbellis 改进了聊天提示上方添加和只读文件的格式。
+- 通过更灵活地解析 o1 模型不符合标准的代码编辑回复，改进了对其支持。
+- 纠正了差异编辑格式提示，只替换第一个匹配项。
+- 加强了整体编辑格式提示，要求提供干净的文件名。
+- 现在提供将 `.env` 添加到 `.gitignore` 文件的选项。
+- 附带一个小型模型元数据 json 文件，以处理尚未在 litellm 中更新的模型。
+- 为 azure 上的 o1 模型提供了模型设置。
+- 修复了在 `/help` RAG 结果中正确包含 URL 的问题。
+- Aider 在此版本中编写了 49% 的代码。
 
 ### Aider v0.59.1
 
-- Check for obsolete `yes: true` in yaml config, show helpful error.
-- Model settings for openrouter/anthropic/claude-3.5-sonnet:beta
+- 检查 yaml 配置中过时的 `yes: true`，显示有用的错误信息。
+- 为 openrouter/anthropic/claude-3.5-sonnet:beta 提供模型设置。
 
 ### Aider v0.59.0
 
-- Improvements to `/read-only`:
-  - Now supports shell-style auto-complete of the full file system.
-  - Still auto-completes the full paths of the repo files like `/add`.
-  - Now supports globs like `src/**/*.py`
-- Renamed `--yes` to `--yes-always`.
-  - Now uses `AIDER_YES_ALWAYS` env var and `yes-always:` yaml key.
-  - Existing YAML and .env files will need to be updated.
-  - Can still abbreviate to `--yes` on the command line.
-- Config file now uses standard YAML list syntax with `  - list entries`, one per line.  
-- `/settings` now includes the same announcement lines that would print at launch.
-- Sanity checks the `--editor-model` on launch now, same as main and weak models.
-- Added `--skip-sanity-check-repo` switch to speedup launch in large repos.
-- Bugfix so architect mode handles Control-C properly.
-- Repo-map is deterministic now, with improved caching logic.
-- Improved commit message prompt.
-- Aider wrote 77% of the code in this release.
+- 对 `/read-only` 的改进：
+  - 现在支持 shell 风格的整个文件系统的自动完成。
+  - 仍然像 `/add` 一样自动完成 repo 文件的完整路径。
+  - 现在支持 glob 模式，如 `src/**/*.py`。
+- 将 `--yes` 重命名为 `--yes-always`。
+  - 现在使用 `AIDER_YES_ALWAYS` 环境变量和 `yes-always:` yaml 键。
+  - 现有的 YAML 和 .env 文件需要更新。
+  - 在命令行上仍可以缩写为 `--yes`。
+- 配置文件现在使用标准 YAML 列表语法，每行一个 `  - list entries`。
+- `/settings` 现在包括在启动时会打印的相同公告行。
+- 现在在启动时对 `--editor-model` 进行健全性检查，与主模型和弱模型相同。
+- 添加了 `--skip-sanity-check-repo` 开关以在大型仓库中加速启动。
+- 修复了架构师模式正确处理 Control-C 的问题。
+- Repo-map 现在是确定性的，具有改进的缓存逻辑。
+- 改进了提交消息提示。
+- Aider 在此版本中编写了 77% 的代码。
 
 ### Aider v0.58.1
 
-- Fixed bug where cache warming pings caused subsequent user messages to trigger a tight loop of LLM requests.
+- 修复了缓存预热 ping 导致后续用户消息触发 LLM 请求紧密循环的错误。
 
 ### Aider v0.58.0
 
-- [Use a pair of Architect/Editor models for improved coding](https://aider.chat/2024/09/26/architect.html)
-  - Use a strong reasoning model like o1-preview as your Architect.
-  - Use a cheaper, faster model like gpt-4o as your Editor.
-- New `--o1-preview` and `--o1-mini` shortcuts.
-- Support for new Gemini 002 models.
-- Better support for Qwen 2.5 models.
-- Many confirmation questions can be skipped for the rest of the session with "(D)on't ask again" response.
-- Autocomplete for `/read-only` supports the entire filesystem.
-- New settings for completion menu colors.
-- New `/copy` command to copy the last LLM response to the clipboard.
-- Renamed `/clipboard` to `/paste`.
-- Will now follow HTTP redirects when scraping urls.
-- New `--voice-format` switch to send voice audio as wav/mp3/webm, by @mbailey.
-- ModelSettings takes `extra_params` dict to specify any extras to pass to `litellm.completion()`.
-- Support for cursor shapes when in vim mode.
-- Numerous bug fixes.
-- Aider wrote 53% of the code in this release.
+- [使用一对架构师/编辑器模型进行改进的编码](https://aider.chat/2024/09/26/architect.html)
+  - 使用 o1-preview 等强大的推理模型作为您的架构师。
+  - 使用更便宜、更快的模型如 gpt-4o 作为您的编辑器。
+- 新的 `--o1-preview` 和 `--o1-mini` 快捷方式。
+- 支持新的 Gemini 002 模型。
+- 更好地支持 Qwen 2.5 模型。
+- 许多确认问题现在可以通过 "(D)on't ask again" 响应在会话的剩余部分跳过。
+- `/read-only` 的自动完成现在支持整个文件系统。
+- 新的完成菜单颜色设置。
+- 新的 `/copy` 命令将最后的 LLM 响应复制到剪贴板。
+- 将 `/clipboard` 重命名为 `/paste`。
+- 现在在抓取 URL 时会跟随 HTTP 重定向。
+- 由 @mbailey 添加的新 `--voice-format` 开关，以 wav/mp3/webm 格式发送语音音频。
+- ModelSettings 接受 `extra_params` 字典，指定要传递给 `litellm.completion()` 的任何额外内容。
+- 在 vim 模式下支持光标形状。
+- 众多 bug 修复。
+- Aider 在此版本中编写了 53% 的代码。
 
 ### Aider v0.57.1
 
-- Fixed dependency conflict between aider-chat[help] and [playwright].
+- 修复了 aider-chat[help] 和 [playwright] 之间的依赖冲突。
 
 ### Aider v0.57.0
 
-- Support for OpenAI o1 models:
-  - o1-preview now works well with diff edit format.
-  - o1-preview with diff now matches SOTA leaderboard result with whole edit format.
+- 支持 OpenAI o1 模型：
+  - o1-preview 现在与差异编辑格式配合良好。
+  - 使用差异格式的 o1-preview 现在与使用整体编辑格式的 SOTA 排行榜结果相匹配。
   - `aider --model o1-mini`
   - `aider --model o1-preview`
-- On Windows, `/run` correctly uses PowerShell or cmd.exe.
-- Support for new 08-2024 Cohere models, by @jalammar.
-- Can now recursively add directories with `/read-only`.
-- User input prompts now fall back to simple `input()` if `--no-pretty` or a Windows console is not available.
-- Improved sanity check of git repo on startup.
-- Improvements to prompt cache chunking strategy.
-- Removed "No changes made to git tracked files".
-- Numerous bug fixes for corner case crashes.
-- Updated all dependency versions.
-- Aider wrote 70% of the code in this release.
+- 在 Windows 上，`/run` 正确使用 PowerShell 或 cmd.exe。
+- 由 @jalammar 添加对新的 08-2024 Cohere 模型的支持。
+- 现在可以通过 `/read-only` 递归添加目录。
+- 如果 `--no-pretty` 或 Windows 控制台不可用，用户输入提示现在会回退到简单的 `input()`。
+- 改进了启动时对 git 仓库的健全性检查。
+- 改进了提示缓存分块策略。
+- 删除了 "No changes made to git tracked files"。
+- 修复了许多特殊情况崩溃的 bug。
+- 更新了所有依赖版本。
+- Aider 在此版本中编写了 70% 的代码。
 
 ### Aider v0.56.0
 
-- Enables prompt caching for Sonnet via OpenRouter by @fry69
-- Enables 8k output tokens for Sonnet via VertexAI and DeepSeek V2.5.
-- New `/report` command to open your browser with a pre-populated GitHub Issue.
-- New `--chat-language` switch to set the spoken language.
-- Now `--[no-]suggest-shell-commands` controls both prompting for and offering to execute shell commands.
-- Check key imports on launch, provide helpful error message if dependencies aren't available.
-- Renamed `--models` to `--list-models` by @fry69.
-- Numerous bug fixes for corner case crashes.
-- Aider wrote 56% of the code in this release.
+- 由 @fry69 为通过 OpenRouter 的 Sonnet 启用提示缓存。
+- 为通过 VertexAI 和 DeepSeek V2.5 的 Sonnet 启用 8k 输出令牌。
+- 新的 `/report` 命令可打开浏览器，预填 GitHub 问题。
+- 新的 `--chat-language` 开关设置口语语言。
+- 现在 `--[no-]suggest-shell-commands` 既控制提示，也控制提供执行 shell 命令。
+- 在启动时检查关键导入，如果依赖不可用则提供有用的错误消息。
+- 由 @fry69 将 `--models` 重命名为 `--list-models`。
+- 修复了许多特殊情况崩溃的 bug。
+- Aider 在此版本中编写了 56% 的代码。
 
 ### Aider v0.55.0
 
-- Only print the pip command when self updating on Windows, without running it.
-- Converted many error messages to warning messages.
-- Added `--tool-warning-color` setting.
-- Blanket catch and handle git errors in any `/command`.
-- Catch and handle glob errors in `/add`, errors writing files.
-- Disabled built in linter for typescript.
-- Catch and handle terminals which don't support pretty output.
-- Catch and handle playwright and pandoc errors.
-- Catch `/voice` transcription exceptions, show the WAV file so the user can recover it.
-- Aider wrote 53% of the code in this release.
+- 在 Windows 上自我更新时只打印 pip 命令，不运行它。
+- 将许多错误消息转换为警告消息。
+- 添加了 `--tool-warning-color` 设置。
+- 在任何 `/command` 中全面捕获并处理 git 错误。
+- 捕获并处理 `/add` 中的 glob 错误，写入文件时的错误。
+- 禁用了 typescript 的内置 linter。
+- 捕获并处理不支持漂亮输出的终端。
+- 捕获并处理 playwright 和 pandoc 错误。
+- 捕获 `/voice` 转录异常，显示 WAV 文件以便用户可以恢复它。
+- Aider 在此版本中编写了 53% 的代码。
 
 ### Aider v0.54.12
 
-- Switched to `vX.Y.Z.dev` version naming.
+- 切换到 `vX.Y.Z.dev` 版本命名。
 
 ### Aider v0.54.11
 
-- Improved printed pip command output on Windows.
+- 改进了 Windows 上打印的 pip 命令输出。
 
 ### Aider v0.54.10
 
-- Bugfix to test command in platform info.
+- 修复了平台信息中的测试命令 bug。
 
 ### Aider v0.54.9
 
-- Include important devops files in the repomap.
-- Print quoted pip install commands to the user.
-- Adopt setuptools_scm to provide dev versions with git hashes.
-- Share active test and lint commands with the LLM.
-- Catch and handle most errors creating new files, reading existing files.
-- Catch and handle most git errors.
-- Added --verbose debug output for shell commands.
+- 在 repomap 中包含重要的 devops 文件。
+- 向用户打印带引号的 pip 安装命令。
+- 采用 setuptools_scm 提供带有 git 哈希的开发版本。
+- 与 LLM 共享活动测试和 lint 命令。
+- 捕获并处理创建新文件、读取现有文件的大多数错误。
+- 捕获并处理大多数 git 错误。
+- 为 shell 命令添加了 --verbose 调试输出。
 
 ### Aider v0.54.8
 
-- Startup QOL improvements:
-  - Sanity check the git repo and exit gracefully on problems.
-  - Pause for confirmation after model sanity check to allow user to review warnings.
-- Bug fix for shell commands on Windows.
-- Do not fuzzy match filenames when LLM is creating a new file, by @ozapinq
-- Numerous corner case bug fixes submitted via new crash report -> GitHub Issue feature.
-- Crash reports now include python version, OS, etc.
+- 启动生活质量改进：
+  - 对 git 仓库进行健全性检查，在出现问题时优雅退出。
+  - 在模型健全性检查后暂停确认，允许用户查看警告。
+- 修复了 Windows 上 shell 命令的 bug。
+- 当 LLM 创建新文件时，由 @ozapinq 不进行文件名模糊匹配。
+- 通过新的崩溃报告 -> GitHub 问题功能提交的众多角落案例 bug 修复。
+- 崩溃报告现在包括 python 版本、操作系统等。
 
 ### Aider v0.54.7
 
-- Offer to submit a GitHub issue pre-filled with uncaught exception info.
-- Bugfix for infinite output.
+- 提供提交预填充了未捕获异常信息的 GitHub 问题的选项。
+- 修复了无限输出的 bug。
 
 ### Aider v0.54.6
 
-- New `/settings` command to show active settings.
-- Only show cache warming status update if `--verbose`.
+- 新的 `/settings` 命令显示活动设置。
+- 只有在 `--verbose` 时才显示缓存预热状态更新。
 
 ### Aider v0.54.5
 
-- Bugfix for shell commands on Windows.
-- Refuse to make git repo in $HOME, warn user.
-- Don't ask again in current session about a file the user has said not to add to the chat.
-- Added `--update` as an alias for `--upgrade`.
+- 修复了 Windows 上的 shell 命令 bug。
+- 拒绝在 $HOME 中创建 git 仓库，警告用户。
+- 在当前会话中不再询问用户已经表示不添加到聊天的文件。
+- 添加了 `--update` 作为 `--upgrade` 的别名。
 
 ### Aider v0.54.4
 
-- Bugfix to completions for `/model` command.
-- Bugfix: revert home dir special case.
+- 修复了 `/model` 命令的自动完成问题。
+- 修复了主目录特殊情况。
 
 ### Aider v0.54.3
 
-- Dependency `watchdog<5` for docker image.
+- 为 docker 镜像添加了 `watchdog<5` 依赖。
 
 ### Aider v0.54.2
 
-- When users launch aider in their home dir, help them find/create a repo in a subdir.
-- Added missing `pexpect` dependency.
+- 当用户在其主目录中启动 aider 时，帮助他们在子目录中查找/创建仓库。
+- 添加了缺失的 `pexpect` 依赖。
 
 ### Aider v0.54.0
 
-- Added model settings for `gemini/gemini-1.5-pro-exp-0827` and `gemini/gemini-1.5-flash-exp-0827`.
-- Shell and `/run` commands can now be interactive in environments where a pty is available.
-- Optionally share output of suggested shell commands back to the LLM.
-- New `--[no-]suggest-shell-commands` switch to configure shell commands.
-- Performance improvements for autocomplete in large/mono repos.
-- New `--upgrade` switch to install latest version of aider from pypi.
-- Bugfix to `--show-prompt`.
-- Disabled automatic reply to the LLM on `/undo` for all models.
-- Removed pager from `/web` output.
-- Aider wrote 64% of the code in this release.
+- 添加了 `gemini/gemini-1.5-pro-exp-0827` 和 `gemini/gemini-1.5-flash-exp-0827` 的模型设置。
+- 在可用 pty 的环境中，shell 和 `/run` 命令现在可以是交互式的。
+- 可选择与 LLM 共享建议的 shell 命令的输出。
+- 新的 `--[no-]suggest-shell-commands` 开关配置 shell 命令。
+- 大型/单体仓库中自动完成的性能改进。
+- 新的 `--upgrade` 开关从 pypi 安装最新版本的 aider。
+- 修复了 `--show-prompt` 的 bug。
+- 对所有模型禁用 `/undo` 时自动回复 LLM。
+- 从 `/web` 输出中移除了分页器。
+- Aider 在此版本中编写了 64% 的代码。
 
 ### Aider v0.53.0
 
-- [Keep your prompt cache from expiring](https://aider.chat/docs/usage/caching.html#preventing-cache-expiration) with `--cache-keepalive-pings`.
-  - Pings the API every 5min to keep the cache warm.
-- You can now bulk accept/reject a series of add url and run shell confirmations.
-- Improved matching of filenames from S/R blocks with files in chat.
-- Stronger prompting for Sonnet to make edits in code chat mode.
-- Stronger prompting for the LLM to specify full file paths.
-- Improved shell command prompting.
-- Weak model now uses `extra_headers`, to support Anthropic beta features.
-- New `--install-main-branch` to update to the latest dev version of aider.
-- Improved error messages on attempt to add not-git subdir to chat.
-- Show model metadata info on `--verbose`.
-- Improved warnings when LLMs env variables aren't set.
-- Bugfix to windows filenames which contain `\_`.
-- Aider wrote 59% of the code in this release.
+- [防止提示缓存过期](https://aider.chat/docs/usage/caching.html#preventing-cache-expiration)，使用 `--cache-keepalive-pings`。
+  - 每 5 分钟 ping 一次 API 以保持缓存温暖。
+- 现在您可以批量接受/拒绝一系列的添加 URL 和运行 shell 确认。
+- 改进了从 S/R 块与聊天中文件的文件名匹配。
+- 在代码聊天模式下为 Sonnet 提供更强的编辑提示。
+- 为 LLM 指定完整文件路径提供更强的提示。
+- 改进了 shell 命令提示。
+- 弱模型现在使用 `extra_headers`，支持 Anthropic beta 功能。
+- 新的 `--install-main-branch` 更新到 aider.
+- 改进了尝试将非 git 子目录添加到聊天时的错误消息。
+- 使用 `--verbose` 显示模型元数据信息。
+- 当 LLMs 环境变量未设置时改进警告。
+- 修复了包含 `\_` 的 Windows 文件名问题。
+- Aider 在此版本中编写了 59% 的代码。
 
 ### Aider v0.52.1
 
-- Bugfix for NameError when applying edits.
+- 修复了应用编辑时的 NameError。
 
 ### Aider v0.52.0
 
-- Aider now offers to run shell commands:
-  - Launch a browser to view updated html/css/js.
-  - Install new dependencies.
-  - Run DB migrations. 
-  - Run the program to exercise changes.
-  - Run new test cases.
-- `/read` and `/drop` now expand `~` to the home dir.
-- Show the active chat mode at aider prompt.
-- New `/reset` command to `/drop` files and `/clear` chat history.
-- New `--map-multiplier-no-files` to control repo map size multiplier when no files are in the chat.
-  - Reduced default multiplier to 2.
-- Bugfixes and improvements to auto commit sequencing.
-- Improved formatting of token reports and confirmation dialogs.
-- Default OpenAI model is now `gpt-4o-2024-08-06`.
-- Bumped dependencies to pickup litellm bugfixes.
-- Aider wrote 68% of the code in this release.
+- Aider 现在提供运行 shell 命令的选项：
+  - 启动浏览器查看更新的 html/css/js。
+  - 安装新的依赖项。
+  - 运行数据库迁移。
+  - 运行程序以测试更改。
+  - 运行新的测试用例。
+- `/read` 和 `/drop` 现在将 `~` 扩展到主目录。
+- 在 aider 提示符处显示活动聊天模式。
+- 新的 `/reset` 命令，用于 `/drop` 文件和 `/clear` 聊天历史记录。
+- 新的 `--map-multiplier-no-files` 控制聊天中没有文件时的 repo 映射大小乘数。
+  - 将默认乘数减少到 2。
+- 修复和改进自动提交排序的问题。
+- 改进了令牌报告和确认对话框的格式。
+- 默认 OpenAI 模型现在是 `gpt-4o-2024-08-06`。
+- 更新依赖以获取 litellm 错误修复。
+- Aider 在此版本中编写了 68% 的代码。
 
 ### Aider v0.51.0
 
-- Prompt caching for Anthropic models with `--cache-prompts`.
-  - Caches the system prompt, repo map and `/read-only` files.
-- Repo map recomputes less often in large/mono repos or when caching enabled.
-  - Use `--map-refresh <always|files|manual|auto>` to configure.
-- Improved cost estimate logic for caching.
-- Improved editing performance on Jupyter Notebook `.ipynb` files.
-- Show which config yaml file is loaded with `--verbose`.
-- Bumped dependency versions.
-- Bugfix: properly load `.aider.models.metadata.json` data.
-- Bugfix: Using `--msg /ask ...` caused an exception.
-- Bugfix: litellm tokenizer bug for images.
-- Aider wrote 56% of the code in this release.
+- 使用 `--cache-prompts` 为 Anthropic 模型提供提示缓存。
+  - 缓存系统提示、仓库映射和 `/read-only` 文件。
+- 在大型/单体仓库或启用缓存时，仓库映射重新计算的频率降低。
+  - 使用 `--map-refresh <always|files|manual|auto>` 进行配置。
+- 改进了缓存的成本估算逻辑。
+- 改进了对 Jupyter Notebook `.ipynb` 文件的编辑性能。
+- 使用 `--verbose` 显示加载了哪个配置 yaml 文件。
+- 更新了依赖版本。
+- 错误修复：正确加载 `.aider.models.metadata.json` 数据。
+- 错误修复：使用 `--msg /ask ...` 导致异常。
+- 错误修复：litellm 对图像的分词器错误。
+- Aider 在此版本中编写了 56% 的代码。
 
 ### Aider v0.50.1
 
-- Bugfix for provider API exceptions.
+- 修复了提供商 API 异常的问题。
 
 ### Aider v0.50.0
 
-- Infinite output for DeepSeek Coder, Mistral models in addition to Anthropic's models.
-- New `--deepseek` switch to use DeepSeek Coder.
-- DeepSeek Coder uses 8k token output.
-- New `--chat-mode <mode>` switch to launch in ask/help/code modes.
-- New `/code <message>` command request a code edit while in `ask` mode.
-- Web scraper is more robust if page never idles.
-- Improved token and cost reporting for infinite output.
-- Improvements and bug fixes for `/read` only files.
-- Switched from `setup.py` to `pyproject.toml`, by @branchvincent.
-- Bug fix to persist files added during `/ask`.
-- Bug fix for chat history size in `/tokens`.
-- Aider wrote 66% of the code in this release.
+- 除了 Anthropic 的模型外，DeepSeek Coder、Mistral 模型也支持无限输出。
+- 新的 `--deepseek` 开关用于使用 DeepSeek Coder。
+- DeepSeek Coder 使用 8k 令牌输出。
+- 新的 `--chat-mode <mode>` 开关以 ask/help/code 模式启动。
+- 新的 `/code <message>` 命令在 `ask` 模式下请求代码编辑。
+- 如果页面永不空闲，网页抓取器更加健壮。
+- 改进了无限输出的令牌和成本报告。
+- 改进和修复了 `/read` 只读文件的问题。
+- 由 @branchvincent 将 `setup.py` 切换为 `pyproject.toml`。
+- 修复了在 `/ask` 期间添加的文件的持久化问题。
+- 修复了 `/tokens` 中聊天历史大小的错误。
+- Aider 在此版本中编写了 66% 的代码。
 
 ### Aider v0.49.1
 
-- Bugfix to `/help`.
+- 修复了 `/help` 的错误。
 
 ### Aider v0.49.0
 
-- Add read-only files to the chat context with `/read` and `--read`,  including from outside the git repo.
-- `/diff` now shows diffs of all changes resulting from your request, including lint and test fixes.
-- New `/clipboard` command to paste images or text from the clipboard, replaces `/add-clipboard-image`.
-- Now shows the markdown scraped when you add a url with `/web`.
-- When [scripting aider](https://aider.chat/docs/scripting.html) messages can now contain in-chat `/` commands.
-- Aider in docker image now suggests the correct command to update to latest version.
-- Improved retries on API errors (was easy to test during Sonnet outage).
-- Added `--mini` for `gpt-4o-mini`.
-- Bugfix to keep session cost accurate when using `/ask` and `/help`.
-- Performance improvements for repo map calculation.
-- `/tokens` now shows the active model.
-- Enhanced commit message attribution options:
-  - New `--attribute-commit-message-author` to prefix commit messages with 'aider: ' if aider authored the changes, replaces `--attribute-commit-message`.
-  - New `--attribute-commit-message-committer` to prefix all commit messages with 'aider: '.
-- Aider wrote 61% of the code in this release.
+- 添加 `/read` 和 `--read` 将只读文件添加到聊天上下文，包括 git 仓库外的文件。
+- `/diff` 现在显示您的请求产生的所有更改的差异，包括 lint 和测试修复。
+- 新的 `/clipboard` 命令从剪贴板粘贴图像或文本，替代 `/add-clipboard-image`。
+- 现在显示使用 `/web` 添加 URL 时抓取的 markdown。
+- 在[脚本化 aider](https://aider.chat/docs/scripting.html) 时，消息现在可以包含聊天内的 `/` 命令。
+- docker 镜像中的 Aider 现在建议使用正确的命令更新到最新版本。
+- 在 API 错误上改进重试（在 Sonnet 宕机期间很容易测试）。
+- 添加了 `--mini` 用于 `gpt-4o-mini`。
+- 保持会话成本准确，即使在使用 `/ask` 和 `/help` 时。
+- 仓库映射计算的性能改进。
+- `/tokens` 现在显示活跃模型。
+- 增强的提交消息归属选项：
+  - 新的 `--attribute-commit-message-author` 在提交消息前加上"aider: "，如果 aider 是更改的作者，替代 `--attribute-commit-message`。
+  - 新的 `--attribute-commit-message-committer` 在所有提交消息前加上"aider: "。
+- Aider 在此版本中编写了 61% 的代码。
 
 ### Aider v0.48.1
 
-- Added `openai/gpt-4o-2024-08-06`.
-- Worked around litellm bug that removes OpenRouter app headers when using `extra_headers`.
-- Improved progress indication during repo map processing.
-- Corrected instructions for upgrading the docker container to latest aider version.
-- Removed obsolete 16k token limit on commit diffs, use per-model limits.
+- 添加了 `openai/gpt-4o-2024-08-06`。
+- 解决了使用 `extra_headers` 时 litellm 移除 OpenRouter 应用标头的问题。
+- 在仓库映射处理期间改进了进度指示。
+- 更正了升级 docker 容器到最新 aider 版本的说明。
+- 移除了提交差异上过时的 16k 令牌限制，使用每个模型的限制。
 
 ### Aider v0.48.0
 
-- Performance improvements for large/mono repos.
-- Added `--subtree-only` to limit aider to current directory subtree.
-  - Should help with large/mono repo performance.
-- New `/add-clipboard-image` to add images to the chat from your clipboard.
-- Use `--map-tokens 1024` to use repo map with any model.
-- Support for Sonnet's 8k output window.
-  - [Aider already supported infinite output from Sonnet.](https://aider.chat/2024/07/01/sonnet-not-lazy.html)
-- Workaround litellm bug for retrying API server errors.
-- Upgraded dependencies, to pick up litellm bug fixes.
-- Aider wrote 44% of the code in this release.
+- 大型/单体仓库的性能改进。
+- 添加了 `--subtree-only` 以限制 aider 到当前目录子树。
+  - 应该有助于大型/单体仓库的性能。
+- 新的 `/add-clipboard-image` 从剪贴板添加图像到聊天。
+- 使用 `--map-tokens 1024` 对任何模型使用仓库映射。
+- 支持 Sonnet 的 8k 输出窗口。
+  - [Aider 已经支持 Sonnet 的无限输出。](https://aider.chat/2024/07/01/sonnet-not-lazy.html)
+- 解决 litellm 重试 API 服务器错误的 bug。
+- 升级依赖项，获取 litellm 错误修复。
+- Aider 在此版本中编写了 44% 的代码。
 
 ### Aider v0.47.1
 
-- Improvements to conventional commits prompting.
+- 改进了常规提交提示。
 
 ### Aider v0.47.0
 
-- [Commit message](https://aider.chat/docs/git.html#commit-messages) improvements:
-  - Added Conventional Commits guidelines to commit message prompt.
-  - Added `--commit-prompt` to customize the commit message prompt.
-  - Added strong model as a fallback for commit messages (and chat summaries).
-- [Linting](https://aider.chat/docs/usage/lint-test.html) improvements:
-  - Ask before fixing lint errors.
-  - Improved performance of `--lint` on all dirty files in repo.
-  - Improved lint flow, now doing code edit auto-commit before linting.
-  - Bugfix to properly handle subprocess encodings (also for `/run`).
-- Improved [docker support](https://aider.chat/docs/install/docker.html):
-  - Resolved permission issues when using `docker run --user xxx`.
-  - New `paulgauthier/aider-full` docker image, which includes all extras.
-- Switching to code and ask mode no longer summarizes the chat history.
-- Added graph of aider's contribution to each release.
-- Generic auto-completions are provided for `/commands` without a completion override.
-- Fixed broken OCaml tags file.
-- Bugfix in `/run` add to chat approval logic.
-- Aider wrote 58% of the code in this release.
+- [提交消息](https://aider.chat/docs/git.html#commit-messages)改进：
+  - 在提交消息提示中添加了 Conventional Commits 准则。
+  - 添加了 `--commit-prompt` 以自定义提交消息提示。
+  - 添加了强大模型作为提交消息（和聊天摘要）的后备。
+- [Linting](https://aider.chat/docs/usage/lint-test.html) 改进：
+  - 修复 lint 错误前询问。
+  - 改进了对仓库中所有脏文件的 `--lint` 性能。
+  - 改进了 lint 流程，现在在 linting 前进行代码编辑自动提交。
+  - 修复了正确处理子进程编码的问题（也适用于 `/run`）。
+- 改进了 [docker 支持](https://aider.chat/docs/install/docker.html)：
+  - 解决了使用 `docker run --user xxx` 时的权限问题。
+  - 新的 `paulgauthier/aider-full` docker 镜像，包含所有额外功能。
+- 切换到代码和询问模式不再总结聊天历史。
+- 添加了 aider 对每个版本贡献的图表。
+- 为没有完成覆盖的 `/commands` 提供通用自动完成。
+- 修复了 OCaml 标签文件。
+- 修复了 `/run` 添加到聊天确认逻辑中的错误。
+- Aider 在此版本中编写了 58% 的代码。
 
 ### Aider v0.46.1
 
-- Downgraded stray numpy dependency back to 1.26.4.
+- 将谷歌 numpy 依赖降级回 1.26.4。
 
 ### Aider v0.46.0
 
-- New `/ask <question>` command to ask about your code, without making any edits.
-- New `/chat-mode <mode>` command to switch chat modes:
-  - ask: Ask questions about your code without making any changes.
-  - code: Ask for changes to your code (using the best edit format).
-  - help: Get help about using aider (usage, config, troubleshoot).
-- Add `file: CONVENTIONS.md` to `.aider.conf.yml` to always load a specific file.
-  - Or `file: [file1, file2, file3]` to always load multiple files.
-- Enhanced token usage and cost reporting. Now works when streaming too.
-- Filename auto-complete for `/add` and `/drop` is now case-insensitive.
-- Commit message improvements:
-  - Updated commit message prompt to use imperative tense.
-  - Fall back to main model if weak model is unable to generate a commit message.
-- Stop aider from asking to add the same url to the chat multiple times.
-- Updates and fixes to `--no-verify-ssl`:
-  - Fixed regression that broke it in v0.42.0.
-  - Disables SSL certificate verification when `/web` scrapes websites.
-- Improved error handling and reporting in `/web` scraping functionality
-- Fixed syntax error in Elm's tree-sitter scm file (by @cjoach).
-- Handle UnicodeEncodeError when streaming text to the terminal.
-- Updated dependencies to latest versions.
-- Aider wrote 45% of the code in this release.
+- 新的 `/ask <question>` 命令，询问关于代码的问题，但不做任何更改。
+- 新的 `/chat-mode <mode>` 命令切换聊天模式：
+  - ask: 询问关于代码的问题，但不做任何更改。
+  - code: 请求对代码进行更改（使用最佳编辑格式）。
+  - help: 获取关于使用 aider 的帮助（用法、配置、故障排除）。
+- 在 `.aider.conf.yml` 中添加 `file: CONVENTIONS.md` 以始终加载特定文件。
+  - 或者 `file: [file1, file2, file3]` 以始终加载多个文件。
+- 增强了令牌使用和成本报告。现在在流式传输时也能工作。
+- `/add` 和 `/drop` 的文件名自动完成现在不区分大小写。
+- 提交消息改进：
+  - 更新了提交消息提示以使用祈使语气。
+  - 如果弱模型无法生成提交消息，回退到主模型。
+- 阻止 aider 多次询问是否将同一 URL 添加到聊天中。
+- 更新和修复 `--no-verify-ssl`：
+  - 修复了 v0.42.0 中的回归。
+  - 当 `/web` 抓取网站时禁用 SSL 证书验证。
+- 改进了 `/web` 抓取功能中的错误处理和报告。
+- 修复了 Elm 的 tree-sitter scm 文件中的语法错误（由 @cjoach 提供）。
+- 处理将文本流式传输到终端时的 UnicodeEncodeError。
+- 更新依赖项到最新版本。
+- Aider 在此版本中编写了 45% 的代码。
 
 ### Aider v0.45.1
 
-- Use 4o-mini as the weak model wherever 3.5-turbo was used.
+- 在使用 3.5-turbo 的任何地方将 4o-mini 用作弱模型。
 
 ### Aider v0.45.0
 
-- GPT-4o mini scores similar to the original GPT 3.5, using whole edit format.
-- Aider is better at offering to add files to the chat on Windows.
-- Bugfix corner cases for `/undo` with new files or new repos.
-- Now shows last 4 characters of API keys in `--verbose` output.
-- Bugfix to precedence of multiple `.env` files.
-- Bugfix to gracefully handle HTTP errors when installing pandoc.
-- Aider wrote 42% of the code in this release.
+- GPT-4o mini 使用整体编辑格式的得分与原始 GPT 3.5 相似。
+- Aider 在 Windows 上更好地提供将文件添加到聊天的选项。
+- 修复了 `/undo` 与新文件或新仓库的边缘情况。
+- 现在在 `--verbose` 输出中显示 API 密钥的最后 4 个字符。
+- 修复了多个 `.env` 文件的优先级问题。
+- 修复了在安装 pandoc 时优雅处理 HTTP 错误的问题。
+- Aider 在此版本中编写了 42% 的代码。
 
 ### Aider v0.44.0
 
-- Default pip install size reduced by 3-12x.
-- Added 3 package extras, which aider will offer to install when needed:
+- 默认 pip 安装尺寸减少了 3-12 倍。
+- 添加了 3 个包额外功能，aider 将在需要时提供安装：
   - `aider-chat[help]`
   - `aider-chat[browser]`
   - `aider-chat[playwright]`
-- Improved regex for detecting URLs in user chat messages.
-- Bugfix to globbing logic when absolute paths are included in `/add`.
-- Simplified output of `--models`.
-- The `--check-update` switch was renamed to `--just-check-updated`.
-- The `--skip-check-update` switch was renamed to `--[no-]check-update`.
-- Aider wrote 29% of the code in this release (157/547 lines).
+- 改进了检测用户聊天消息中 URL 的正则表达式。
+- 修复了在 `/add` 中包含绝对路径时的 globbing 逻辑。
+- 简化了 `--models` 的输出。
+- `--check-update` 开关重命名为 `--just-check-updated`。
+- `--skip-check-update` 开关重命名为 `--[no-]check-update`。
+- Aider 在此版本中编写了 29% 的代码（157/547 行）。
 
 ### Aider v0.43.4
 
-- Added scipy back to main requirements.txt.
+- 将 scipy 添加回主要 requirements.txt。
 
 ### Aider v0.43.3
 
-- Added build-essentials back to main Dockerfile.
+- 将 build-essentials 添加回主要 Dockerfile。
 
 ### Aider v0.43.2
 
-- Moved HuggingFace embeddings deps into [hf-embed] extra.
-- Added [dev] extra.
+- 将 HuggingFace 嵌入依赖移至 [hf-embed] 额外功能。
+- 添加了 [dev] 额外功能。
 
 ### Aider v0.43.1
 
-- Replace the torch requirement with the CPU only version, because the GPU versions are huge.
+- 用仅 CPU 版本替换 torch 要求，因为 GPU 版本太大。
 
 ### Aider v0.43.0
 
-- Use `/help <question>` to [ask for help about using aider](https://aider.chat/docs/troubleshooting/support.html), customizing settings, troubleshooting, using LLMs, etc.
-- Allow multiple use of `/undo`.
-- All config/env/yml/json files now load from home, git root, cwd and named command line switch.
-- New `$HOME/.aider/caches` dir for app-wide expendable caches.
-- Default `--model-settings-file` is now `.aider.model.settings.yml`.
-- Default `--model-metadata-file` is now `.aider.model.metadata.json`.
-- Bugfix affecting launch with `--no-git`.
-- Aider wrote 9% of the 424 lines edited in this release.
+- 使用 `/help <question>` [询问有关使用 aider 的帮助](https://aider.chat/docs/troubleshooting/support.html)，自定义设置，故障排除，使用 LLM 等。
+- 允许多次使用 `/undo`。
+- 所有配置/环境/yml/json 文件现在从主目录、git 根目录、当前工作目录和命名命令行开关加载。
+- 新的 `$HOME/.aider/caches` 目录用于应用范围的可消耗缓存。
+- 默认 `--model-settings-file` 现在是 `.aider.model.settings.yml`。
+- 默认 `--model-metadata-file` 现在是 `.aider.model.metadata.json`。
+- 修复了使用 `--no-git` 启动时影响的错误。
+- Aider 在此版本中编写了 424 行编辑中的 9%。
 
 ### Aider v0.42.0
 
-- Performance release:
-  - 5X faster launch!
-  - Faster auto-complete in large git repos (users report ~100X speedup)!
+- 性能发布：
+  - 启动速度提升 5 倍！
+  - 大型 git 仓库中的自动完成速度更快（用户报告约 100 倍加速）！
 
 ### Aider v0.41.0
 
-- [Allow Claude 3.5 Sonnet to stream back >4k tokens!](https://aider.chat/2024/07/01/sonnet-not-lazy.html)
-  - It is the first model capable of writing such large coherent, useful code edits.
-  - Do large refactors or generate multiple files of new code in one go.
-- Aider now uses `claude-3-5-sonnet-20240620` by default if `ANTHROPIC_API_KEY` is set in the environment.
-- [Enabled image support](https://aider.chat/docs/usage/images-urls.html) for 3.5 Sonnet and for GPT-4o & 3.5 Sonnet via OpenRouter (by @yamitzky).
-- Added `--attribute-commit-message` to prefix aider's commit messages with "aider:".
-- Fixed regression in quality of one-line commit messages.
-- Automatically retry on Anthropic `overloaded_error`.
-- Bumped dependency versions.
+- [允许 Claude 3.5 Sonnet 流式返回 >4k 令牌！](https://aider.chat/2024/07/01/sonnet-not-lazy.html)
+  - 它是第一个能够编写如此大型连贯、有用的代码编辑的模型。
+  - 一次完成大型重构或生成多个新代码文件。
+- 如果环境中设置了 `ANTHROPIC_API_KEY`，aider 现在默认使用 `claude-3-5-sonnet-20240620`。
+- [为 3.5 Sonnet 和通过 OpenRouter 的 GPT-4o 和 3.5 Sonnet 启用图像支持](https://aider.chat/docs/usage/images-urls.html)（由 @yamitzky 提供）。
+- 添加了 `--attribute-commit-message` 以在 aider 的提交消息前缀添加 "aider:"。
+- 修复了一行提交消息质量的回归。
+- 在 Anthropic 的 `overloaded_error` 上自动重试。
+- 更新了依赖版本。
 
 ### Aider v0.40.6
 
-- Fixed `/undo` so it works regardless of `--attribute` settings.
+- 修复了 `/undo`，使其无论 `--attribute` 设置如何都能工作。
 
 ### Aider v0.40.5
 
-- Bump versions to pickup latest litellm to fix streaming issue with Gemini
+- 更新版本以获取最新的 litellm，修复与 Gemini 的流式问题
   - https://github.com/BerriAI/litellm/issues/4408
 
 ### Aider v0.40.1
 
-- Improved context awareness of repomap.
-- Restored proper `--help` functionality.
+- 改进了 repomap 的上下文感知能力。
+- 恢复了正确的 `--help` 功能。
 
 ### Aider v0.40.0
 
-- Improved prompting to discourage Sonnet from wasting tokens emitting unchanging code (#705).
-- Improved error info for token limit errors.
-- Options to suppress adding "(aider)" to the [git author and committer names](https://aider.chat/docs/git.html#commit-attribution).
-- Use `--model-settings-file` to customize per-model settings, like use of repo-map (by @caseymcc).
-- Improved invocation of flake8 linter for python code.
+- 改进了提示，阻止 Sonnet 浪费令牌输出不变的代码 (#705)。
+- 改进了令牌限制错误的错误信息。
+- 选项可以禁止在 [git 作者和提交者名称](https://aider.chat/docs/git.html#commit-attribution) 中添加 "(aider)"。
+- 使用 `--model-settings-file` 自定义每个模型的设置，如 repo-map 的使用（由 @caseymcc 提供）。
+- 改进了 python 代码的 flake8 linter 调用。
 
 
 ### Aider v0.39.0
 
-- Use `--sonnet` for Claude 3.5 Sonnet, which is the top model on [aider's LLM code editing leaderboard](https://aider.chat/docs/leaderboards/#claude-35-sonnet-takes-the-top-spot).
-- All `AIDER_xxx` environment variables can now be set in `.env` (by @jpshack-at-palomar).
-- Use `--llm-history-file` to log raw messages sent to the LLM (by @daniel-vainsencher).
-- Commit messages are no longer prefixed with "aider:". Instead the git author and committer names have "(aider)" added.
+- 使用 `--sonnet` 获取 Claude 3.5 Sonnet，它是 [aider 的 LLM 代码编辑排行榜](https://aider.chat/docs/leaderboards/#claude-35-sonnet-takes-the-top-spot) 上的顶级模型。
+- 所有 `AIDER_xxx` 环境变量现在可以在 `.env` 中设置（由 @jpshack-at-palomar 提供）。
+- 使用 `--llm-history-file` 记录发送到 LLM 的原始消息（由 @daniel-vainsencher 提供）。
+- 提交消息不再添加 "aider:" 前缀。相反，git 作者和提交者名称添加 "(aider)"。
 
 ### Aider v0.38.0
 
-- Use `--vim` for [vim keybindings](https://aider.chat/docs/usage/commands.html#vi) in the chat.
-- [Add LLM metadata](https://aider.chat/docs/llms/warnings.html#specifying-context-window-size-and-token-costs) via `.aider.models.json` file (by @caseymcc).
-- More detailed [error messages on token limit errors](https://aider.chat/docs/troubleshooting/token-limits.html).
-- Single line commit messages, without the recent chat messages.
-- Ensure `--commit --dry-run` does nothing.
-- Have playwright wait for idle network to better scrape js sites.
-- Documentation updates, moved into website/ subdir.
-- Moved tests/ into aider/tests/.
+- 使用 `--vim` 在聊天中[获取 vim 按键绑定](https://aider.chat/docs/usage/commands.html#vi)。
+- 通过 `.aider.models.json` 文件[添加 LLM 元数据](https://aider.chat/docs/llms/warnings.html#specifying-context-window-size-and-token-costs)（由 @caseymcc 提供）。
+- 令牌限制错误的[更详细错误消息](https://aider.chat/docs/troubleshooting/token-limits.html)。
+- 单行提交消息，不包含最近的聊天消息。
+- 确保 `--commit --dry-run` 不做任何事情。
+- 让 playwright 等待网络空闲以更好地抓取 js 网站。
+- 文档更新，移至 website/ 子目录。
+- 将 tests/ 移至 aider/tests/。
 
 ### Aider v0.37.0
 
-- Repo map is now optimized based on text of chat history as well as files added to chat.
-- Improved prompts when no files have been added to chat to solicit LLM file suggestions.
-- Aider will notice if you paste a URL into the chat, and offer to scrape it.
-- Performance improvements the repo map, especially in large repos.
-- Aider will not offer to add bare filenames like `make` or `run` which may just be words.
-- Properly override `GIT_EDITOR` env for commits if it is already set.
-- Detect supported audio sample rates for `/voice`.
-- Other small bug fixes.
+- 仓库映射现在基于聊天历史文本以及添加到聊天的文件进行优化。
+- 当没有文件添加到聊天时，改进了提示以请求 LLM 文件建议。
+- Aider 会注意到你是否将 URL 粘贴到聊天中，并提供抓取它的选项。
+- 仓库映射的性能改进，特别是在大型仓库中。
+- Aider 不会提供添加像 `make` 或 `run` 这样可能只是词语的裸文件名。
+- 如果已经设置，正确覆盖提交的 `GIT_EDITOR` 环境变量。
+- 检测 `/voice` 支持的音频采样率。
+- 其他小错误修复。
 
 ### Aider v0.36.0
 
-- [Aider can now lint your code and fix any errors](https://aider.chat/2024/05/22/linting.html).
-  - Aider automatically lints and fixes after every LLM edit.
-  - You can manually lint-and-fix files with `/lint` in the chat or `--lint` on the command line.
-  - Aider includes built in basic linters for all supported tree-sitter languages.
-  - You can also configure aider to use your preferred linter with `--lint-cmd`.
-- Aider has additional support for running tests and fixing problems.
-  - Configure your testing command with `--test-cmd`.
-  - Run tests with `/test` or from the command line with `--test`.
-  - Aider will automatically attempt to fix any test failures.
-  
+- [Aider 现在可以对你的代码进行 linting 并修复任何错误](https://aider.chat/2024/05/22/linting.html)。
+  - Aider 在每次 LLM 编辑后自动进行 linting 和修复。
+  - 你可以使用聊天中的 `/lint` 或命令行上的 `--lint` 手动对文件进行 lint-and-fix。
+  - Aider 为所有支持的 tree-sitter 语言包含内置的基本 linter。
+  - 你还可以配置 aider 使用 `--lint-cmd` 来使用你喜欢的 linter。
+- Aider 额外支持运行测试和修复问题。
+  - 使用 `--test-cmd` 配置你的测试命令。
+  - 使用 `/test` 或从命令行使用 `--test` 运行测试。
+  - Aider 将自动尝试修复任何测试失败。
 
 ### Aider v0.35.0
 
-- Aider now uses GPT-4o by default.
-  - GPT-4o tops the [aider LLM code editing leaderboard](https://aider.chat/docs/leaderboards/) at 72.9%, versus 68.4% for Opus.
-  - GPT-4o takes second on [aider's refactoring leaderboard](https://aider.chat/docs/leaderboards/#code-refactoring-leaderboard) with 62.9%, versus Opus at 72.3%.
-- Added `--restore-chat-history` to restore prior chat history on launch, so you can continue the last conversation.
-- Improved reflection feedback to LLMs using the diff edit format.
-- Improved retries on `httpx` errors.
+- Aider 现在默认使用 GPT-4o。
+  - GPT-4o 在 [aider LLM 代码编辑排行榜](https://aider.chat/docs/leaderboards/) 上以 72.9% 的成绩排名第一，而 Opus 为 68.4%。
+  - GPT-4o 在 [aider 的重构排行榜](https://aider.chat/docs/leaderboards/#code-refactoring-leaderboard) 上以 62.9% 的成绩排名第二，而 Opus 为 72.3%。
+- 添加了 `--restore-chat-history` 在启动时恢复先前的聊天历史，以便你可以继续最后的对话。
+- 改进了使用差异编辑格式的 LLM 的反射反馈。
+- 改进了对 `httpx` 错误的重试。
 
 ### Aider v0.34.0
 
-- Updated prompting to use more natural phrasing about files, the git repo, etc. Removed reliance on read-write/read-only terminology.
-- Refactored prompting to unify some phrasing across edit formats.
-- Enhanced the canned assistant responses used in prompts.
-- Added explicit model settings for `openrouter/anthropic/claude-3-opus`, `gpt-3.5-turbo`
-- Added `--show-prompts` debug switch.
-- Bugfix: catch and retry on all litellm exceptions.
+- 更新了提示，使用更自然的表述方式来描述文件、git 仓库等。移除了对读写/只读术语的依赖。
+- 重构了提示，统一了不同编辑格式的表述方式。
+- 增强了提示中使用的预设助手回复。
+- 为 `openrouter/anthropic/claude-3-opus`、`gpt-3.5-turbo` 添加了明确的模型设置。
+- 添加了 `--show-prompts` 调试选项。
+- 错误修复：捕获并重试所有 litellm 异常。
 
 
 ### Aider v0.33.0
 
-- Added native support for [Deepseek models](https://aider.chat/docs/llms.html#deepseek) using `DEEPSEEK_API_KEY` and `deepseek/deepseek-chat`, etc rather than as a generic OpenAI compatible API.
+- 使用 `DEEPSEEK_API_KEY` 和 `deepseek/deepseek-chat` 等添加了对 [Deepseek 模型](https://aider.chat/docs/llms.html#deepseek) 的原生支持，而不是作为通用的 OpenAI 兼容 API。
 
 ### Aider v0.32.0
 
-- [Aider LLM code editing leaderboards](https://aider.chat/docs/leaderboards/) that rank popular models according to their ability to edit code.
-  - Leaderboards include GPT-3.5/4 Turbo, Opus, Sonnet, Gemini 1.5 Pro, Llama 3, Deepseek Coder & Command-R+.
-- Gemini 1.5 Pro now defaults to a new diff-style edit format (diff-fenced), enabling it to work better with larger code bases.
-- Support for Deepseek-V2, via more a flexible config of system messages in the diff edit format.
-- Improved retry handling on errors from model APIs.
-- Benchmark outputs results in YAML, compatible with leaderboard.
+- [Aider LLM 代码编辑排行榜](https://aider.chat/docs/leaderboards/) 对流行模型根据其编辑代码的能力进行排名。
+  - 排行榜包括 GPT-3.5/4 Turbo、Opus、Sonnet、Gemini 1.5 Pro、Llama 3、Deepseek Coder 和 Command-R+。
+- Gemini 1.5 Pro 现在默认使用新的差异风格编辑格式（diff-fenced），使其能够更好地处理更大的代码库。
+- 通过在差异编辑格式中对系统消息进行更灵活的配置，支持 Deepseek-V2。
+- 改进了对模型 API 错误的重试处理。
+- 基准测试输出结果采用 YAML 格式，与排行榜兼容。
 
 ### Aider v0.31.0
 
-- [Aider is now also AI pair programming in your browser!](https://aider.chat/2024/05/02/browser.html) Use the `--browser` switch to launch an experimental browser based version of aider.
-- Switch models during the chat with `/model <name>` and search the list of available models with `/models <query>`.
+- [Aider 现在也支持在浏览器中进行 AI 结对编程！](https://aider.chat/2024/05/02/browser.html) 使用 `--browser` 开关启动实验性的基于浏览器的 aider 版本。
+- 在聊天过程中使用 `/model <n>` 切换模型，使用 `/models <query>` 搜索可用模型列表。
 
 ### Aider v0.30.1
 
-- Adding missing `google-generativeai` dependency
+- 添加缺失的 `google-generativeai` 依赖
 
 ### Aider v0.30.0
 
-- Added [Gemini 1.5 Pro](https://aider.chat/docs/llms.html#free-models) as a recommended free model.
-- Allow repo map for "whole" edit format.
-- Added `--models <MODEL-NAME>` to search the available models.
-- Added `--no-show-model-warnings` to silence model warnings.
+- 添加了 [Gemini 1.5 Pro](https://aider.chat/docs/llms.html#free-models) 作为推荐的免费模型。
+- 允许对"整体"编辑格式使用仓库映射。
+- 添加了 `--models <MODEL-NAME>` 用于搜索可用模型。
+- 添加了 `--no-show-model-warnings` 以静默模型警告。
 
 ### Aider v0.29.2
 
-- Improved [model warnings](https://aider.chat/docs/llms.html#model-warnings) for unknown or unfamiliar models
+- 改进了[模型警告](https://aider.chat/docs/llms.html#model-warnings)，用于未知或不熟悉的模型
 
 ### Aider v0.29.1
 
-- Added better support for groq/llama3-70b-8192
+- 添加了对 groq/llama3-70b-8192 的更好支持
 
 ### Aider v0.29.0
 
-- Added support for [directly connecting to Anthropic, Cohere, Gemini and many other LLM providers](https://aider.chat/docs/llms.html).
-- Added `--weak-model <model-name>` which allows you to specify which model to use for commit messages and chat history summarization.
-- New command line switches for working with popular models:
+- 添加了对[直接连接到 Anthropic、Cohere、Gemini 和许多其他 LLM 提供商](https://aider.chat/docs/llms.html)的支持。
+- 添加了 `--weak-model <model-name>` 选项，允许您指定用于提交消息和聊天历史摘要的模型。
+- 用于处理流行模型的新命令行开关：
   - `--4-turbo-vision`
   - `--opus`
   - `--sonnet`
   - `--anthropic-api-key`
-- Improved "whole" and "diff" backends to better support [Cohere's free to use Command-R+ model](https://aider.chat/docs/llms.html#cohere).
-- Allow `/add` of images from anywhere in the filesystem.
-- Fixed crash when operating in a repo in a detached HEAD state.
-- Fix: Use the same default model in CLI and python scripting.
+- 改进了"整体"和"差异"后端，以更好地支持 [Cohere 的免费使用 Command-R+ 模型](https://aider.chat/docs/llms.html#cohere)。
+- 允许从文件系统的任何位置使用 `/add` 添加图片。
+- 修复了在分离的 HEAD 状态下在仓库中操作时的崩溃问题。
+- 修复：在 CLI 和 python 脚本中使用相同的默认模型。
 
 ### Aider v0.28.0
 
-- Added support for new `gpt-4-turbo-2024-04-09` and `gpt-4-turbo` models.
-  - Benchmarked at 61.7% on Exercism benchmark, comparable to `gpt-4-0613` and worse than the `gpt-4-preview-XXXX` models. See [recent Exercism benchmark results](https://aider.chat/2024/03/08/claude-3.html).
-  - Benchmarked at 34.1% on the refactoring/laziness benchmark, significantly worse than the `gpt-4-preview-XXXX` models. See [recent refactor bencmark results](https://aider.chat/2024/01/25/benchmarks-0125.html).
-  - Aider continues to default to `gpt-4-1106-preview` as it performs best on both benchmarks, and significantly better on the refactoring/laziness benchmark.
+- 添加了对新的 `gpt-4-turbo-2024-04-09` 和 `gpt-4-turbo` 模型的支持。
+  - 在 Exercism 基准测试中得分为 61.7%，与 `gpt-4-0613` 相当，但比 `gpt-4-preview-XXXX` 模型差。请参阅[最近的 Exercism 基准测试结果](https://aider.chat/2024/03/08/claude-3.html)。
+  - 在重构/懒惰基准测试中得分为 34.1%，明显比 `gpt-4-preview-XXXX` 模型差。请参阅[最近的重构基准测试结果](https://aider.chat/2024/01/25/benchmarks-0125.html)。
+  - Aider 继续默认使用 `gpt-4-1106-preview`，因为它在两项基准测试中表现最佳，尤其在重构/懒惰基准测试中表现显著更好。
 
 ### Aider v0.27.0
 
-- Improved repomap support for typescript, by @ryanfreckleton.
-- Bugfix: Only /undo the files which were part of the last commit, don't stomp other dirty files
-- Bugfix: Show clear error message when OpenAI API key is not set.
-- Bugfix: Catch error for obscure languages without tags.scm file.
+- 改进了对 typescript 的 repomap 支持，由 @ryanfreckleton 贡献。
+- 错误修复：仅对上次提交的文件执行 /undo，不覆盖其他脏文件
+- 错误修复：当未设置 OpenAI API 密钥时显示清晰的错误消息。
+- 错误修复：捕获没有 tags.scm 文件的罕见语言的错误。
 
 ### Aider v0.26.1
 
-- Fixed bug affecting parsing of git config in some environments.
+- 修复了在某些环境中解析 git 配置时的错误。
 
 ### Aider v0.26.0
 
-- Use GPT-4 Turbo by default.
-- Added `-3` and `-4` switches to use GPT 3.5 or GPT-4 (non-Turbo).
-- Bug fix to avoid reflecting local git errors back to GPT.
-- Improved logic for opening git repo on launch.
+- 默认使用 GPT-4 Turbo。
+- 添加了 `-3` 和 `-4` 开关，用于使用 GPT 3.5 或 GPT-4（非 Turbo）。
+- 错误修复，避免将本地 git 错误反映回 GPT。
+- 改进了启动时打开 git 仓库的逻辑。
 
 ### Aider v0.25.0
 
-- Issue a warning if user adds too much code to the chat.
+- 如果用户向聊天中添加过多代码，会发出警告。
   - https://aider.chat/docs/faq.html#how-can-i-add-all-the-files-to-the-chat
-- Vocally refuse to add files to the chat that match `.aiderignore`
-  - Prevents bug where subsequent git commit of those files will fail.
-- Added `--openai-organization-id` argument.
-- Show the user a FAQ link if edits fail to apply.
-- Made past articles part of https://aider.chat/blog/
+- 明确拒绝将与 `.aiderignore` 匹配的文件添加到聊天中
+  - 防止随后对这些文件进行 git 提交时出现的错误。
+- 添加了 `--openai-organization-id` 参数。
+- 如果编辑无法应用，向用户展示 FAQ 链接。
+- 将过去的文章作为 https://aider.chat/blog/ 的一部分。
 
 ### Aider v0.24.1
 
-- Fixed bug with cost computations when --no-steam in effect
+- 修复了启用 --no-steam 时成本计算的错误
 
 ### Aider v0.24.0
 
-- New `/web <url>` command which scrapes the url, turns it into fairly clean markdown and adds it to the chat.
-- Updated all OpenAI model names, pricing info
-- Default GPT 3.5 model is now `gpt-3.5-turbo-0125`.
-- Bugfix to the `!` alias for `/run`.
+- 新的 `/web <url>` 命令，它会抓取网址内容，将其转换为相当干净的 markdown 并添加到聊天中。
+- 更新了所有 OpenAI 模型名称、价格信息
+- 默认的 GPT 3.5 模型现在是 `gpt-3.5-turbo-0125`。
+- 修复了 `!` 作为 `/run` 别名的错误。
 
 ### Aider v0.23.0
 
-- Added support for `--model gpt-4-0125-preview` and OpenAI's alias `--model gpt-4-turbo-preview`. The `--4turbo` switch remains an alias for `--model gpt-4-1106-preview` at this time.
-- New `/test` command that runs a command and adds the output to the chat on non-zero exit status.
-- Improved streaming of markdown to the terminal.
-- Added `/quit` as alias for `/exit`.
-- Added `--skip-check-update` to skip checking for the update on launch.
-- Added `--openrouter` as a shortcut for `--openai-api-base https://openrouter.ai/api/v1`
-- Fixed bug preventing use of env vars `OPENAI_API_BASE, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_API_DEPLOYMENT_ID`.
+- 添加了对 `--model gpt-4-0125-preview` 和 OpenAI 的别名 `--model gpt-4-turbo-preview` 的支持。`--4turbo` 开关目前仍然是 `--model gpt-4-1106-preview` 的别名。
+- 新的 `/test` 命令，它运行命令并在退出状态非零时将输出添加到聊天中。
+- 改进了 markdown 的终端流式传输。
+- 添加了 `/quit` 作为 `/exit` 的别名。
+- 添加了 `--skip-check-update` 以跳过启动时的更新检查。
+- 添加了 `--openrouter` 作为 `--openai-api-base https://openrouter.ai/api/v1` 的快捷方式。
+- 修复了阻止使用环境变量 `OPENAI_API_BASE, OPENAI_API_TYPE, OPENAI_API_VERSION, OPENAI_API_DEPLOYMENT_ID` 的错误。
 
 ### Aider v0.22.0
 
-- Improvements for unified diff editing format.
-- Added ! as an alias for /run.
-- Autocomplete for /add and /drop now properly quotes filenames with spaces.
-- The /undo command asks GPT not to just retry reverted edit.
+- 改进了统一差异编辑格式。
+- 添加了 ! 作为 /run 的别名。
+- /add 和 /drop 的自动完成现在对带空格的文件名正确加引号。
+- /undo 命令会请求 GPT 不要只是重试被撤销的编辑。
 
 ### Aider v0.21.1
 
-- Bugfix for unified diff editing format.
-- Added --4turbo and --4 aliases for --4-turbo.
+- 修复了统一差异编辑格式的错误。
+- 添加了 --4turbo 和 --4 作为 --4-turbo 的别名。
 
 ### Aider v0.21.0
 
-- Support for python 3.12.
-- Improvements to unified diff editing format.
-- New `--check-update` arg to check if updates are available and exit with status code.
+- 支持 python 3.12。
+- 改进了统一差异编辑格式。
+- 新的 `--check-update` 参数用于检查是否有可用更新并以状态码退出。
 
 ### Aider v0.20.0
 
-- Add images to the chat to automatically use GPT-4 Vision, by @joshuavial
+- 将图片添加到聊天中以自动使用 GPT-4 Vision，由 @joshuavial 贡献
 
-- Bugfixes:
-  - Improved unicode encoding for `/run` command output, by @ctoth
-  - Prevent false auto-commits on Windows, by @ctoth
+- 错误修复：
+  - 改进了 `/run` 命令输出的 Unicode 编码，由 @ctoth 贡献
+  - 防止在 Windows 上错误的自动提交，由 @ctoth 贡献
 
 ### Aider v0.19.1
 
-- Removed stray debug output.
+- 移除了多余的调试输出。
 
 ### Aider v0.19.0
 
-- [Significantly reduced "lazy" coding from GPT-4 Turbo due to new unified diff edit format](https://aider.chat/docs/unified-diffs.html)
-  - Score improves from 20% to 61% on new "laziness benchmark".
-  - Aider now uses unified diffs by default for `gpt-4-1106-preview`.
-- New `--4-turbo` command line switch as a shortcut for `--model gpt-4-1106-preview`.
+- [由于新的统一差异编辑格式，显著减少了 GPT-4 Turbo 的"懒惰"编码](https://aider.chat/docs/unified-diffs.html)
+  - 在新的"懒惰基准测试"中，得分从 20% 提高到 61%。
+  - Aider 现在默认对 `gpt-4-1106-preview` 使用统一差异。
+- 新的 `--4-turbo` 命令行开关，作为 `--model gpt-4-1106-preview` 的快捷方式。
 
 ### Aider v0.18.1
 
-- Upgraded to new openai python client v1.3.7.
+- 升级到新的 openai python 客户端 v1.3.7。
 
 ### Aider v0.18.0
 
-- Improved prompting for both GPT-4 and GPT-4 Turbo.
-  - Far fewer edit errors from GPT-4 Turbo (`gpt-4-1106-preview`).
-  - Significantly better benchmark results from the June GPT-4 (`gpt-4-0613`). Performance leaps from 47%/64% up to 51%/71%.
-- Fixed bug where in-chat files were marked as both read-only and ready-write, sometimes confusing GPT.
-- Fixed bug to properly handle repos with submodules.
+- 改进了 GPT-4 和 GPT-4 Turbo 的提示。
+  - GPT-4 Turbo (`gpt-4-1106-preview`) 的编辑错误大大减少。
+  - 六月版 GPT-4 (`gpt-4-0613`) 的基准测试结果显著提高。性能从 47%/64% 跃升至 51%/71%。
+- 修复了一个错误，该错误导致聊天中的文件同时被标记为只读和可读写，有时会使 GPT 混淆。
+- 修复了错误，以正确处理带有子模块的仓库。
 
 ### Aider v0.17.0
 
-- Support for OpenAI's new 11/06 models:
-  - gpt-4-1106-preview with 128k context window
-  - gpt-3.5-turbo-1106 with 16k context window
-- [Benchmarks for OpenAI's new 11/06 models](https://aider.chat/docs/benchmarks-1106.html)
-- Streamlined [API for scripting aider, added docs](https://aider.chat/docs/faq.html#can-i-script-aider)
-- Ask for more concise SEARCH/REPLACE blocks. [Benchmarked](https://aider.chat/docs/benchmarks.html) at 63.9%, no regression.
-- Improved repo-map support for elisp.
-- Fixed crash bug when `/add` used on file matching `.gitignore`
-- Fixed misc bugs to catch and handle unicode decoding errors.
+- 支持 OpenAI 新的 11/06 模型：
+  - gpt-4-1106-preview 带有 128k 上下文窗口
+  - gpt-3.5-turbo-1106 带有 16k 上下文窗口
+- [OpenAI 新的 11/06 模型的基准测试](https://aider.chat/docs/benchmarks-1106.html)
+- 简化了 [aider 脚本编写的 API，添加了文档](https://aider.chat/docs/faq.html#can-i-script-aider)
+- 要求更简洁的 SEARCH/REPLACE 块。[基准测试](https://aider.chat/docs/benchmarks.html)得分为 63.9%，没有回归。
+- 改进了对 elisp 的仓库映射支持。
+- 修复了当对匹配 `.gitignore` 的文件使用 `/add` 时的崩溃错误
+- 修复了各种错误，以捕获和处理 unicode 解码错误。
 
 ### Aider v0.16.3
 
-- Fixed repo-map support for C#.
+- 修复了对 C# 的仓库映射支持。
 
 ### Aider v0.16.2
 
-- Fixed docker image.
+- 修复了 docker 镜像。
 
 ### Aider v0.16.1
 
-- Updated tree-sitter dependencies to streamline the pip install process
+- 更新了 tree-sitter 依赖项，以简化 pip 安装过程
 
 ### Aider v0.16.0
 
-- [Improved repository map using tree-sitter](https://aider.chat/docs/repomap.html)
-- Switched from "edit block" to "search/replace block", which reduced malformed edit blocks. [Benchmarked](https://aider.chat/docs/benchmarks.html) at 66.2%, no regression.
-- Improved handling of malformed edit blocks targeting multiple edits to the same file. [Benchmarked](https://aider.chat/docs/benchmarks.html) at 65.4%, no regression.
-- Bugfix to properly handle malformed `/add` wildcards.
+- [使用 tree-sitter 改进仓库映射](https://aider.chat/docs/repomap.html)
+- 从"编辑块"切换到"搜索/替换块"，减少了格式错误的编辑块。[基准测试](https://aider.chat/docs/benchmarks.html)得分为 66.2%，没有回归。
+- 改进了对针对同一文件的多个编辑的格式错误编辑块的处理。[基准测试](https://aider.chat/docs/benchmarks.html)得分为 65.4%，没有回归。
+- 修复了正确处理格式错误的 `/add` 通配符的问题。
 
 
 ### Aider v0.15.0
 
-- Added support for `.aiderignore` file, which instructs aider to ignore parts of the git repo.
-- New `--commit` cmd line arg, which just commits all pending changes with a sensible commit message generated by gpt-3.5.
-- Added universal ctags and multiple architectures to the [aider docker image](https://aider.chat/docs/install/docker.html)
-- `/run` and `/git` now accept full shell commands, like: `/run (cd subdir; ls)`
-- Restored missing `--encoding` cmd line switch.
+- 添加了对 `.aiderignore` 文件的支持，指示 aider 忽略 git 仓库的部分内容。
+- 新的 `--commit` 命令行参数，它仅使用由 gpt-3.5 生成的合理提交消息提交所有待处理的更改。
+- 为 [aider docker 镜像](https://aider.chat/docs/install/docker.html) 添加了通用 ctags 和多种架构支持
+- `/run` 和 `/git` 现在接受完整的 shell 命令，例如：`/run (cd subdir; ls)`
+- 恢复了缺失的 `--encoding` 命令行开关。
 
 ### Aider v0.14.2
 
-- Easily [run aider from a docker image](https://aider.chat/docs/install/docker.html)
-- Fixed bug with chat history summarization.
-- Fixed bug if `soundfile` package not available.
+- 轻松[从 docker 镜像运行 aider](https://aider.chat/docs/install/docker.html)
+- 修复了聊天历史摘要的错误。
+- 修复了 `soundfile` 包不可用时的错误。
 
 ### Aider v0.14.1
 
-- /add and /drop handle absolute filenames and quoted filenames
-- /add checks to be sure files are within the git repo (or root)
-- If needed, warn users that in-chat file paths are all relative to the git repo
-- Fixed /add bug in when aider launched in repo subdir
-- Show models supported by api/key if requested model isn't available
+- /add 和 /drop 处理绝对文件名和带引号的文件名
+- /add 检查文件是否在 git 仓库（或根目录）内
+- 如果需要，提醒用户聊天中的文件路径都是相对于 git 仓库的
+- 修复了在仓库子目录中启动 aider 时的 /add 错误
+- 如果请求的模型不可用，显示 api/key 支持的模型
 
 ### Aider v0.14.0
 
-- [Support for Claude2 and other LLMs via OpenRouter](https://aider.chat/docs/faq.html#accessing-other-llms-with-openrouter) by @joshuavial
-- Documentation for [running the aider benchmarking suite](https://github.com/Aider-AI/aider/tree/main/benchmark)
-- Aider now requires Python >= 3.9
+- [通过 OpenRouter 支持 Claude2 和其他 LLM](https://aider.chat/docs/faq.html#accessing-other-llms-with-openrouter)，由 @joshuavial 贡献
+- [运行 aider 基准测试套件](https://github.com/Aider-AI/aider/tree/main/benchmark) 的文档
+- Aider 现在需要 Python >= 3.9
 
 
 ### Aider v0.13.0
 
-- [Only git commit dirty files that GPT tries to edit](https://aider.chat/docs/faq.html#how-did-v0130-change-git-usage)
-- Send chat history as prompt/context for Whisper voice transcription
-- Added `--voice-language` switch to constrain `/voice` to transcribe to a specific language
-- Late-bind importing `sounddevice`, as it was slowing down aider startup
-- Improved --foo/--no-foo switch handling for command line and yml config settings
+- [只对 GPT 尝试编辑的脏文件进行 git 提交](https://aider.chat/docs/faq.html#how-did-v0130-change-git-usage)
+- 将聊天历史作为提示/上下文发送给 Whisper 语音转录
+- 添加了 `--voice-language` 开关，限制 `/voice` 转录为特定语言
+- 延迟绑定导入 `sounddevice`，因为它会减慢 aider 启动速度
+- 改进了命令行和 yml 配置设置的 --foo/--no-foo 开关处理
 
 ### Aider v0.12.0
 
-- [Voice-to-code](https://aider.chat/docs/usage/voice.html) support, which allows you to code with your voice.
-- Fixed bug where /diff was causing crash.
-- Improved prompting for gpt-4, refactor of editblock coder.
-- [Benchmarked](https://aider.chat/docs/benchmarks.html) at 63.2% for gpt-4/diff, no regression.
+- [语音转代码](https://aider.chat/docs/usage/voice.html)支持，允许您使用语音进行编码。
+- 修复了 /diff 导致崩溃的错误。
+- 改进了 gpt-4 的提示，重构了 editblock coder。
+- [基准测试](https://aider.chat/docs/benchmarks.html)得分为 gpt-4/diff 的 63.2%，没有回归。
 
 ### Aider v0.11.1
 
-- Added a progress bar when initially creating a repo map.
-- Fixed bad commit message when adding new file to empty repo.
-- Fixed corner case of pending chat history summarization when dirty committing.
-- Fixed corner case of undefined `text` when using `--no-pretty`.
-- Fixed /commit bug from repo refactor, added test coverage.
-- [Benchmarked](https://aider.chat/docs/benchmarks.html) at 53.4% for gpt-3.5/whole (no regression).
+- 初始创建仓库映射时添加了进度条。
+- 修复了向空仓库添加新文件时的错误提交消息。
+- 修复了脏提交时待处理聊天历史摘要的边缘情况。
+- 修复了使用 `--no-pretty` 时未定义 `text` 的边缘情况。
+- 修复了仓库重构后的 /commit 错误，添加了测试覆盖。
+- [基准测试](https://aider.chat/docs/benchmarks.html)得分为 gpt-3.5/whole 的 53.4%（无回归）。
 
 ### Aider v0.11.0
 
-- Automatically summarize chat history to avoid exhausting context window.
-- More detail on dollar costs when running with `--no-stream`
-- Stronger GPT-3.5 prompt against skipping/eliding code in replies (51.9% [benchmark](https://aider.chat/docs/benchmarks.html), no regression)
-- Defend against GPT-3.5 or non-OpenAI models suggesting filenames surrounded by asterisks.
-- Refactored GitRepo code out of the Coder class.
+- 自动摘要聊天历史，避免耗尽上下文窗口。
+- 使用 `--no-stream` 运行时提供更多关于美元成本的详细信息
+- 增强了 GPT-3.5 提示，防止在回复中跳过/省略代码（51.9% [基准测试](https://aider.chat/docs/benchmarks.html)，无回归）
+- 防止 GPT-3.5 或非 OpenAI 模型建议使用星号包围的文件名。
+- 将 GitRepo 代码从 Coder 类中重构出来。
 
 ### Aider v0.10.1
 
-- /add and /drop always use paths relative to the git root
-- Encourage GPT to use language like "add files to the chat" to ask users for permission to edit them.
+- /add 和 /drop 始终使用相对于 git 根目录的路径
+- 鼓励 GPT 使用"将文件添加到聊天中"之类的语言，以要求用户允许编辑它们。
 
 ### Aider v0.10.0
 
-- Added `/git` command to run git from inside aider chats.
-- Use Meta-ENTER (Esc+ENTER in some environments) to enter multiline chat messages.
-- Create a `.gitignore` with `.aider*` to prevent users from accidentally adding aider files to git.
-- Check pypi for newer versions and notify user.
-- Updated keyboard interrupt logic so that 2 ^C in 2 seconds always forces aider to exit.
-- Provide GPT with detailed error if it makes a bad edit block, ask for a retry.
-- Force `--no-pretty` if aider detects it is running inside a VSCode terminal.
-- [Benchmarked](https://aider.chat/docs/benchmarks.html) at 64.7% for gpt-4/diff (no regression)
+- 添加了 `/git` 命令，可在 aider 聊天中运行 git。
+- 使用 Meta-ENTER（在某些环境中为 Esc+ENTER）输入多行聊天消息。
+- 创建一个包含 `.aider*` 的 `.gitignore`，以防止用户意外将 aider 文件添加到 git 中。
+- 检查 pypi 是否有更新版本并通知用户。
+- 更新了键盘中断逻辑，使得 2 秒内按 2 次 ^C 总是强制 aider 退出。
+- 如果 GPT 创建了错误的编辑块，提供详细错误信息，要求重试。
+- 如果 aider 检测到它在 VSCode 终端内运行，则强制使用 `--no-pretty`。
+- [基准测试](https://aider.chat/docs/benchmarks.html)得分为 gpt-4/diff 的 64.7%（无回归）
 
 
 ### Aider v0.9.0
 
-- Support for the OpenAI models in [Azure](https://aider.chat/docs/faq.html#azure)
-- Added `--show-repo-map`
-- Improved output when retrying connections to the OpenAI API
-- Redacted api key from `--verbose` output
-- Bugfix: recognize and add files in subdirectories mentioned by user or GPT
-- [Benchmarked](https://aider.chat/docs/benchmarks.html) at 53.8% for gpt-3.5-turbo/whole (no regression)
+- 支持在[Azure](https://aider.chat/docs/faq.html#azure)中使用OpenAI模型
+- 添加了`--show-repo-map`选项
+- 改进了重试连接OpenAI API时的输出显示
+- 从`--verbose`输出中隐藏了API密钥
+- 错误修复：识别并添加用户或GPT提到的子目录中的文件
+- [基准测试](https://aider.chat/docs/benchmarks.html)得分为gpt-3.5-turbo/whole的53.8%（无回归）
 
 ### Aider v0.8.3
 
-- Added `--dark-mode` and `--light-mode` to select colors optimized for terminal background
-- Install docs link to [NeoVim plugin](https://github.com/joshuavial/aider.nvim) by @joshuavial
-- Reorganized the `--help` output
-- Bugfix/improvement to whole edit format, may improve coding editing for GPT-3.5
-- Bugfix and tests around git filenames with unicode characters
-- Bugfix so that aider throws an exception when OpenAI returns InvalidRequest
-- Bugfix/improvement to /add and /drop to recurse selected directories
-- Bugfix for live diff output when using "whole" edit format
+- 添加了`--dark-mode`和`--light-mode`选项，用于选择针对终端背景优化的颜色
+- 安装文档链接到由@joshuavial开发的[NeoVim插件](https://github.com/joshuavial/aider.nvim)
+- 重新组织了`--help`输出
+- 修复/改进了整体编辑格式，可能改善了GPT-3.5的代码编辑
+- 修复了关于带有Unicode字符的git文件名的错误并添加了测试
+- 修复了在OpenAI返回InvalidRequest时aider抛出异常的问题
+- 修复/改进了/add和/drop命令，使其能够递归选择目录
+- 修复了使用"whole"编辑格式时的实时差异输出
 
 ### Aider v0.8.2
 
-- Disabled general availability of gpt-4 (it's rolling out, not 100% available yet)
+- 禁用了gpt-4的通用可用性（它正在推出，尚未100%可用）
 
 ### Aider v0.8.1
 
-- Ask to create a git repo if none found, to better track GPT's code changes
-- Glob wildcards are now supported in `/add` and `/drop` commands
-- Pass `--encoding` into ctags, require it to return `utf-8`
-- More robust handling of filepaths, to avoid 8.3 windows filenames
-- Added [FAQ](https://aider.chat/docs/faq.html)
-- Marked GPT-4 as generally available
-- Bugfix for live diffs of whole coder with missing filenames
-- Bugfix for chats with multiple files
-- Bugfix in editblock coder prompt
+- 如果没有找到git仓库，询问是否创建一个，以便更好地跟踪GPT的代码更改
+- 现在在`/add`和`/drop`命令中支持通配符
+- 将`--encoding`传递给ctags，要求它返回`utf-8`
+- 更加健壮地处理文件路径，避免Windows 8.3文件名问题
+- 添加了[FAQ](https://aider.chat/docs/faq.html)
+- 将GPT-4标记为普遍可用
+- 修复了带有缺失文件名的whole coder的实时差异显示
+- 修复了多文件聊天的问题
+- 修复了editblock coder提示中的问题
 
 ### Aider v0.8.0
 
-- [Benchmark comparing code editing in GPT-3.5 and GPT-4](https://aider.chat/docs/benchmarks.html)
-- Improved Windows support:
-  - Fixed bugs related to path separators in Windows
-  - Added a CI step to run all tests on Windows
-- Improved handling of Unicode encoding/decoding
-  - Explicitly read/write text files with utf-8 encoding by default (mainly benefits Windows)
-  - Added `--encoding` switch to specify another encoding
-  - Gracefully handle decoding errors
-- Added `--code-theme` switch to control the pygments styling of code blocks (by @kwmiebach)
-- Better status messages explaining the reason when ctags is disabled
+- [比较GPT-3.5和GPT-4代码编辑能力的基准测试](https://aider.chat/docs/benchmarks.html)
+- 改进了Windows支持：
+  - 修复了与Windows路径分隔符相关的错误
+  - 添加了在Windows上运行所有测试的CI步骤
+- 改进了Unicode编码/解码处理：
+  - 默认明确使用utf-8编码读取/写入文本文件（主要有益于Windows）
+  - 添加了`--encoding`开关以指定其他编码
+  - 优雅地处理解码错误
+- 添加了`--code-theme`开关，用于控制代码块的pygments样式（由@kwmiebach贡献）
+- 当ctags被禁用时提供更好的状态消息，解释原因
 
 ### Aider v0.7.2:
 
-- Fixed a bug to allow aider to edit files that contain triple backtick fences.
+- 修复了一个错误，允许aider编辑包含三重反引号围栏的文件。
 
 ### Aider v0.7.1:
 
-- Fixed a bug in the display of streaming diffs in GPT-3.5 chats
+- 修复了GPT-3.5聊天中流式差异显示的错误
 
 ### Aider v0.7.0:
 
-- Graceful handling of context window exhaustion, including helpful tips.
-- Added `--message` to give GPT that one instruction and then exit after it replies and any edits are performed.
-- Added `--no-stream` to disable streaming GPT responses.
-  - Non-streaming responses include token usage info.
-  - Enables display of cost info based on OpenAI advertised pricing.
-- Coding competence benchmarking tool against suite of programming tasks based on Execism's python repo.
+- 优雅地处理上下文窗口耗尽的情况，包括提供有用的提示。
+- 添加了`--message`选项，用于给GPT一条指令，然后在它回复并执行任何编辑后退出。
+- 添加了`--no-stream`选项，用于禁用GPT响应的流式显示。
+  - 非流式响应包括令牌使用信息。
+  - 根据OpenAI公布的价格显示成本信息。
+- 基于Execism的python仓库开发的编程任务套件的编码能力基准测试工具。
   - https://github.com/exercism/python
-- Major refactor in preparation for supporting new function calls api.
-- Initial implementation of a function based code editing backend for 3.5.
-  - Initial experiments show that using functions makes 3.5 less competent at coding.
-- Limit automatic retries when GPT returns a malformed edit response.
+- 为支持新的函数调用API进行了重大重构。
+- 为3.5实现了基于函数的代码编辑后端的初始版本。
+  - 初步实验表明，使用函数使3.5在编码方面的能力下降。
+- 限制GPT返回格式错误的编辑响应时的自动重试次数。
 
 ### Aider v0.6.2
 
-* Support for `gpt-3.5-turbo-16k`, and all OpenAI chat models
-* Improved ability to correct when gpt-4 omits leading whitespace in code edits
-* Added `--openai-api-base` to support API proxies, etc.
+* 支持`gpt-3.5-turbo-16k`以及所有OpenAI聊天模型
+* 改进了在gpt-4省略代码编辑中的前导空格时进行纠正的能力
+* 添加了`--openai-api-base`选项，以支持API代理等
 
 ### Aider v0.5.0
 
-- Added support for `gpt-3.5-turbo` and `gpt-4-32k`.
-- Added `--map-tokens` to set a token budget for the repo map, along with a PageRank based algorithm for prioritizing which files and identifiers to include in the map.
-- Added in-chat command `/tokens` to report on context window token usage.
-- Added in-chat command `/clear` to clear the conversation history.
+- 添加了对`gpt-3.5-turbo`和`gpt-4-32k`的支持。
+- 添加了`--map-tokens`选项，为仓库映射设置令牌预算，以及基于PageRank的算法，用于优先考虑要包含在映射中的文件和标识符。
+- 添加了聊天命令`/tokens`，用于报告上下文窗口令牌使用情况。
+- 添加了聊天命令`/clear`，用于清除对话历史记录。
 <!--[[[end]]]-->
