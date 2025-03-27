@@ -1,6 +1,6 @@
 ---
-title: Alternative DeepSeek V3 providers
-excerpt: DeepSeek's API has been experiencing reliability issues. Here are alternative providers you can use.
+title: DeepSeek V3 替代提供商
+excerpt: DeepSeek的API一直存在可靠性问题。这里有一些您可以使用的替代提供商。
 #highlight_image: /assets/deepseek-down.jpg
 draft: false
 nav_exclude: true
@@ -9,17 +9,17 @@ nav_exclude: true
 <p class="post-date">{{ page.date | date: "%B %d, %Y" }}</p>
 {% endif %}
 
-# Alternative DeepSeek V3 providers
+# DeepSeek V3 替代提供商
 {: .no_toc }
 
 <canvas id="editChart" width="800" height="450" style="margin-top: 20px"></canvas>
 
-DeepSeek's API has been experiencing significant reliability issues for the past 24-48+ hours, with many users reporting downtime and overload problems.
-Their [status page](https://status.deepseek.com) notes an ongoing incident.
+在过去的24-48+小时内，DeepSeek的API一直存在重大可靠性问题，许多用户报告了停机和过载问题。
+他们的[状态页面](https://status.deepseek.com)显示存在正在进行的事件。
 
-If you're affected by these issues, several alternative providers offer access to DeepSeek V3. This article compares their performance on aider's polyglot benchmark to help you choose a reliable alternative.
+如果您受到这些问题的影响，有几个替代提供商提供对DeepSeek V3的访问。本文比较了它们在aider的多语言基准测试上的表现，以帮助您选择可靠的替代方案。
 
-## Providers
+## 提供商
 {: .no_toc }
 
 * TOC
@@ -27,62 +27,59 @@ If you're affected by these issues, several alternative providers offer access t
 
 ## OpenRouter
 
-[OpenRouter offers many DeepSeek providers](https://openrouter.ai/deepseek/deepseek-chat/providers)
-through their unified API.
-You can use aider with OpenRouter like this:
+[OpenRouter提供多种DeepSeek提供商](https://openrouter.ai/deepseek/deepseek-chat/providers)
+通过他们的统一API。
+您可以这样使用OpenRouter和aider：
 
 ```bash
-# Set your API key using environment variables
+# 使用环境变量设置API密钥
 export OPENROUTER_API_KEY=<your-key>
 aider --model openrouter/deepseek/deepseek-chat
 
-# Or use the --api-key command line option
+# 或使用--api-key命令行选项
 aider --model openrouter/deepseek/deepseek-chat --api-key openrouter=<your-key>
 
-# Or add it to .aider.conf.yml in your home directory or project root:
+# 或将其添加到您的主目录或项目根目录的.aider.conf.yml中：
 api-key:
   - openrouter=<your-key>
 ```
 
-OpenRouter automatically monitors their providers and routes requests to stable
-APIs and away from those experiencing unreliable performance.
+OpenRouter自动监控其提供商，并将请求路由到稳定的API，远离那些性能不可靠的API。
 
-But not all providers serve the same version of open source models, and not
-all have the same privacy guarantees.
-You can control which OpenRouter providers are used to serve the model via
-[aider's model settings](https://aider.chat/docs/config/adv-model-settings.html#model-settings).
-Create a `.aider.model.settings.yml` file in your home directory or git project root with settings like this:
+但并非所有提供商都提供相同版本的开源模型，也并非所有提供商都有相同的隐私保证。
+您可以通过[aider的模型设置](https://aider.chat/docs/config/adv-model-settings.html#model-settings)控制用于提供模型的OpenRouter提供商。
+在您的主目录或git项目根目录中创建一个`.aider.model.settings.yml`文件，其设置如下：
 
 ```yaml
 - name: openrouter/deepseek/deepseek-chat
   extra_params:
     extra_body:
       provider:
-        # Only use these providers, in this order
+        # 仅使用这些提供商，按此顺序
         order: ["Novita"]
-        # Don't fall back to other providers
+        # 不要回退到其他提供商
         allow_fallbacks: false
 ```
 
-See [OpenRouter's provider routing docs](https://openrouter.ai/docs/provider-routing) for more details.
+更多详情请参阅[OpenRouter的提供商路由文档](https://openrouter.ai/docs/provider-routing)。
 
 
 ## Fireworks
 
 ```bash
-# Set your API key using environment variables
+# 使用环境变量设置API密钥
 export FIREWORKS_API_KEY=<your-key>
 aider --model fireworks_ai/accounts/fireworks/models/deepseek-chat
 
-# Or use the --api-key command line option
+# 或使用--api-key命令行选项
 aider --model fireworks_ai/accounts/fireworks/models/deepseek-chat --api-key fireworks=<your-key>
 
-# Or add it to .aider.conf.yml in your home directory or project root:
+# 或将其添加到您的主目录或项目根目录的.aider.conf.yml中：
 api-key:
   - fireworks=<your-key>
 ```
 
-Create a `.aider.model.settings.yml` file in your home directory or git project root with settings like this:
+在您的主目录或git项目根目录中创建一个`.aider.model.settings.yml`文件，其设置如下：
 
 ```yaml
 - name: fireworks_ai/accounts/fireworks/models/deepseek-chat
@@ -105,23 +102,23 @@ Create a `.aider.model.settings.yml` file in your home directory or git project 
 
 ## Hyperbolic
 
-You can use [Hyperbolic's API](https://hyperbolic.xyz) as an OpenAI-compatible provider:
+您可以使用[Hyperbolic的API](https://hyperbolic.xyz)作为OpenAI兼容的提供商：
 
 ```bash
-# Set your API key using environment variables
+# 使用环境变量设置API密钥
 export OPENAI_API_BASE=https://api.hyperbolic.xyz/v1/
 export OPENAI_API_KEY=<your-key>
 aider --model openai/deepseek-ai/DeepSeek-V3
 
-# Or use the --api-key command line option
+# 或使用--api-key命令行选项
 aider --model openai/deepseek-ai/DeepSeek-V3 --api-key openai=<your-key>
 
-# Or add it to .aider.conf.yml in your home directory or project root:
+# 或将其添加到您的主目录或项目根目录的.aider.conf.yml中：
 api-key:
   - openai=<your-key>
 ```
 
-Create a `.aider.model.settings.yml` file in your home directory or git project root with settings like this:
+在您的主目录或git项目根目录中创建一个`.aider.model.settings.yml`文件，其设置如下：
 
 ```yaml
 - name: openai/deepseek-ai/DeepSeek-V3
@@ -145,33 +142,32 @@ Create a `.aider.model.settings.yml` file in your home directory or git project 
 
 ## Ollama
 
-You can run [DeepSeek V3 via Ollama](https://ollama.com/library/deepseek-v3).
+您可以通过[Ollama运行DeepSeek V3](https://ollama.com/library/deepseek-v3)。
 
 ```bash
-# Pull the model
+# 拉取模型
 ollama pull deepseek-v3
 
-# Start your ollama server
+# 启动ollama服务器
 ollama serve
 
-# In another terminal window...
+# 在另一个终端窗口...
 export OLLAMA_API_BASE=http://127.0.0.1:11434 # Mac/Linux
-setx   OLLAMA_API_BASE http://127.0.0.1:11434 # Windows, restart shell after setx
+setx   OLLAMA_API_BASE http://127.0.0.1:11434 # Windows，setx后重启shell
 
 aider --model ollama/deepseek-v3
 ```
 
-It's important to provide model settings, especially the `num_ctx` parameter to
-set the context window.
-Ollama uses a 2k context window by default, which is very small for working with aider.
-Larger context windows will allow you to work with larger amounts of code,
-but will use memory and increase latency.
+提供模型设置很重要，特别是`num_ctx`参数来设置上下文窗口。
+Ollama默认使用2k上下文窗口，这对于与aider一起工作来说非常小。
+更大的上下文窗口将允许您处理更多的代码，
+但会使用更多内存并增加延迟。
 
-Unlike most other LLM servers, Ollama does not throw an error if you submit a request that exceeds the context window. Instead, it just silently truncates the request by discarding the “oldest” messages in the chat to make it fit within the context window.
+与大多数其他LLM服务器不同，如果您提交的请求超过上下文窗口，Ollama不会抛出错误。相反，它只是通过丢弃聊天中"最旧"的消息来静默截断请求，使其适合上下文窗口内。
 
-So if your context window is too small, you won’t get an explicit error. The biggest symptom will be that aider says it can’t see (some of) the files you added to the chat. That’s because ollama is silently discarding them because they exceed the context window.
+所以如果您的上下文窗口太小，您不会收到明确的错误。最大的症状将是aider表示它看不到您添加到聊天中的（部分）文件。这是因为ollama正在静默丢弃它们，因为它们超出了上下文窗口。
 
-Create a `.aider.model.settings.yml` file in your home directory or git project root with settings like this:
+在您的主目录或git项目根目录中创建一个`.aider.model.settings.yml`文件，其设置如下：
 
 ```yaml
 - name: ollama/deepseek-v3
@@ -188,34 +184,33 @@ Create a `.aider.model.settings.yml` file in your home directory or git project 
   use_temperature: true
   streaming: true
   extra_params:
-    num_ctx: 8192 # How large a context window?
+    num_ctx: 8192 # 上下文窗口有多大？
 ```
 
-## Other providers
+## 其他提供商
 
-You will need to properly configure aider to work with DeepSeek V3 when served
-via other providers:
+当通过其他提供商提供DeepSeek V3时，您需要正确配置aider：
 
-- Determine the `--model` name to use.
-- Provide your API key to aider.
-- Add model settings to `.aider.model.settings.yml`.
+- 确定要使用的`--model`名称。
+- 向aider提供您的API密钥。
+- 将模型设置添加到`.aider.model.settings.yml`。
 
 
-Adapt the `.aider.model.settings.yml` shown above for Fireworks. You will need to change the `name` field to match you chosen provider's model naming scheme.
+调整上面显示的Fireworks的`.aider.model.settings.yml`。您需要将`name`字段更改为匹配您选择的提供商的模型命名方案。
 
-See [Advanced model settings](https://aider.chat/docs/config/adv-model-settings.html#model-settings) for details about all aider model settings
+有关所有aider模型设置的详细信息，请参阅[高级模型设置](https://aider.chat/docs/config/adv-model-settings.html#model-settings)
 
-## Results
+## 结果
 
 
 <table style="width: 100%; max-width: 800px; margin: auto; border-collapse: collapse; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 14px;">
   <thead style="background-color: #f2f2f2;">
     <tr>
-      <th style="padding: 8px; text-align: left;">Model</th>
-      <th style="padding: 8px; text-align: center;">Percent completed correctly</th>
-      <th style="padding: 8px; text-align: center;">Percent using correct edit format</th>
-      <th style="padding: 8px; text-align: left;">Command</th>
-      <th style="padding: 8px; text-align: center;">Edit format</th>
+      <th style="padding: 8px; text-align: left;">模型</th>
+      <th style="padding: 8px; text-align: center;">正确完成百分比</th>
+      <th style="padding: 8px; text-align: center;">使用正确编辑格式的百分比</th>
+      <th style="padding: 8px; text-align: left;">命令</th>
+      <th style="padding: 8px; text-align: center;">编辑格式</th>
     </tr>
   </thead>
   <tbody>

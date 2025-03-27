@@ -1,6 +1,6 @@
 ---
-title: Details matter with open source models
-excerpt: Open source LLMs are becoming very powerful, but pay attention to how you (or your provider) are serving the model. It can affect code editing skill.
+title: 开源模型的细节很重要
+excerpt: 开源LLM变得越来越强大，但请注意您（或您的提供商）如何提供模型服务。这可能会影响代码编辑技能。
 highlight_image: /assets/quantization.jpg
 draft: false
 nav_exclude: true
@@ -9,96 +9,91 @@ nav_exclude: true
 <p class="post-date">{{ page.date | date: "%B %d, %Y" }}</p>
 {% endif %}
 
-# Details matter with open source models
+# 开源模型的细节很重要
 {: .no_toc }
 
 <canvas id="quantChart" width="800" height="600" style="margin: 20px 0"></canvas>
 
-Open source models like Qwen 2.5 32B Instruct are performing very well on
-aider's code editing benchmark, rivaling closed source frontier models.
+像Qwen 2.5 32B Instruct这样的开源模型在aider的代码编辑基准测试中表现非常好，媲美闭源前沿模型。
 
-But pay attention to how your model is being served and quantized, 
-as it can impact code editing skill.
-Open source models are often available at a variety of quantizations,
-and can be served with different token limits.
-These details matter when working with code.
+但请注意您的模型如何被服务和量化，因为这可能会影响代码编辑技能。
+开源模型通常以各种量化版本提供，
+并且可以以不同的令牌限制提供服务。
+这些细节在处理代码时很重要。
 
-The graph above and table below compares different versions of the Qwen 2.5 Coder 32B Instruct model,
-served both locally and from a variety of cloud providers.
+上图和下表比较了Qwen 2.5 Coder 32B Instruct模型的不同版本，
+它们既在本地提供服务，也从各种云提供商提供服务。
 
-- The [HuggingFace BF16 weights](https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct) served via [glhf.chat](https://glhf.chat).
-- [4bit and 8bit quants for mlx](https://t.co/cwX3DYX35D).
-- The results from [OpenRouter's mix of providers](https://openrouter.ai/qwen/qwen-2.5-coder-32b-instruct/providers) which serve the model with different levels of quantization.
-- Results from OpenRouter's providers, both served via OpenRouter and directly to their own APIs.
-- Ollama locally serving different quantizations from the [Ollama model library](https://ollama.com/library/qwen2.5-coder:32b-instruct-q4_K_M) with 8k+
-context windows.
-- An Ollama fp16 quantization served with Ollama's default 2k context window.
+- 通过[glhf.chat](https://glhf.chat)提供服务的[HuggingFace BF16权重](https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct)。
+- [针对mlx的4位和8位量化](https://t.co/cwX3DYX35D)。
+- 来自[OpenRouter提供商混合](https://openrouter.ai/qwen/qwen-2.5-coder-32b-instruct/providers)的结果，这些提供商以不同级别的量化提供模型服务。
+- 来自OpenRouter提供商的结果，既通过OpenRouter提供，也直接通过它们自己的API提供。
+- Ollama从[Ollama模型库](https://ollama.com/library/qwen2.5-coder:32b-instruct-q4_K_M)本地提供不同量化的服务，具有8k+上下文窗口。
+- 使用Ollama默认2k上下文窗口提供服务的Ollama fp16量化。
 
-### Pitfalls and details
+### 陷阱和细节
 
-This benchmarking effort highlighted a number of pitfalls and details specific to open source
-models which
-can have a significant impact on their ability to correctly edit code:
+这项基准测试工作突显了开源模型特有的许多陷阱和细节，
+这些因素可能对它们正确编辑代码的能力产生重大影响：
 
-- **Quantization** -- Open source models are often available at dozens of different quantizations.
-Most seem to only modestly decrease code editing skill, but stronger quantizations
-do have a real impact.
-- **Context window** -- Cloud providers can decide how large a context window to accept,
-and they often choose differently. Ollama's local API server
-defaults to a tiny 2k context window,
-and silently discards data that exceeds it. Such a small window has
-catastrophic effects on performance, without throwing obvious hard errors.
-- **Output token limits** -- Open source models are often served with wildly
-differing output token limits. This has a direct impact on how much code the
-model can write or edit in a response.
-- **Buggy cloud providers** -- While benchmarking Qwen 2.5 Coder 32B Instruct
-and DeepSeek V2.5, I discovered
-multiple cloud providers with broken or buggy API endpoints.
-They seemed
-to be returning results different from expected based on the advertised
-quantization and context sizes.
-The harm caused to the code editing benchmark varied from serious
-to catastrophic.
-One provider scored 0.5% on the benchmark with DeepSeek V2.5, a highly capable model.
+- **量化** -- 开源模型通常以数十种不同的量化版本提供。
+大多数似乎只是适度降低代码编辑技能，但更强的量化
+确实有实际影响。
+- **上下文窗口** -- 云提供商可以决定接受多大的上下文窗口，
+而且它们经常做出不同的选择。Ollama的本地API服务器
+默认为一个微小的2k上下文窗口，
+并且会静默丢弃超出它的数据。这么小的窗口会
+对性能造成灾难性影响，而不会抛出明显的硬错误。
+- **输出令牌限制** -- 开源模型通常以极其
+不同的输出令牌限制提供服务。这直接影响模型可以
+在响应中编写或编辑多少代码。
+- **有缺陷的云提供商** -- 在对Qwen 2.5 Coder 32B Instruct
+和DeepSeek V2.5进行基准测试时，我发现
+多个云提供商的API端点存在缺陷或bug。
+它们似乎
+返回的结果与基于广告的量化和上下文大小预期的不同。
+对代码编辑基准测试造成的损害从严重
+到灾难性不等。
+一个提供商在使用DeepSeek V2.5（一个高度能干的模型）的基准测试中得分为0.5%。
 
-Closed source, proprietary models don't typically have these issues.
-They are owned and operated by the organization that created them,
-and typically served with specific, predictable context window and output token limits.
-Their quantization level is usually unknown, but fixed and unchanging for all users.
+闭源、专有模型通常没有这些问题。
+它们由创建它们的组织拥有和运营，
+并且通常以特定的、可预测的上下文窗口和输出令牌限制提供服务。
+它们的量化级别通常是未知的，但对所有用户是固定和不变的。
 
-### Conclusions
+### 结论
 
-The best versions of the Qwen model rival GPT-4o, while the worst performing
-quantization is more like the older GPT-4 Turbo when served competently.
-Even an otherwise excellent fp16 quantization falls to GPT-3.5 Turbo levels of performance
-if run with Ollama's default 2k context window.
+Qwen模型的最佳版本可与GPT-4o媲美，而性能最差的
+量化版本在服务得当时更像是较旧的GPT-4 Turbo。
+即使是原本优秀的fp16量化，
+如果使用Ollama的默认2k上下文窗口运行，性能也会降至GPT-3.5 Turbo水平。
 
-### Sections
+### 章节
 {: .no_toc }
 
 - TOC
 {:toc}
 
-## Benchmark results
+## 基准测试结果
 
 {: .note :}
-These are results from single benchmark runs, so expect normal variance of +/- 1-2%.
+这些是来自单次基准测试运行的结果，所以预期正常变异为+/- 1-2%。
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 {% include quant-chart.js %}
 </script>
 
-<input type="text" id="quantSearchInput" placeholder="Search..." style="width: 100%; max-width: 800px; margin: 10px auto; padding: 8px; display: block; border: 1px solid #ddd; border-radius: 4px;">
+<input type="text" id="quantSearchInput" placeholder="搜索..." style="width: 100%; max-width: 800px; margin: 10px auto; padding: 8px; display: block; border: 1px solid #ddd; border-radius: 4px;">
 
 <table style="width: 100%; max-width: 800px; margin: auto; border-collapse: collapse; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 14px;">
   <thead style="background-color: #f2f2f2;">
     <tr>
-      <th style="padding: 8px; text-align: left;">Model</th>
-      <th style="padding: 8px; text-align: center;">Percent completed correctly</th>
-      <th style="padding: 8px; text-align: center;">Percent using correct edit format</th>
-      <th style="padding: 8px; text-align: left;">Command</th>
-      <th style="padding: 8px; text-align: center;">Edit format</th>
+      <th style="padding: 8px; text-align: left;">模型</th>
+      <th style="padding: 8px; text-align: center;">正确完成百分比</th>
+      <th style="padding: 8px; text-align: center;">使用正确编辑格式的百分比</th>
+      <th style="padding: 8px; text-align: left;">命令</th>
+      <th style="padding: 8px; text-align: center;">编辑格式</th>
     </tr>
   </thead>
   <tbody>
@@ -149,23 +144,23 @@ document.getElementById('quantSearchInput').addEventListener('keyup', function()
 });
 </script>
 
-## Setting Ollama's context window size
+## 设置Ollama的上下文窗口大小
 
-[Ollama uses a 2k context window by default](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-specify-the-context-window-size),
-which is very small for working with aider.
-Unlike most other LLM servers, Ollama does not throw an error if you submit
-a request that exceeds the context window.
-Instead, it just silently truncates the request by discarding the "oldest" messages
-in the chat to make it fit within the context window.
+[Ollama默认使用2k上下文窗口](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-specify-the-context-window-size)，
+这对于与aider一起工作来说非常小。
+与大多数其他LLM服务器不同，Ollama在您提交
+超出上下文窗口的请求时不会抛出错误。
+相反，它只是通过丢弃聊天中"最旧"的消息来
+静默截断请求，使其适合于上下文窗口内。
 
-Except for the single 2k context result,
-all of the Ollama results above were collected with at least an 8k context window.
-An 8k window is large enough to attempt all the coding problems in the benchmark.
-Aider sets Ollama's context window to 8k by default, starting in aider v0.65.0.
+除了单个2k上下文结果外，
+上面所有的Ollama结果都是使用至少8k上下文窗口收集的。
+8k窗口足够大，可以尝试基准测试中的所有编码问题。
+从aider v0.65.0开始，Aider默认将Ollama的上下文窗口设置为8k。
 
-You can change the Ollama server's context window with a 
-[`.aider.model.settings.yml` file](https://aider.chat/docs/config/adv-model-settings.html#model-settings)
-like this:
+您可以使用
+[`.aider.model.settings.yml`文件](https://aider.chat/docs/config/adv-model-settings.html#model-settings)
+更改Ollama服务器的上下文窗口，如下所示：
 
 ```
 - name: ollama/qwen2.5-coder:32b-instruct-fp16
@@ -173,22 +168,22 @@ like this:
     num_ctx: 8192
 ```
 
-## Choosing providers with OpenRouter
+## 使用OpenRouter选择提供商
 
-OpenRouter allows you to ignore specific providers in your
-[preferences](https://openrouter.ai/settings/preferences).
-This can be used to limit your OpenRouter requests to be
-served by only your preferred providers.
+OpenRouter允许您在您的
+[首选项](https://openrouter.ai/settings/preferences)中忽略特定提供商。
+这可以用来限制您的OpenRouter请求
+仅由您首选的提供商提供服务。
 
-## Notes
+## 注意事项
 
-This article went through many revisions as I received feedback from
-numerous members of the community.
-Here are some of the noteworthy learnings and changes:
+这篇文章经过多次修订，因为我收到了
+社区众多成员的反馈。
+以下是一些值得注意的经验和变化：
 
-- The first version of this article included incorrect Ollama models.
-- Earlier Ollama results used the too small default 2k context window,
-artificially harming the benchmark results.
-- The benchmark results appear to have uncovered a problem in the way
-OpenRouter was communicating with Hyperbolic.
-They fixed the issue 11/24/24, shortly after it was pointed out.
+- 本文的第一个版本包含了不正确的Ollama模型。
+- 早期的Ollama结果使用了太小的默认2k上下文窗口，
+人为地损害了基准测试结果。
+- 基准测试结果似乎发现了OpenRouter
+与Hyperbolic通信方式中的一个问题。
+他们在11/24/24修复了这个问题，就在它被指出后不久。
