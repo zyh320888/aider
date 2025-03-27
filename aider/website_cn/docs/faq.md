@@ -198,7 +198,6 @@ aider会尝试提示模型使用系统配置的语言，但LLM并不总是可靠
 可以美观地分享aider聊天记录：
 
 1. 从`.aider.chat.history.md`复制Markdown日志创建github gist，或将原始Markdown发布到网络
-
    ```
    https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
    ```
@@ -207,20 +206,24 @@ aider会尝试提示模型使用系统配置的语言，但LLM并不总是可靠
    ```
    https://aider.chat/share/?mdurl=
    ```
-   生成如下URL，可以显示终端样式的聊天记录：
-   ```
-   https://aider.chat/share/?mdurl=https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
-   ```
 
-## 运行aider时能否手动编辑文件？
+最终URL会像这样，展示聊天历史：
+```
+https://aider.chat/share/?mdurl=https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
+```
 
-可以，aider在每次收到消息时都会读取文件系统中的最新文件副本。
+## aider运行时能否手动编辑文件？
 
-但不建议在等待aider回复过程中编辑已加入聊天的文件，可能产生冲突。
+可以。aider在您每次发送消息时都会从文件系统读取最新版本的文件。
+
+但在等待aider回复时，最好不要编辑已添加到聊天的文件，以避免编辑冲突。
 
 ## 什么是Aider AI LLC？
 
-Aider AI LLC是aider AI编码工具背后的公司。Aider是[GitHub上的开源项目](https://github.com/Aider-AI/aider)，采用[Apache 2.0许可证](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt)。
+Aider AI LLC是aider AI编程工具背后的公司。
+Aider是[开源的，可在GitHub获取](https://github.com/Aider-AI/aider)，
+使用[Apache 2.0许可证](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt)。
+
 
 <div style="height:80vh"></div>
 

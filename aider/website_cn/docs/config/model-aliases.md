@@ -1,5 +1,5 @@
 ---
-parent: Configuration
+parent: 配置
 nav_order: 1000
 description: 为模型分配方便的简短名称。
 ---
@@ -20,7 +20,7 @@ aider --alias "fast:gpt-4o-mini" --alias "smart:o3-mini"
 
 ## 配置文件
 
-您还可以在[`.aider.conf.yml`文件](https://aider.chat/docs/config/aider_conf.html)中定义别名：
+当然，您还可以在[`.aider.conf.yml`文件](https://aider.chat/docs/config/aider_conf.html)中定义别名：
 
 ```yaml
 alias:
@@ -31,11 +31,33 @@ alias:
 
 ## 使用别名
 
-一旦定义，您可以使用别名代替完整的模型名称：
+一旦定义，您可以在命令行中使用别名代替完整的模型名称：
 
 ```bash
 aider --model fast  # 使用gpt-4o-mini
 aider --model smart  # 使用o3-mini
+```
+
+或者在聊天中使用`/model`命令：
+
+```
+Aider v0.75.3
+Main model: anthropic/claude-3-7-sonnet-20250219 with diff edit format, prompt cache, infinite output
+Weak model: claude-3-5-sonnet-20241022
+Git repo: .git with 406 files
+Repo-map: using 4096 tokens, files refresh
+─────────────────────────────────────────────────────────────────────────────────────────────────────
+> /model fast
+
+Aider v0.75.3
+Main model: gpt-4o-mini with diff edit format
+─────────────────────────────────────────────────────────────────────────────────────────────────────
+diff> /model smart
+
+Aider v0.75.3
+Main model: o3-mini with diff edit format
+─────────────────────────────────────────────────────────────────────────────────────────────────────
+>
 ```
 
 ## 内置别名
@@ -57,10 +79,11 @@ for alias, model in sorted(MODEL_ALIASES.items()):
 - `4o`: gpt-4o
 - `deepseek`: deepseek/deepseek-chat
 - `flash`: gemini/gemini-2.0-flash-exp
+- `gemini-2.5-pro`: gemini/gemini-2.5-pro-exp-03-25
 - `haiku`: claude-3-5-haiku-20241022
 - `opus`: claude-3-opus-20240229
 - `r1`: deepseek/deepseek-reasoner
-- `sonnet`: claude-3-5-sonnet-20241022
+- `sonnet`: anthropic/claude-3-7-sonnet-20250219
 <!--[[[end]]]-->
 
 ## 优先级
