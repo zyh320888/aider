@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getAspectRatio() {
         var width = chartContainer.offsetWidth;
-        // Gradually change aspect ratio from 2 (landscape) to 1 (square)
+        // 逐渐将宽高比从2（横向）变为1（方形）
         return Math.max(1, Math.min(2, width / 300));
     }
 
@@ -66,14 +66,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 x: {
                     title: {
                         display: true,
-                        text: 'Model'
+                        text: '模型'
                     }
                 },
                 y: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Total syntax errors from 5 runs'
+                        text: '5次运行的语法错误总数'
                     },
                     max: 35
                 }
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Syntax errors by model and code wrapping strategy',
+                    text: '按模型和代码包装策略的语法错误',
                     font: {
                         size: 16
                     }
@@ -133,7 +133,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('resize', resizeChart);
 
-    // Initial resize to set correct size
+    // 初始调整以设置正确的大小
     resizeChart();
 });
+
+function createStripedCanvas(isStrict) {
+    const patternCanvas = document.createElement('canvas');
+    const patternContext = patternCanvas.getContext('2d');
+    const size = 10;
+    patternCanvas.width = size;
+    patternCanvas.height = size;
+
+    patternContext.fillStyle = 'rgba(255, 99, 132, 0.8)';
+    patternContext.fillRect(0, 0, size, size);
+
+    if (isStrict) {
+        patternContext.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        patternContext.lineWidth = 0.75;
+        patternContext.beginPath();
+        patternContext.moveTo(0, 0);
+        patternContext.lineTo(size, size);
+        patternContext.stroke();
+    }
+
+    return patternCanvas;
+}
 </script>

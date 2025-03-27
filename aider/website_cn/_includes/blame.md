@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var blameData = {
         labels: labels,
         datasets: [{
-            label: 'Aider\'s percent of new code by release',
+            label: '每个版本中Aider编写的新代码百分比',
             data: [{% for row in site.data.blame %}{ x: '{{ row.end_tag }}', y: {{ row.aider_percentage }}, lines: {{ row.aider_total }} },{% endfor %}],
             backgroundColor: 'rgba(54, 162, 235, 0.8)',
             borderColor: 'rgba(54, 162, 235, 1)',
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
             borderWidth: 1
         },
         {
-            label: 'Human',
+            label: '人类',
             data: [{% for row in site.data.blame %}{ x: '{{ row.end_tag }}', y: {{ row.total_lines | minus: row.aider_total }} },{% endfor %}],
             backgroundColor: 'rgba(200, 200, 200, 0.8)',
             borderColor: 'rgba(200, 200, 200, 1)',
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     type: 'category',
                     title: {
                         display: true,
-                        text: 'Version'
+                        text: '版本'
                     },
                     ticks: {
                         maxRotation: 45,
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 y: {
                     title: {
                         display: true,
-                        text: 'Percent of new code'
+                        text: '新代码百分比'
                     },
                     beginAtZero: true
                 }
@@ -84,16 +84,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            var label = 'Aider\'s contribution';
+                            var label = 'Aider的贡献';
                             var value = context.parsed.y || 0;
                             var lines = context.raw.lines || 0;
-                            return `${label}: ${Math.round(value)}% (${lines} lines)`;
+                            return `${label}: ${Math.round(value)}% (${lines} 行)`;
                         }
                     }
                 },
                 title: {
                     display: true,
-                    text: 'Percent of new code written by aider, by release',
+                    text: '按版本划分的Aider编写的新代码百分比',
                     font: {
                         size: 16
                     }
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Version'
+                        text: '版本'
                     },
                     ticks: {
                         maxRotation: 45,
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Lines of new code'
+                        text: '新代码行数'
                     },
                     beginAtZero: true
                 }
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 title: {
                     display: true,
-                    text: 'Lines of new code, by release',
+                    text: '按版本划分的新代码行数',
                     font: {
                         size: 16
                     }

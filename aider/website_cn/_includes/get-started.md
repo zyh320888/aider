@@ -1,25 +1,25 @@
 
-If you already have python 3.8-3.13 installed, you can get started quickly like this:
+如果您已经安装了 Python 3.8-3.13，可以按照以下方式快速开始：
 
 ```bash
 python -m pip install aider-install
 aider-install
 
-# Change directory into your code base
+# 切换到您的代码库目录
 cd /to/your/project
 
-# Work with DeepSeek via DeepSeek's API
+# 通过 DeepSeek API 使用 DeepSeek
 aider --model deepseek --api-key deepseek=your-key-goes-here
 
-# Work with Claude 3.5 Sonnet via Anthropic's API
+# 通过 Anthropic API 使用 Claude 3.5 Sonnet
 aider --model sonnet --api-key anthropic=your-key-goes-here
 
-# Work with GPT-4o via OpenAI's API
+# 通过 OpenAI API 使用 GPT-4o
 aider --model gpt-4o --api-key openai=your-key-goes-here
 
-# Work with Sonnet via OpenRouter's API
+# 通过 OpenRouter API 使用 Sonnet
 aider --model openrouter/anthropic/claude-3.5-sonnet --api-key openrouter=your-key-goes-here
 
-# Work with DeepSeek via OpenRouter's API
+# 通过 OpenRouter API 使用 DeepSeek
 aider --model openrouter/deepseek/deepseek-chat --api-key openrouter=your-key-goes-here
 ```

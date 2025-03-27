@@ -1,18 +1,17 @@
-If you need more help, please check our
+如果您需要更多帮助，请查看我们的
 [GitHub issues](https://github.com/Aider-AI/aider/issues)
-and file a new issue if your problem isn't discussed.
-Or drop into our
+并在您的问题未被讨论时提交新的issue。
+或者加入我们的
 [Discord](https://discord.gg/Tv2uQnR88V)
-to chat with us.
+与我们聊天。
 
-When reporting problems, it is very helpful if you can provide:
+在报告问题时，如果您能提供以下信息会很有帮助：
 
-- Aider version
-- LLM model you are using
+- Aider版本
+- 您使用的LLM模型
 
-Including the "announcement" lines that
-aider prints at startup
-is an easy way to share this helpful info.
+包含aider在启动时打印的"公告"行
+是分享这些有用信息的简便方法。
 
 ```
 Aider v0.37.1-dev

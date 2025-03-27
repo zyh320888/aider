@@ -1,9 +1,9 @@
-To use aider with pipx on replit, you can run these commands in the replit shell:
+要在replit上使用pipx运行aider，您可以在replit终端中运行以下命令：
 
 ```bash
 pip install pipx
-pipx run aider-chat ...normal aider args...
+pipx run aider-chat ...正常的aider参数...
 ```
 
-If you install aider with pipx on replit and try and run it as just `aider` it will crash with a missing `libstdc++.so.6` library.
+如果您在replit上使用pipx安装aider并尝试直接运行`aider`，它会因缺少`libstdc++.so.6`库而崩溃。
 

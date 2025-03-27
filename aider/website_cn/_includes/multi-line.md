@@ -1,22 +1,22 @@
-You can send long, multi-line messages in the chat in a few ways:
-  - Paste a multi-line message directly into the chat.
-  - Enter `{` alone on the first line to start a multiline message and `}` alone on the last line to end it.
-    - Or, start with `{tag` (where "tag" is any sequence of letters/numbers) and end with `tag}`. This is useful when you need to include closing braces `}` in your message.
-  - Use Meta-ENTER to start a new line without sending the message (Esc+ENTER in some environments).
-  - Use `/paste` to paste text from the clipboard into the chat.
-  - Use the `/editor` command to open your editor to create the next chat message. See [editor configuration docs](/docs/config/editor.html) for more info.
-  - Use multiline-mode, which swaps the function of Meta-Enter and Enter, so that Enter inserts a newline, and Meta-Enter submits your command. To enable multiline mode:
-    - Use the `/multiline-mode` command to toggle it during a session.
-    - Use the `--multiline` switch.
+您可以通过以下几种方式在聊天中发送长的多行消息：
+  - 直接将多行消息粘贴到聊天中。
+  - 在第一行单独输入 `{` 开始多行消息，在最后一行单独输入 `}` 结束。
+    - 或者，以 `{标签` 开始（其中"标签"是任意字母/数字序列）并以 `标签}` 结束。当您需要在消息中包含右大括号 `}` 时，这很有用。
+  - 使用 Meta-ENTER 开始新行而不发送消息（在某些环境中使用 Esc+ENTER）。
+  - 使用 `/paste` 将剪贴板中的文本粘贴到聊天中。
+  - 使用 `/editor` 命令打开您的编辑器创建下一条聊天消息。更多信息请参阅[编辑器配置文档](/docs/config/editor.html)。
+  - 使用多行模式，它会交换 Meta-Enter 和 Enter 的功能，使 Enter 插入换行符，Meta-Enter 提交命令。启用多行模式：
+    - 在会话期间使用 `/multiline-mode` 命令切换它。
+    - 使用 `--multiline` 开关。
   
-Example with a tag:
+带标签的示例：
 ```
 {python
 def hello():
-    print("Hello}")  # Note: contains a brace
+    print("Hello}")  # 注意：包含大括号
 python}
 ```
 
 {: .note }
-People often ask for SHIFT-ENTER to be a soft-newline.
-Unfortunately there is no portable way to detect that keystroke in terminals.
+人们经常要求使用 SHIFT-ENTER 作为软换行。
+不幸的是，在终端中没有通用方法来检测这个按键组合。

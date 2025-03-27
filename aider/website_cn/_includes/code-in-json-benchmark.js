@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getAspectRatio() {
         var width = chartContainer.offsetWidth;
-        // Gradually change aspect ratio from 2 (landscape) to 1 (square)
+        // 逐渐将宽高比从2（横向）变为1（方形）
         return Math.max(1, Math.min(2, width / 300));
     }
 
@@ -66,14 +66,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 x: {
                     title: {
                         display: true,
-                        text: 'Model'
+                        text: '模型'
                     }
                 },
                 y: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Pass Rate (%, average of 5 runs)'
+                        text: '通过率（%，5次运行平均值）'
                     },
                     max: 70
                 }
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Coding skill by model and code wrapping strategy',
+                    text: '按模型和代码包装策略的编码能力',
                     font: {
                         size: 16
                     }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
         plugins: [{
             afterDraw: function(chart) {
                 var ctx = chart.ctx;
-                var isWideScreen = window.innerWidth > 768; // Assuming 768px as the breakpoint for wide screens
+                var isWideScreen = window.innerWidth > 768; // 假设768px为宽屏的断点
                 if (isWideScreen) {
                     chart.data.datasets.forEach(function(dataset, i) {
                         var meta = chart.getDatasetMeta(i);
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('resize', resizeChart);
 
-    // Initial resize to set correct size
+    // 初始调整以设置正确的大小
     resizeChart();
 });
 
