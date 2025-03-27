@@ -1,27 +1,28 @@
 ---
-parent: Connecting to LLMs
+parent: 连接到LLMs
 nav_order: 300
 ---
 
 # Gemini
 
-You'll need a [Gemini API key](https://aistudio.google.com/app/u/2/apikey).
+您需要一个 [Gemini API密钥](https://aistudio.google.com/app/u/2/apikey)。
 
 ```
 python -m pip install -U aider-chat
 
-# You may need to install google-generativeai
+# 您可能需要安装google-generativeai
 pip install -U google-generativeai
 
-# Or with pipx...
+# 或使用pipx...
 pipx inject aider-chat google-generativeai
 
 export GEMINI_API_KEY=<key> # Mac/Linux
-setx   GEMINI_API_KEY <key> # Windows, restart shell after setx
+setx   GEMINI_API_KEY <key> # Windows, 使用setx后需重启shell
 
-aider --model gemini/gemini-1.5-pro-latest
+# 您可以使用Gemini 2.5 Pro模型：
+aider --model gemini-2.5-pro
 
-# List models available from Gemini
+# 列出Gemini可用的模型
 aider --list-models gemini/
 ```
 

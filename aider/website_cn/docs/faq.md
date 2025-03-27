@@ -91,6 +91,19 @@ Repo-map: disabled
 /ask 这个修改与FooBar类的协作是否存在问题？
 ```
 
+你也可以在aider外准备diff输出并提供给aider阅读：
+
+```
+$ git diff -C10 v1..v2 > v1-v2-changes.diff
+$ aider --read v1-v2-changes.diff
+
+Aider v0.77.2.dev+import
+主模型: anthropic/claude-3-7-sonnet-20250219 使用diff编辑格式，8k思考token
+──────────────────────────────────
+v1-v2-changes.diff
+> 您认为这个PR中有潜在的bug吗？
+```
+
 {: .tip }
 `/git`命令的输出不会包含在聊天上下文中
 
@@ -148,13 +161,17 @@ tr:hover { background-color: #f5f5f5; }
 </style>
 <table>
 <tr><th>Model Name</th><th class='right'>Total Tokens</th><th class='right'>Percent</th></tr>
-<tr><td>claude-3-5-sonnet-20241022</td><td class='right'>905,105</td><td class='right'>63.8%</td></tr>
-<tr><td>fireworks_ai/accounts/fireworks/models/deepseek-v3</td><td class='right'>277,726</td><td class='right'>19.6%</td></tr>
-<tr><td>deepseek/deepseek-chat</td><td class='right'>97,745</td><td class='right'>6.9%</td></tr>
-<tr><td>claude-3-5-haiku-20241022</td><td class='right'>69,203</td><td class='right'>4.9%</td></tr>
-<tr><td>o3-mini</td><td class='right'>46,467</td><td class='right'>3.3%</td></tr>
-<tr><td>fireworks_ai/accounts/fireworks/models/deepseek-r1</td><td class='right'>21,182</td><td class='right'>1.5%</td></tr>
-<tr><td>ollama_chat/REDACTED</td><td class='right'>309</td><td class='right'>0.0%</td></tr>
+<tr><td>fireworks_ai/accounts/fireworks/models/deepseek-v3</td><td class='right'>1,564,808</td><td class='right'>36.4%</td></tr>
+<tr><td>anthropic/claude-3-7-sonnet-20250219</td><td class='right'>1,499,523</td><td class='right'>34.9%</td></tr>
+<tr><td>fireworks_ai/accounts/fireworks/models/deepseek-r1</td><td class='right'>380,307</td><td class='right'>8.8%</td></tr>
+<tr><td>deepseek/deepseek-chat</td><td class='right'>312,589</td><td class='right'>7.3%</td></tr>
+<tr><td>gpt-4o</td><td class='right'>243,123</td><td class='right'>5.7%</td></tr>
+<tr><td>gemini/gemini-2.5-pro-exp-03-25</td><td class='right'>150,031</td><td class='right'>3.5%</td></tr>
+<tr><td>claude-3-5-haiku-20241022</td><td class='right'>81,038</td><td class='right'>1.9%</td></tr>
+<tr><td>o3-mini</td><td class='right'>48,351</td><td class='right'>1.1%</td></tr>
+<tr><td>openrouter/google/gemini-2.5-pro-exp-03-25:free</td><td class='right'>11,449</td><td class='right'>0.3%</td></tr>
+<tr><td>gemini/REDACTED</td><td class='right'>5,772</td><td class='right'>0.1%</td></tr>
+<tr><td>openrouter/REDACTED</td><td class='right'>3,830</td><td class='right'>0.1%</td></tr>
 </table>
 
 {: .note :}
@@ -168,9 +185,11 @@ Aider的统计仅记录"知名"LLM的名称。
 
 ## 为什么有时代码高亮失效？
 
-当添加的文件包含三重反引号时，aider会改用`<source>`标签包裹代码块以保证安全，此时可能失去语法高亮。
+当添加的文件包含三重反引号时，aider会改用`<source>`标签包裹代码块以保证安全，此时可能失去语法高亮。通常在添加含有代码块的markdown文件时会出现这种情况。
 
 ## 为什么LLM使用意外语言回复？
+
+aider会尝试提示模型使用系统配置的语言，但LLM并不总是可靠，有时会使用意外语言（Claude特别喜欢说法语）。
 
 可尝试用`--chat-language <语言>`明确设置，但LLM可能不遵守。
 
@@ -193,16 +212,15 @@ Aider的统计仅记录"知名"LLM的名称。
    https://aider.chat/share/?mdurl=https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
    ```
 
-
-
 ## 运行aider时能否手动编辑文件？
 
-可以，但建议不要在等待回复时编辑已加入聊天的文件，可能产生冲突。
+可以，aider在每次收到消息时都会读取文件系统中的最新文件副本。
+
+但不建议在等待aider回复过程中编辑已加入聊天的文件，可能产生冲突。
 
 ## 什么是Aider AI LLC？
 
-aider的开发者公司，项目在[GitHub开源](https://github.com/Aider-AI/aider)并采用[Apache 2.0协议](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt)。
-
+Aider AI LLC是aider AI编码工具背后的公司。Aider是[GitHub上的开源项目](https://github.com/Aider-AI/aider)，采用[Apache 2.0许可证](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt)。
 
 <div style="height:80vh"></div>
 

@@ -30,56 +30,205 @@ cog.out(get_supported_languages_md())
 
 | Language | File extension | Repo map | Linter |
 |:--------:|:--------------:|:--------:|:------:|
+| actionscript         | .as                  |          |   ✓    |
+| ada                  | .adb                 |          |   ✓    |
+| ada                  | .ads                 |          |   ✓    |
+| agda                 | .agda                |          |   ✓    |
+| arduino              | .ino                 |    ✓     |   ✓    |
+| asm                  | .asm                 |          |   ✓    |
+| asm                  | .s                   |          |   ✓    |
+| astro                | .astro               |          |   ✓    |
 | bash                 | .bash                |          |   ✓    |
+| bash                 | .sh                  |          |   ✓    |
+| bash                 | .zsh                 |          |   ✓    |
+| beancount            | .bean                |          |   ✓    |
+| bibtex               | .bib                 |          |   ✓    |
+| bicep                | .bicep               |          |   ✓    |
+| bitbake              | .bb                  |          |   ✓    |
+| bitbake              | .bbappend            |          |   ✓    |
+| bitbake              | .bbclass             |          |   ✓    |
 | c                    | .c                   |    ✓     |   ✓    |
-| c_sharp              | .cs                  |    ✓     |   ✓    |
-| commonlisp           | .cl                  |          |   ✓    |
+| c                    | .h                   |    ✓     |   ✓    |
+| cairo                | .cairo               |          |   ✓    |
+| capnp                | .capnp               |          |   ✓    |
+| chatito              | .chatito             |    ✓     |   ✓    |
+| clarity              | .clar                |          |   ✓    |
+| clojure              | .clj                 |          |   ✓    |
+| clojure              | .cljc                |          |   ✓    |
+| clojure              | .cljs                |          |   ✓    |
+| clojure              | .edn                 |          |   ✓    |
+| cmake                | .cmake               |          |   ✓    |
+| cmake                | CMakeLists.txt       |          |   ✓    |
+| commonlisp           | .cl                  |    ✓     |   ✓    |
+| commonlisp           | .lisp                |    ✓     |   ✓    |
+| cpon                 | .cpon                |          |   ✓    |
 | cpp                  | .cc                  |    ✓     |   ✓    |
 | cpp                  | .cpp                 |    ✓     |   ✓    |
+| cpp                  | .cxx                 |    ✓     |   ✓    |
+| cpp                  | .h++                 |    ✓     |   ✓    |
+| cpp                  | .hpp                 |    ✓     |   ✓    |
+| cpp                  | .hxx                 |    ✓     |   ✓    |
+| csharp               | .cs                  |    ✓     |   ✓    |
 | css                  | .css                 |          |   ✓    |
-| dockerfile           | .dockerfile          |          |   ✓    |
-| dot                  | .dot                 |          |   ✓    |
+| csv                  | .csv                 |          |   ✓    |
+| cuda                 | .cu                  |          |   ✓    |
+| cuda                 | .cuh                 |          |   ✓    |
+| d                    | .d                   |    ✓     |   ✓    |
+| dart                 | .dart                |    ✓     |   ✓    |
+| dockerfile           | Dockerfile           |          |   ✓    |
+| dtd                  | .dtd                 |          |   ✓    |
 | elisp                | .el                  |    ✓     |   ✓    |
 | elixir               | .ex                  |    ✓     |   ✓    |
+| elixir               | .exs                 |    ✓     |   ✓    |
 | elm                  | .elm                 |    ✓     |   ✓    |
-| embedded_template    | .et                  |          |   ✓    |
 | erlang               | .erl                 |          |   ✓    |
+| erlang               | .hrl                 |          |   ✓    |
+| fennel               | .fnl                 |          |   ✓    |
+| firrtl               | .fir                 |          |   ✓    |
+| fish                 | .fish                |          |   ✓    |
+| fortran              | .f                   |          |   ✓    |
+| fortran              | .f03                 |          |   ✓    |
+| fortran              | .f08                 |          |   ✓    |
+| fortran              | .f90                 |          |   ✓    |
+| fortran              | .f95                 |          |   ✓    |
+| func                 | .fc                  |          |   ✓    |
+| gdscript             | .gd                  |          |   ✓    |
+| gitattributes        | .gitattributes       |          |   ✓    |
+| gitcommit            | .gitcommit           |          |   ✓    |
+| gitignore            | .gitignore           |          |   ✓    |
+| gleam                | .gleam               |    ✓     |   ✓    |
+| glsl                 | .frag                |          |   ✓    |
+| glsl                 | .glsl                |          |   ✓    |
+| glsl                 | .vert                |          |   ✓    |
+| gn                   | .gn                  |          |   ✓    |
+| gn                   | .gni                 |          |   ✓    |
 | go                   | .go                  |    ✓     |   ✓    |
-| gomod                | .gomod               |          |   ✓    |
+| gomod                | go.mod               |          |   ✓    |
+| gosum                | go.sum               |          |   ✓    |
+| groovy               | .groovy              |          |   ✓    |
+| gstlaunch            | .launch              |          |   ✓    |
 | hack                 | .hack                |          |   ✓    |
+| hare                 | .ha                  |          |   ✓    |
 | haskell              | .hs                  |          |   ✓    |
+| haxe                 | .hx                  |          |   ✓    |
 | hcl                  | .hcl                 |    ✓     |   ✓    |
 | hcl                  | .tf                  |    ✓     |   ✓    |
+| hcl                  | .tfvars              |    ✓     |   ✓    |
+| heex                 | .heex                |          |   ✓    |
+| hlsl                 | .hlsl                |          |   ✓    |
+| html                 | .htm                 |          |   ✓    |
 | html                 | .html                |          |   ✓    |
+| hyprlang             | .hypr                |          |   ✓    |
+| ispc                 | .ispc                |          |   ✓    |
+| janet                | .janet               |          |   ✓    |
 | java                 | .java                |    ✓     |   ✓    |
 | javascript           | .js                  |    ✓     |   ✓    |
+| javascript           | .jsx                 |    ✓     |   ✓    |
 | javascript           | .mjs                 |    ✓     |   ✓    |
 | jsdoc                | .jsdoc               |          |   ✓    |
 | json                 | .json                |          |   ✓    |
+| jsonnet              | .jsonnet             |          |   ✓    |
+| jsonnet              | .libsonnet           |          |   ✓    |
 | julia                | .jl                  |          |   ✓    |
+| kconfig              | Kconfig              |          |   ✓    |
+| kdl                  | .kdl                 |          |   ✓    |
 | kotlin               | .kt                  |    ✓     |   ✓    |
-| lua                  | .lua                 |          |   ✓    |
+| kotlin               | .kts                 |    ✓     |   ✓    |
+| latex                | .cls                 |          |   ✓    |
+| latex                | .sty                 |          |   ✓    |
+| latex                | .tex                 |          |   ✓    |
+| linkerscript         | .ld                  |          |   ✓    |
+| llvm                 | .ll                  |          |   ✓    |
+| lua                  | .lua                 |    ✓     |   ✓    |
+| luadoc               | .luadoc              |          |   ✓    |
+| luap                 | .luap                |          |   ✓    |
+| luau                 | .luau                |          |   ✓    |
+| magik                | .magik               |          |   ✓    |
 | make                 | .mk                  |          |   ✓    |
-| objc                 | .m                   |          |   ✓    |
-| ocaml                | .ml                  |    ✓     |   ✓    |
+| make                 | Makefile             |          |   ✓    |
+| markdown             | .markdown            |          |   ✓    |
+| markdown             | .md                  |          |   ✓    |
+| matlab               | .m                   |          |   ✓    |
+| matlab               | .mat                 |          |   ✓    |
+| mermaid              | .mermaid             |          |   ✓    |
+| meson                | meson.build          |          |   ✓    |
+| ninja                | .ninja               |          |   ✓    |
+| nix                  | .nix                 |          |   ✓    |
+| nqc                  | .nqc                 |          |   ✓    |
+| objc                 | .mm                  |          |   ✓    |
+| odin                 | .odin                |          |   ✓    |
+| org                  | .org                 |          |   ✓    |
+| pascal               | .pas                 |          |   ✓    |
+| pascal               | .pp                  |          |   ✓    |
+| pem                  | .pem                 |          |   ✓    |
 | perl                 | .pl                  |          |   ✓    |
+| perl                 | .pm                  |          |   ✓    |
+| pgn                  | .pgn                 |          |   ✓    |
 | php                  | .php                 |    ✓     |   ✓    |
+| po                   | .po                  |          |   ✓    |
+| po                   | .pot                 |          |   ✓    |
+| pony                 | .pony                |    ✓     |   ✓    |
+| powershell           | .ps1                 |          |   ✓    |
+| powershell           | .psm1                |          |   ✓    |
+| printf               | .printf              |          |   ✓    |
+| prisma               | .prisma              |          |   ✓    |
+| properties           | .properties          |    ✓     |   ✓    |
+| prql                 | .prql                |          |   ✓    |
+| proto                | .proto               |          |   ✓    |
 | python               | .py                  |    ✓     |   ✓    |
-| ql                   | .ql                  |    ✓     |   ✓    |
-| r                    | .R                   |          |   ✓    |
+| python               | .pyi                 |    ✓     |   ✓    |
+| python               | .pyx                 |    ✓     |   ✓    |
+| qmldir               | qmldir               |          |   ✓    |
+| qmljs                | .qml                 |          |   ✓    |
 | r                    | .r                   |          |   ✓    |
+| racket               | .rkt                 |          |   ✓    |
 | regex                | .regex               |          |   ✓    |
+| rego                 | .rego                |          |   ✓    |
+| requirements         | requirements.txt     |          |   ✓    |
 | rst                  | .rst                 |          |   ✓    |
 | ruby                 | .rb                  |    ✓     |   ✓    |
 | rust                 | .rs                  |    ✓     |   ✓    |
-| scala                | .scala               |          |   ✓    |
+| scala                | .scala               |    ✓     |   ✓    |
+| scheme               | .scm                 |          |   ✓    |
+| scss                 | .scss                |          |   ✓    |
+| sexp                 | .sexp                |          |   ✓    |
+| sml                  | .sml                 |          |   ✓    |
+| solidity             | .sol                 |          |   ✓    |
+| sparql               | .rq                  |          |   ✓    |
 | sql                  | .sql                 |          |   ✓    |
-| sqlite               | .sqlite              |          |   ✓    |
+| squirrel             | .nut                 |          |   ✓    |
+| starlark             | .bzl                 |          |   ✓    |
+| strace               | .strace              |          |   ✓    |
+| supercollider        | .sc                  |          |   ✓    |
+| svelte               | .svelte              |          |   ✓    |
+| swift                | .swift               |    ✓     |   ✓    |
+| systemrdl            | .rdl                 |          |   ✓    |
+| tablegen             | .td                  |          |   ✓    |
+| templ                | .templ               |          |   ✓    |
+| thrift               | .thrift              |          |   ✓    |
+| tiger                | .tig                 |          |   ✓    |
+| todotxt              | .txt                 |          |   ✓    |
 | toml                 | .toml                |          |   ✓    |
-| tsq                  | .tsq                 |          |   ✓    |
+| tsx                  | .tsx                 |    ✓     |   ✓    |
+| turtle               | .ttl                 |          |   ✓    |
+| twig                 | .twig                |          |   ✓    |
 | typescript           | .ts                  |    ✓     |   ✓    |
-| typescript           | .tsx                 |    ✓     |   ✓    |
+| typst                | .typ                 |          |   ✓    |
+| usd                  | .usda                |          |   ✓    |
+| vala                 | .vala                |          |   ✓    |
+| verilog              | .v                   |          |   ✓    |
+| vhdl                 | .vhd                 |          |   ✓    |
+| vhdl                 | .vhdl                |          |   ✓    |
+| wat                  | .wat                 |          |   ✓    |
+| webgpu               | .wgsl                |          |   ✓    |
+| xml                  | .svg                 |          |   ✓    |
+| xml                  | .xml                 |          |   ✓    |
+| xml                  | .xml.erb             |          |   ✓    |
 | yaml                 | .yaml                |          |   ✓    |
+| yaml                 | .yml                 |          |   ✓    |
+| yang                 | .yang                |          |   ✓    |
+| yuck                 | .yuck                |          |   ✓    |
+| zig                  | .zig                 |          |   ✓    |
 
 <!--[[[end]]]-->
 
