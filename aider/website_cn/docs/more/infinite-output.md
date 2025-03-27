@@ -15,9 +15,11 @@ Aider v0.58.0
 主模型: claude-3-5-sonnet-20240620 支持差异编辑格式、提示缓存和无限输出
 ```
 
-支持预填充的模型可以被设定为从特定文本开始响应。当Aider从模型收集代码编辑遇到输出令牌限制时，它会用部分响应预填充发起新的LLM请求，提示模型从断点处继续生成内容。这种预填充机制可以重复进行，从而实现超长输出。跨越这些输出限制边界的文本拼接需要一些启发式方法，但通常相当可靠。
+支持预填充的模型可以被设定为从特定文本开始响应。您可以"把话放到模型嘴里"，而它会从那一点继续生成文本。
 
-目前支持"无限输出"的预填充模型包括：
+当Aider从模型收集代码编辑遇到输出令牌限制时，它会用部分响应预填充发起新的LLM请求，提示模型从断点处继续生成内容。这种预填充机制可以重复进行，从而实现超长输出。跨越这些输出限制边界的文本拼接需要一些启发式方法，但通常相当可靠。
+
+Aider对支持"预填充"的模型提供"无限输出"功能，例如：
 
 <!--[[[cog
 import requests
@@ -38,11 +40,17 @@ cog.out(model_list)
 ]]]-->
 - anthropic.claude-3-5-haiku-20241022-v1:0
 - anthropic.claude-3-5-sonnet-20241022-v2:0
+- anthropic.claude-3-7-sonnet-20250219-v1:0
 - claude-3-5-haiku-20241022
+- claude-3-5-haiku-latest
 - claude-3-5-sonnet-20240620
 - claude-3-5-sonnet-20241022
+- claude-3-5-sonnet-latest
+- claude-3-7-sonnet-20250219
+- claude-3-7-sonnet-latest
 - claude-3-haiku-20240307
 - claude-3-opus-20240229
+- claude-3-opus-latest
 - claude-3-sonnet-20240229
 - codestral/codestral-2405
 - codestral/codestral-latest
@@ -74,15 +82,18 @@ cog.out(model_list)
 - mistral/pixtral-large-2411
 - mistral/pixtral-large-latest
 - openrouter/anthropic/claude-3.5-sonnet
+- openrouter/anthropic/claude-3.7-sonnet
 - openrouter/deepseek/deepseek-r1
 - us.anthropic.claude-3-5-haiku-20241022-v1:0
 - us.anthropic.claude-3-5-sonnet-20241022-v2:0
+- us.anthropic.claude-3-7-sonnet-20250219-v1:0
 - vertex_ai/claude-3-5-haiku
 - vertex_ai/claude-3-5-haiku@20241022
 - vertex_ai/claude-3-5-sonnet
 - vertex_ai/claude-3-5-sonnet-v2
 - vertex_ai/claude-3-5-sonnet-v2@20241022
 - vertex_ai/claude-3-5-sonnet@20240620
+- vertex_ai/claude-3-7-sonnet@20250219
 - vertex_ai/claude-3-haiku
 - vertex_ai/claude-3-haiku@20240307
 - vertex_ai/claude-3-opus

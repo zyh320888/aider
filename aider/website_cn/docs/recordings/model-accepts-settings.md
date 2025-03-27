@@ -1,12 +1,12 @@
 ---
-parent: Screen recordings
+parent: 屏幕录制
 nav_order: 1
 layout: minimal
 highlight_image: /assets/recordings.jpg
-description: Watch the implementation of a warning system that alerts users when they try to apply reasoning settings to models that don't support them. Includes adding model metadata, confirmation dialogs, refactoring, and comprehensive test coverage.
+description: 观看实现一个警告系统的过程，该系统在用户尝试将推理设置应用于不支持这些设置的模型时发出警告。包括添加模型元数据、确认对话框、重构和全面的测试覆盖。
 ---
 
-# Warn when users apply unsupported reasoning settings
+# 用户应用不支持的推理设置时发出警告
 
 <script>
 const recording_id = "model-accepts-settings";
@@ -15,52 +15,52 @@ const recording_url = "https://gist.githubusercontent.com/paul-gauthier/66b1b5aa
 
 {% include recording.md %}
 
-## Commentary
+## 解说
 
-- 0:01 Users sometimes run aider with "reasoning" settings that aren't supported by the model they're using. This can cause LLM API calls to completely fail, with non-specific error messages from the API provider. We're going to warn users up front to prevent this.
-- 0:25 Ok, let's ask aider to add a new model setting where we can note which reasoning settings it supports. And then print a warning if the user tries to apply an unsupported setting.
-- 1:30 Looks like it's including some extra changes we don't want.
-- 1:45 Let's have a look at the models code and clean up some stray lines.
-- 2:00 It also made the warning logic too conservative. We want to warn unless the setting is explicitly known to be supported.
-- 3:00 Ok, good. Now lets add a setting to silence these warnings for power users who are doing something intentional.
-- 3:45 Now we need to update the database of model settings to annotate which models support which reasoning settings. We'll start with the code that handles "fallback" settings for known models on unknown providers.
-- 4:45 Oh, we forgot to give aider the actual file with that code! Aider asks to see it.
-- 5:00 Ok, we've confused aider by asking it to change code it couldn't see.
-- 5:10 Let's clear the chat and refine the prompt and try again.
-- 6:00 Ok, looks good. Let's move on and update the full model settings database YAML file. Each main model like "o1" appears here from many providers, like OpenAI, OpenRouter, etc. We want to update them all.
-- 7:43 Let's interrupt and refine the prompt to be more clear about which models to update.
-- 9:20 Looks good. Let's review the YAML file and eyeball all the relevant models.
-- 10:20 Now let's do some manual testing.
-- 10:41 Ok, it should not be warning us about using "thinking tokens" with Sonnet 3.7.
-- 10:55 Let's see if aider can spot the problem?
-- 11:28 That doesn't sound like a promising solution. Let's add more of the relevant code, clear history and try again.
-- 12:00 Ok, let's try aider's proposed solution.
-- 12:32 And see if it worked... Nope! Still getting the unneeded warning. Undo that change!
-- 12:48 Time for some manual print debugging.
-- 13:00 It seems like the "accept_settings" value is not being set?
-- 14:30 Aha! I have a local model settings file for Sonnet which overrides aider's built in settings. And we did not update it. Let's add "accepts_settings" there.
-- 14:45 That was the problem, it wasn't a bug.
-- 14:59 Ok, let's add test coverage for all this stuff.
-- 15:09 And while aider writes tests, let's use "git diff" to review all the changes we've made.
-- 15:34 Aider is done writing tests, let's try them.
-- 15:44 One passed, one failed. Let's eyeball the passing test first.
-- 16:04 And let's see if aider can fix the failing test.
-- 16:14 Aider needs to see another file, which makes sense.
-- 16:29 It's found the problem, but is trying to "fix" the code. We want it to fix the test.
-- 16:47 Ok, tests are passing.
-- 16:55 We should stop and ask the user "are you sure?", not just flash a warning if they're about to break their API calls.
-- 17:59 Ok, that confirmation dialog looks good.
-- 18:35 This code is a little bit repetitive. Let's do a bit of refactoring.
-- 19:44 Sonnet is messing up the code editing instructions, so aider is retrying.
-- 19:54 Let's clear the chat history and try again.
-- 20:25 Are tests still passing after the refactor?
-- 20:55 Tests passed, good. Let's tweak the warning text.
-- 21:10 And now let's have aider update the docs to explain these changes.
-- 22:32 Let's proofread and edit the updated docs.
-- 24:25 And a "git diff" of all the docs changes to do a final check.
-- 24:56 Let's have aider update the project's HISTORY file.
-- 25:35 We can refine the HISTORY entries a bit.
-- 26:20 All done!
+- 0:01 用户有时会使用"推理"设置运行aider，但这些设置不被他们使用的模型所支持。这可能导致LLM API调用完全失败，并显示来自API提供商的非特定错误消息。我们将提前警告用户以防止这种情况。
+- 0:25 好的，让我们请aider添加一个新的模型设置，我们可以在其中注明它支持哪些推理设置。然后，如果用户尝试应用不支持的设置，就打印一个警告。
+- 1:30 看起来它包含了一些我们不需要的额外更改。
+- 1:45 让我们看一下模型代码并清理一些多余的行。
+- 2:00 警告逻辑太保守了。我们希望在设置未明确知道被支持时发出警告。
+- 3:00 好的。现在让我们为高级用户添加一个设置，以便在他们故意这样做时可以静默这些警告。
+- 3:45 现在我们需要更新模型设置数据库，注明哪些模型支持哪些推理设置。我们将从处理已知模型在未知提供商上的"回退"设置的代码开始。
+- 4:45 哦，我们忘了给aider提供包含该代码的实际文件！Aider请求查看它。
+- 5:00 好的，我们通过要求它更改它看不到的代码而让aider感到困惑。
+- 5:10 让我们清除聊天记录并完善提示，再试一次。
+- 6:00 看起来不错。让我们继续更新完整的模型设置数据库YAML文件。像"o1"这样的每个主要模型都会从多个提供商出现，如OpenAI、OpenRouter等。我们想要更新所有这些。
+- 7:43 让我们打断并完善提示，以便更清楚地说明要更新哪些模型。
+- 9:20 看起来不错。让我们检查YAML文件并快速浏览所有相关模型。
+- 10:20 现在让我们做一些手动测试。
+- 10:41 好的，它不应该警告我们使用Sonnet 3.7的"思考标记"。
+- 10:55 让我们看看aider能否发现问题？
+- 11:28 这听起来不像是一个有希望的解决方案。让我们添加更多相关代码，清除历史记录并再次尝试。
+- 12:00 好的，让我们尝试aider提出的解决方案。
+- 12:32 看看它是否有效... 不行！仍然收到不必要的警告。撤销那个更改！
+- 12:48 是时候进行一些手动打印调试了。
+- 13:00 似乎"accept_settings"值未被设置？
+- 14:30 啊哈！我有一个Sonnet的本地模型设置文件，它覆盖了aider内置的设置。我们没有更新它。让我们在那里添加"accepts_settings"。
+- 14:45 那是问题所在，这不是一个程序错误。
+- 14:59 好的，让我们为所有这些内容添加测试覆盖。
+- 15:09 当aider编写测试时，让我们使用"git diff"查看我们所做的所有更改。
+- 15:34 Aider已完成编写测试，让我们尝试运行它们。
+- 15:44 一个通过，一个失败。让我们先看一下通过的测试。
+- 16:04 让我们看看aider能否修复失败的测试。
+- 16:14 Aider需要查看另一个文件，这很合理。
+- 16:29 它找到了问题，但正在尝试"修复"代码。我们希望它修复测试。
+- 16:47 好的，测试现在通过了。
+- 16:55 当用户即将破坏他们的API调用时，我们应该停下来询问用户"你确定吗？"，而不只是闪现一个警告。
+- 17:59 好的，确认对话框看起来不错。
+- 18:35 这段代码有点重复。让我们进行一些重构。
+- 19:44 Sonnet搞乱了代码编辑指令，因此aider正在重试。
+- 19:54 让我们清除聊天历史并再次尝试。
+- 20:25 重构后测试是否仍然通过？
+- 20:55 测试通过了，很好。让我们调整警告文本。
+- 21:10 现在让我们请aider更新文档以解释这些更改。
+- 22:32 让我们校对并编辑更新的文档。
+- 24:25 以及对所有文档更改进行"git diff"，进行最终检查。
+- 24:56 让我们请aider更新项目的HISTORY文件。
+- 25:35 我们可以稍微优化HISTORY条目。
+- 26:20 全部完成！
 
 
 

@@ -13,7 +13,7 @@ highlight_image: /assets/recordings.jpg
 这些视频包含了对aider使用方式的解说，
 可能会为您使用aider提供一些灵感。
 
-{% assign sorted_pages = site.pages | where: "parent", "Screen recordings" | sort: "nav_order" %}
+{% assign sorted_pages = site.pages | where: "parent", "屏幕录制" | sort: "nav_order" %}
 {% for page in sorted_pages %}
 - [{{ page.title }}]({{ page.url | relative_url }}) - {{ page.description }}
 {% endfor %}

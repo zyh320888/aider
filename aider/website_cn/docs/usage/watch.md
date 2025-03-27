@@ -1,17 +1,17 @@
 ---
-title: Aider in your IDE
+title: 在IDE中使用Aider
 #highlight_image: /assets/browser.jpg
 parent: 使用指南
 nav_order: 750
-description: Aider can watch your files and respond to AI comments you add in your favorite IDE or text editor.
+description: Aider可以监控您的文件并响应您在喜欢的IDE或文本编辑器中添加的AI注释。
 ---
 
-# Aider in your IDE
+# 在IDE中使用Aider
 
 <div class="video-container">
   <video controls loop poster="/assets/watch.jpg">
     <source src="/assets/watch.mp4" type="video/mp4">
-    <a href="/assets/watch.mp4">Aider browser UI demo video</a>
+    <a href="/assets/watch.mp4">Aider浏览器UI演示视频</a>
   </video>
 </div>
 
@@ -32,45 +32,42 @@ description: Aider can watch your files and respond to AI comments you add in yo
 }
 </style>
 
-## AI comments
+## AI注释
 
-If you run aider with `--watch-files`, it will watch all files in your repo
-and look for any AI coding instructions you add using your favorite IDE or text editor.
+如果您使用`--watch-files`参数运行aider，它将监控您代码库中的所有文件，并查找您通过喜欢的IDE或文本编辑器添加的任何AI编码指令。
 
-Specifically, aider looks for one-liner comments (# ... or // ...) that either start or end with `AI`, `AI!` or `AI?` like these:
+具体来说，aider会查找以`AI`、`AI!`或`AI?`开头或结尾的单行注释（# ... 或 // ...），如下所示：
 
 ```python
 # Make a snake game. AI!
 # What is the purpose of this method AI?
 ```
 
-Or in `//` comment languages...
+或者在使用`//`注释的语言中...
 
 ```js
 // Write a protein folding prediction engine. AI!
 ```
 
-Aider will take note of all the comments that start or end with `AI`.
-Comments that include `AI!` with an exclamation point or `AI?` with a question
-mark are special.
-They trigger aider to take action to collect *all* the AI comments and use them
-as your instructions.
+Aider会记录所有以`AI`开头或结尾的注释。
+包含带感叹号的`AI!`或带问号的`AI?`的注释是特殊的。
+它们会触发aider采取行动，收集*所有*AI注释并将它们用作您的指令。
 
-- `AI!` triggers aider to make changes to your code.
-- `AI?` triggers aider to answer your question.
+- `AI!`触发aider对您的代码进行更改。
+- `AI?`触发aider回答您的问题。
 
-See the demo video above that shows aider working with AI comments in VSCode.
+观看上方的演示视频，展示了aider在VSCode中处理AI注释的方式。
 
 
-## Example
+## 示例
 
-For example, if you included this AI comment in your code:
+例如，如果您在代码中包含这样的AI注释：
 
 ```js
 function factorial(n) // Implement this. AI!
 ```
 
-Then aider would update the file and implement the function:
+那么aider会更新文件并实现该函数：
 
 ```js
 function factorial(n) {
@@ -82,28 +79,26 @@ function factorial(n) {
 }
 ```
 
-## Comment styles
+## 注释样式
 
-Aider only watches for these types of **one-liner** comments:
+Aider只监控这些类型的**单行**注释：
 
 ```
-# Python and bash style
-// Javascript style
--- SQL style
+# Python和bash风格
+// Javascript风格
+-- SQL风格
 ```
 
-Aider will look for those comment types in all files.
-You can use them into any code file you're editing, even if they aren't the
-correct comment syntax for that language.
+Aider会在所有文件中查找这些注释类型。
+您可以在编辑的任何代码文件中使用它们，即使它们不是该语言正确的注释语法。
 
-## Multiple uses
+## 多种用途
 
-This capability is quite flexible and powerful, and can be used in many ways.
+这一功能非常灵活和强大，可以以多种方式使用。
 
-### In-context instructions
+### 上下文指令
 
-You can add an AI comment in the function you want changed,
-explaining the change request in-context right where you want the changes.
+您可以在想要更改的函数中添加AI注释，在您希望进行更改的地方直接在上下文中解释更改请求。
 
 ```javascript
 app.get('/sqrt/:n', (req, res) => {
@@ -116,13 +111,11 @@ app.get('/sqrt/:n', (req, res) => {
 });
 ```
 
-### Multiple comments
+### 多条注释
 
-You can add multiple `AI` comments without the `!`,
-before triggering aider with a final `AI!`.
-Also keep in mind that you can spread the AI comments across
-multiple files, if you want to coordinate changes in multiple places.
-Just use `AI!` last, to trigger aider.
+您可以添加多条不带`!`的`AI`注释，最后用一个`AI!`触发aider。
+同时请记住，如果您想协调多处的更改，可以在多个文件中分散AI注释。
+只需在最后使用`AI!`来触发aider。
 
 ```python
 @app.route('/factorial/<int:n>')
@@ -141,11 +134,10 @@ def factorial(n):
     return jsonify(result=result)
 ```
 
-### Long form instructions
+### 长格式指令
 
-You can add a block of comments, with longer instructions.
-Just be sure to start or end one of the lines with `AI` or `AI!` to draw
-aider's attention to the block.
+您可以添加一块注释，包含更长的指令。
+只需确保其中一行以`AI`或`AI!`开头或结尾，以引起aider的注意。
 
 ```python
 # Make these changes: AI!
@@ -158,14 +150,12 @@ if __name__ == "__main__":
     app.run(debug=True)
 ```
 
-### Add a file to the aider chat
+### 将文件添加到aider聊天
 
-Rather than using `/add` to add a file inside the aider chat, you can
-simply put an `#AI` comment in it and save the file.
-You can undo/remove the comment immediately if you like, the file
-will still be added to the aider chat.
+您不必在aider聊天中使用`/add`来添加文件，只需在文件中放置一个`#AI`注释并保存文件即可。
+如果您愿意，可以立即撤销/删除该注释，文件仍将添加到aider聊天中。
 
-## Also use aider chat in the terminal
+## 同时使用终端中的aider聊天
 
 It can be really helpful to get a change started with AI comments.
 But sometimes you want to build on or refine those changes.
@@ -252,14 +242,14 @@ def factorial(n):
 As you use aider with your chosen LLM, you can develop a sense for how
 explicit you need to make your AI comments.
 
-## Behind the scenes
+## 幕后
 
-Aider sends your AI comments to the LLM with the
+Aider将您的AI注释发送给LLM，使用
 [repo map](https://aider.chat/docs/repomap.html)
-and all the other code context you've added to the chat.
+和所有其他代码上下文添加到聊天中。
 
-It also pulls out and highlights the AI comments with specific context, showing the LLM
-exactly how they fit into the code base.
+它还提取并突出显示AI注释，显示LLM
+确切如何将它们融入代码库。
 
 ```
 The "AI" comments below marked with █ can be found in the code files I've shared with you.
