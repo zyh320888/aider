@@ -157,57 +157,54 @@ if __name__ == "__main__":
 
 ## 同时使用终端中的aider聊天
 
-It can be really helpful to get a change started with AI comments.
-But sometimes you want to build on or refine those changes.
-You can of course continue to do that with AI comments,
-but it can sometimes be effective to switch over to the aider terminal chat.
-The chat has the history of the AI comments you just made,
-so you can continue on naturally from there.
+使用AI注释开始更改非常有帮助。
+但有时您希望在此基础上构建或完善这些更改。
+您当然可以继续使用AI注释来完成这些工作，
+但有时切换到aider终端聊天可能更有效。
+聊天中包含您刚刚做出的AI注释的历史，
+所以您可以自然地从那里继续。
 
-You can also use the normal aider chat in your terminal to work with
-many of aider's more advanced features:
+您还可以在终端中使用常规的aider聊天来使用
+aider的许多高级功能：
 
-- Use `/undo` to revert changes you don't like. Although you may also be able to use your IDE's undo function to step back in the file history.
-- Use [chat modes](https://aider.chat/docs/usage/modes.html) to ask questions or get help.
-- Manage the chat context with `/tokens`, `/clear`, `/drop`, `/reset`.
-Adding an AI comment will add the file to the chat.
-Periodically, you may want remove extra context that is no longer needed.
-- [Fix lint and test errors](https://aider.chat/docs/usage/lint-test.html).
-- Run shell commands.
-- Etc.
+- 使用`/undo`撤销您不喜欢的更改。不过您也可能能够使用IDE的撤销功能来回退文件历史。
+- 使用[聊天模式](https://aider.chat/docs/usage/modes.html)提问或获取帮助。
+- 使用`/tokens`、`/clear`、`/drop`、`/reset`管理聊天上下文。
+添加AI注释将把文件添加到聊天中。
+定期地，您可能需要移除不再需要的额外上下文。
+- [修复代码检查和测试错误](https://aider.chat/docs/usage/lint-test.html)。
+- 运行shell命令。
+- 等等。
 
 
-## You can be lazy
+## 可以偷懒
 
-The examples above all show AI
-comments with full sentences, proper capitalization, punctuation, etc.
-This was done to help explain how AI comments work, but is not needed in practice.
+上面的例子都展示了完整句子、适当大写、标点符号等的AI注释。
+这样做是为了帮助解释AI注释如何工作，但在实践中并不需要。
 
-Most LLMs are perfectly capable of dealing with ambiguity and
-inferring implied intent.
-This often allows you to be quite lazy with your AI comments.
-In particular, you can start and end comments with lowercase `ai` and `ai!`,
-but you can also be much more terse with the request itself.
-Below are simpler versions of some of the examples given above.
+大多数LLM完全能够处理模糊性并推断隐含的意图。
+这通常允许您在AI注释中相当偷懒。
+特别是，您可以使用小写的`ai`和`ai!`开始和结束注释，
+而且您也可以使请求本身更加简洁。
+以下是上面给出的一些例子的简化版本。
 
-When the context clearly implies the needed action, `ai!` might be all you
-need. For example, to implement a factorial function
-in a program full of other math functions either of these
-approaches would probably work:
+当上下文明确暗示所需操作时，`ai!`可能是您
+唯一需要的。例如，要在充满其他数学函数的程序中实现阶乘函数，
+以下任一方法可能都有效：
 
 ```js
 function factorial(n) // ai!
 ```
 
-Or...
+或者...
 
 ```js
 // add factorial() ai!
 ```
 
-Rather than a long, explicit comment like "Add error handling for NaN and less than zero,"
-you can let aider infer more about the request.
-This simpler comment may be sufficient:
+与其使用"Add error handling for NaN and less than zero"这样长而明确的注释，
+您可以让aider推断出更多关于请求的信息。
+这个简单的注释可能已经足够了：
 
 ```javascript
 app.get('/sqrt/:n', (req, res) => {
@@ -220,7 +217,7 @@ app.get('/sqrt/:n', (req, res) => {
 });
 ```
 
-Similarly, this refactor probably could have been requested with fewer words, like this:
+类似地，这个重构可能可以用更少的词来请求，比如这样：
 
 ```python
 @app.route('/factorial/<int:n>')
@@ -239,8 +236,7 @@ def factorial(n):
     return jsonify(result=result)
 ```
 
-As you use aider with your chosen LLM, you can develop a sense for how
-explicit you need to make your AI comments.
+随着您使用您选择的LLM与aider合作，您可以发展出一种感觉，了解需要多明确地表达您的AI注释。
 
 ## 幕后
 
@@ -277,8 +273,8 @@ todo_app.py:
 
 --------
 
-#### Credits
+#### 致谢
 
-*This feature was inspired by
-the way [Override](https://github.com/oi-overide) watches for file changes
-to find prompts embedded within `//> a specific set of delimiters <//`.*
+*这个功能的灵感来源于
+[Override](https://github.com/oi-overide)监视文件变化
+以查找嵌入在`//> 特定分隔符集 <//`中的提示的方式。*

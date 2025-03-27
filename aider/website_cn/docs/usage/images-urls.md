@@ -1,47 +1,45 @@
 ---
 parent: 使用指南
 nav_order: 700
-description: Add images and web pages to the aider coding chat.
+description: 在aider编码聊天中添加图片和网页。
 ---
 
-# Images & web pages
+# 图片和网页
 
-You can add images and URLs to the aider chat.
+您可以在aider聊天中添加图片和URL链接。
 
-## Images
+## 图片
 
-Aider supports working with image files for many vision-capable models
-like GPT-4o and Claude 3.5 Sonnet.
-Adding images to a chat can be helpful in many situations:
+Aider支持许多具有视觉能力的模型处理图像文件，
+比如GPT-4o和Claude 3.7 Sonnet。
+在多种情况下，向聊天添加图片可能会很有帮助：
 
-- Add screenshots of web pages or UIs that you want aider to build or modify.
-- Show aider a mockup of a UI you want to build.
-- Screenshot an error message that is otherwise hard to copy & paste as text.
-- Etc.
+- 添加您想要aider构建或修改的网页或UI的截图。
+- 向aider展示您想要构建的UI模型。
+- 截取难以复制粘贴为文本的错误信息。
+- 等等。
 
-You can add images to the chat just like you would
-add any other file:
+您可以像添加任何其他文件一样向聊天添加图片：
 
-- Use `/add <image-filename>` from within the chat
-- Use `/paste` to paste an image from your clipboard into the chat.
-- Launch aider with image filenames on the command line: `aider <image-filename>` along with any other command line arguments you need.
+- 在聊天中使用`/add <图片文件名>`
+- 使用`/paste`将剪贴板中的图片粘贴到聊天中。
+- 在命令行中使用图片文件名启动aider：`aider <图片文件名>`，以及您需要的任何其他命令行参数。
 
-## Web pages
+## 网页
 
-Aider can scrape the text from URLs and add it to the chat.
-This can be helpful to:
+Aider可以从URL中抓取文本并将其添加到聊天中。
+这在以下情况下可能会有所帮助：
 
-- Include documentation pages for less popular APIs.
-- Include the latest docs for libraries or packages that are newer than the model's training cutoff date.
-- Etc.
+- 包含不太流行的API的文档页面。
+- 包含比模型训练截止日期更新的库或包的最新文档。
+- 等等。
 
-To add URLs to the chat:
+要向聊天添加URL：
 
-- Use `/web <url>`
-- Just paste the URL into the chat and aider will ask if you want to add it.
+- 使用`/web <url>`
+- 只需将URL粘贴到聊天中，aider会询问您是否要添加它。
 
-You can also scrape web pages from the command line to see the markdown version that aider produces:
-
+您还可以从命令行抓取网页，以查看aider生成的markdown版本：
 
 ```
 python -m aider.scrape https://aider.chat/docs/usage/tips.html

@@ -1,7 +1,7 @@
 ---
 parent: 使用指南
 nav_order: 50
-description: Control aider with in-chat commands like /add, /model, etc.
+description: 使用聊天命令如/add, /model等来控制aider
 ---
 
 # 聊天命令
@@ -44,7 +44,7 @@ cog.out(get_help_md())
 | **/ls** | 列出所有已知文件并标记哪些包含在聊天会话中 |
 | **/map** | 打印当前代码仓库地图 |
 | **/map-refresh** | 强制刷新代码仓库地图 |
-| **/model** | 切换新的LLM模型 |
+| **/model** | 切换主模型为新的LLM |
 | **/models** | 搜索可用模型列表 |
 | **/multiline-mode** | 切换多行模式（交换Enter和Meta+Enter的行为） |
 | **/paste** | 将剪贴板的图像/文本粘贴到聊天。可为图像指定名称 |
@@ -97,6 +97,7 @@ cog.out(get_help_md())
 - `Ctrl-N` : 查看下一条历史
 - `Ctrl-P` : 查看上一条历史
 - `Ctrl-R` : 历史命令反向搜索
+- `Ctrl-Y` : 粘贴(yank)之前剪切的文本
 
 
 ### Vi 模式
