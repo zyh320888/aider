@@ -1,44 +1,42 @@
 ---
 parent: Configuration
 nav_order: 100
-description: How to configure a custom editor for aider's /editor command
+description: 如何为aider的/editor命令配置自定义编辑器
 ---
 
-# Editor configuration
+# 编辑器配置
 
-Aider allows you to configure your preferred text editor for use with the `/editor` command. The editor must be capable of running in "blocking mode", meaning the command line will wait until you close the editor before proceeding.
+Aider允许您配置首选文本编辑器以与`/editor`命令一起使用。编辑器必须能够在"阻塞模式"下运行，这意味着命令行将等待直到您关闭编辑器后才继续。
 
-## Using `--editor`
+## 使用`--editor`
 
-You can specify the text editor with the `--editor` switch or using
-`editor:` in aider's
-[yaml config file](https://aider.chat/docs/config/aider_conf.html).
+您可以使用`--editor`开关或在aider的[yaml配置文件](https://aider.chat/docs/config/aider_conf.html)中使用`editor:`来指定文本编辑器。
 
-## Environment variables
+## 环境变量
 
-Aider checks the following environment variables in order to determine which editor to use:
+Aider按以下顺序检查环境变量以确定使用哪个编辑器：
 
 1. `AIDER_EDITOR`
 2. `VISUAL`
 3. `EDITOR`
 
-## Default behavior
+## 默认行为
 
-If no editor is configured, aider will use these platform-specific defaults:
+如果未配置编辑器，aider将使用这些特定平台的默认值：
 
 - Windows: `notepad`
 - macOS: `vim`
 - Linux/Unix: `vi`
 
-## Using a custom editor
+## 使用自定义编辑器
 
-You can set your preferred editor in your shell's configuration file (e.g., `.bashrc`, `.zshrc`):
+您可以在shell的配置文件中设置您首选的编辑器（例如，`.bashrc`，`.zshrc`）：
 
 ```bash
 export AIDER_EDITOR=vim
 ```
 
-## Popular Editors by Platform
+## 按平台划分的流行编辑器
 
 ### macOS
 
@@ -111,17 +109,17 @@ export AIDER_EDITOR=vim
    set AIDER_EDITOR="notepad++ -multiInst -notabbar -nosession -noPlugin -waitForClose"
    ```
 
-## Editor command arguments
+## 编辑器命令参数
 
-Some editors require specific command-line arguments to operate in blocking mode. The `--wait` flag (or equivalent) is commonly used to make the editor block until the file is closed.
+某些编辑器需要特定的命令行参数才能在阻塞模式下运行。`--wait`标志（或等效标志）通常用于使编辑器阻塞直到文件关闭。
 
-## Troubleshooting
+## 故障排除
 
-If you encounter issues with your editor not blocking (returning to the prompt immediately), verify that:
+如果您遇到编辑器不阻塞（立即返回提示符）的问题，请验证：
 
-1. Your editor supports blocking mode
-2. You've included the necessary command-line arguments for blocking mode
-3. The editor command is properly quoted if it contains spaces or special characters, e.g.:
+1. 您的编辑器支持阻塞模式
+2. 您已包含阻塞模式所需的命令行参数
+3. 如果编辑器命令包含空格或特殊字符，则编辑器命令已正确引用，例如：
    ```bash
    export AIDER_EDITOR="code --wait"
    ```

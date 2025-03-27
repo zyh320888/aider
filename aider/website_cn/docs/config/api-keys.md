@@ -1,72 +1,68 @@
 ---
 parent: Configuration
 nav_order: 5
-description: Setting API keys for API providers.
+description: 为API提供商设置API密钥。
 ---
 
-# API Keys
+# API密钥
 
-Aider lets you specify API keys in a few ways:
+Aider允许您通过几种方式指定API密钥：
 
-- On the command line
-- As environment variables
-- In a `.env` file
-- In your `.aider.conf.yml` config file
+- 在命令行中
+- 作为环境变量
+- 在`.env`文件中
+- 在您的`.aider.conf.yml`配置文件中
 
 ---
 
-## OpenAI and Anthropic
+## OpenAI和Anthropic
 
-Aider has special support for providing
-OpenAI and Anthropic API keys
-via dedicated switches and configuration options.
-Settings keys for other providers works a bit differently, see below.
+Aider对通过专用开关和配置选项提供
+OpenAI和Anthropic API密钥有特殊支持。
+其他提供商的设置密钥工作方式略有不同，请参见下文。
 
-#### Command line
+#### 命令行
 
-You can set OpenAI and Anthropic API keys via
-[command line switches](/docs/config/options.html#api-keys-and-settings)
-`--openai-api-key` and `--anthropic-api-key`.
+您可以通过[命令行开关](/docs/config/options.html#api-keys-and-settings)
+`--openai-api-key`和`--anthropic-api-key`设置OpenAI和Anthropic API密钥。
 
 
-#### Environment variables or .env file
+#### 环境变量或.env文件
 
-You can also store them in environment variables or a 
-[.env file](/docs/config/dotenv.html), which also works
-for every API provider:
+您也可以将它们存储在环境变量或[.env文件](/docs/config/dotenv.html)中，
+这对每个API提供商都有效：
 
 ```
-OPENAI_API_KEY=<key>
-ANTHROPIC_API_KEY=<key>
+OPENAI_API_KEY=<密钥>
+ANTHROPIC_API_KEY=<密钥>
 ```
 
-#### Yaml config file
-You can also set those API keys via special entries in the
-[yaml config file](/docs/config/aider_conf.html), like this:
+#### Yaml配置文件
+您还可以通过[yaml配置文件](/docs/config/aider_conf.html)中的特殊条目设置这些API密钥，如下所示：
 
 ```yaml
-openai-api-key: <key>
-anthropic-api-key: <key>
+openai-api-key: <密钥>
+anthropic-api-key: <密钥>
 ```
 
 
 ---
 
-## Other API providers
+## 其他API提供商
 
-All other LLM providers can use one of these other methods to set their API keys.
+所有其他LLM提供商可以使用以下方法之一设置他们的API密钥。
 
-#### Command line
+#### 命令行
 {: .no_toc }
 
-Use `--api-key provider=<key>` which has the effect of setting the environment variable `PROVIDER_API_KEY=<key>`. So `--api-key gemini=xxx` would set `GEMINI_API_KEY=xxx`.
+使用`--api-key provider=<密钥>`，这将设置环境变量`PROVIDER_API_KEY=<密钥>`。因此，`--api-key gemini=xxx`将设置`GEMINI_API_KEY=xxx`。
 
-#### Environment variables or .env file
+#### 环境变量或.env文件
 {: .no_toc }
 
-You can set API keys in environment variables.
-The [.env file](/docs/config/dotenv.html)
-is a great place to store your API keys and other provider API environment variables:
+您可以在环境变量中设置API密钥。
+[.env文件](/docs/config/dotenv.html)
+是存储API密钥和其他提供商API环境变量的好地方：
 
 ```bash
 GEMINI_API_KEY=foo
@@ -74,17 +70,16 @@ OPENROUTER_API_KEY=bar
 DEEPSEEK_API_KEY=baz
 ```
 
-#### Yaml config file
+#### Yaml配置文件
 
 
-You can also set API keys in the 
-[`.aider.conf.yml` file](/docs/config/aider_conf.html)
-via the `api-key` entry:
+您还可以通过[`.aider.conf.yml`文件](/docs/config/aider_conf.html)
+中的`api-key`条目设置API密钥：
 
 ```
 api-key:
-- gemini=foo      # Sets env var GEMINI_API_KEY=foo
-- openrouter=bar  # Sets env var OPENROUTER_API_KEY=bar
-- deepseek=baz    # Sets env var DEEPSEEK_API_KEY=baz
+- gemini=foo      # 设置环境变量 GEMINI_API_KEY=foo
+- openrouter=bar  # 设置环境变量 OPENROUTER_API_KEY=bar
+- deepseek=baz    # 设置环境变量 DEEPSEEK_API_KEY=baz
 ```
 

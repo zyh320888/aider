@@ -1,21 +1,21 @@
 ---
 parent: Configuration
 nav_order: 10
-description: Details about all of aider's settings.
+description: 关于aider所有设置的详细信息。
 ---
 
-# Options reference
+# 选项参考
 {: .no_toc }
 
-You can use `aider --help` to see all the available options,
-or review them below.
+你可以使用 `aider --help` 查看所有可用选项，
+或在下面查看它们。
 
 - TOC
 {:toc}
 
 {% include keys.md %}
 
-## Usage summary
+## 使用摘要
 
 <!--[[[cog
 from aider.args import get_md_help
@@ -83,688 +83,688 @@ usage: aider [-h] [--model] [--opus] [--sonnet] [--haiku] [--4]
 
 ```
 
-## options:
+## 选项：
 
 ### `--help`
-show this help message and exit  
-Aliases:
+显示帮助信息并退出  
+别名：
   - `-h`
   - `--help`
 
-## Main model:
+## 主要模型：
 
 ### `--model MODEL`
-Specify the model to use for the main chat  
-Environment variable: `AIDER_MODEL`  
+指定用于主聊天的模型  
+环境变量：`AIDER_MODEL`  
 
 ### `--opus`
-Use claude-3-opus-20240229 model for the main chat  
-Environment variable: `AIDER_OPUS`  
+使用 claude-3-opus-20240229 模型进行主聊天  
+环境变量：`AIDER_OPUS`  
 
 ### `--sonnet`
-Use claude-3-5-sonnet-20241022 model for the main chat  
-Environment variable: `AIDER_SONNET`  
+使用 claude-3-5-sonnet-20241022 模型进行主聊天  
+环境变量：`AIDER_SONNET`  
 
 ### `--haiku`
-Use claude-3-5-haiku-20241022 model for the main chat  
-Environment variable: `AIDER_HAIKU`  
+使用 claude-3-5-haiku-20241022 模型进行主聊天  
+环境变量：`AIDER_HAIKU`  
 
 ### `--4`
-Use gpt-4-0613 model for the main chat  
-Environment variable: `AIDER_4`  
-Aliases:
+使用 gpt-4-0613 模型进行主聊天  
+环境变量：`AIDER_4`  
+别名：
   - `--4`
   - `-4`
 
 ### `--4o`
-Use gpt-4o model for the main chat  
-Environment variable: `AIDER_4O`  
+使用 gpt-4o 模型进行主聊天  
+环境变量：`AIDER_4O`  
 
 ### `--mini`
-Use gpt-4o-mini model for the main chat  
-Environment variable: `AIDER_MINI`  
+使用 gpt-4o-mini 模型进行主聊天  
+环境变量：`AIDER_MINI`  
 
 ### `--4-turbo`
-Use gpt-4-1106-preview model for the main chat  
-Environment variable: `AIDER_4_TURBO`  
+使用 gpt-4-1106-preview 模型进行主聊天  
+环境变量：`AIDER_4_TURBO`  
 
 ### `--35turbo`
-Use gpt-3.5-turbo model for the main chat  
-Environment variable: `AIDER_35TURBO`  
-Aliases:
+使用 gpt-3.5-turbo 模型进行主聊天  
+环境变量：`AIDER_35TURBO`  
+别名：
   - `--35turbo`
   - `--35-turbo`
   - `--3`
   - `-3`
 
 ### `--deepseek`
-Use deepseek/deepseek-chat model for the main chat  
-Environment variable: `AIDER_DEEPSEEK`  
+使用 deepseek/deepseek-chat 模型进行主聊天  
+环境变量：`AIDER_DEEPSEEK`  
 
 ### `--o1-mini`
-Use o1-mini model for the main chat  
-Environment variable: `AIDER_O1_MINI`  
+使用 o1-mini 模型进行主聊天  
+环境变量：`AIDER_O1_MINI`  
 
 ### `--o1-preview`
-Use o1-preview model for the main chat  
-Environment variable: `AIDER_O1_PREVIEW`  
+使用 o1-preview 模型进行主聊天  
+环境变量：`AIDER_O1_PREVIEW`  
 
-## API Keys and settings:
+## API 密钥和设置：
 
 ### `--openai-api-key VALUE`
-Specify the OpenAI API key  
-Environment variable: `AIDER_OPENAI_API_KEY`  
+指定 OpenAI API 密钥  
+环境变量：`AIDER_OPENAI_API_KEY`  
 
 ### `--anthropic-api-key VALUE`
-Specify the Anthropic API key  
-Environment variable: `AIDER_ANTHROPIC_API_KEY`  
+指定 Anthropic API 密钥  
+环境变量：`AIDER_ANTHROPIC_API_KEY`  
 
 ### `--openai-api-base VALUE`
-Specify the api base url  
-Environment variable: `AIDER_OPENAI_API_BASE`  
+指定 API 基础 URL  
+环境变量：`AIDER_OPENAI_API_BASE`  
 
 ### `--openai-api-type VALUE`
-(deprecated, use --set-env OPENAI_API_TYPE=<value>)  
-Environment variable: `AIDER_OPENAI_API_TYPE`  
+（已弃用，请使用 --set-env OPENAI_API_TYPE=<value>）  
+环境变量：`AIDER_OPENAI_API_TYPE`  
 
 ### `--openai-api-version VALUE`
-(deprecated, use --set-env OPENAI_API_VERSION=<value>)  
-Environment variable: `AIDER_OPENAI_API_VERSION`  
+（已弃用，请使用 --set-env OPENAI_API_VERSION=<value>）  
+环境变量：`AIDER_OPENAI_API_VERSION`  
 
 ### `--openai-api-deployment-id VALUE`
-(deprecated, use --set-env OPENAI_API_DEPLOYMENT_ID=<value>)  
-Environment variable: `AIDER_OPENAI_API_DEPLOYMENT_ID`  
+（已弃用，请使用 --set-env OPENAI_API_DEPLOYMENT_ID=<value>）  
+环境变量：`AIDER_OPENAI_API_DEPLOYMENT_ID`  
 
 ### `--openai-organization-id VALUE`
-(deprecated, use --set-env OPENAI_ORGANIZATION=<value>)  
-Environment variable: `AIDER_OPENAI_ORGANIZATION_ID`  
+（已弃用，请使用 --set-env OPENAI_ORGANIZATION=<value>）  
+环境变量：`AIDER_OPENAI_ORGANIZATION_ID`  
 
 ### `--set-env ENV_VAR_NAME=value`
-Set an environment variable (to control API settings, can be used multiple times)  
-Default: []  
-Environment variable: `AIDER_SET_ENV`  
+设置环境变量（用于控制 API 设置，可多次使用）  
+默认值：[]  
+环境变量：`AIDER_SET_ENV`  
 
 ### `--api-key PROVIDER=KEY`
-Set an API key for a provider (eg: --api-key provider=<key> sets PROVIDER_API_KEY=<key>)  
-Default: []  
-Environment variable: `AIDER_API_KEY`  
+为提供商设置 API 密钥（例如：--api-key provider=<key> 设置 PROVIDER_API_KEY=<key>）  
+默认值：[]  
+环境变量：`AIDER_API_KEY`  
 
-## Model settings:
+## 模型设置：
 
 ### `--list-models MODEL`
-List known models which match the (partial) MODEL name  
-Environment variable: `AIDER_LIST_MODELS`  
-Aliases:
+列出与（部分）MODEL 名称匹配的已知模型  
+环境变量：`AIDER_LIST_MODELS`  
+别名：
   - `--list-models MODEL`
   - `--models MODEL`
 
 ### `--model-settings-file MODEL_SETTINGS_FILE`
-Specify a file with aider model settings for unknown models  
-Default: .aider.model.settings.yml  
-Environment variable: `AIDER_MODEL_SETTINGS_FILE`  
+指定包含未知模型的 aider 模型设置的文件  
+默认值：.aider.model.settings.yml  
+环境变量：`AIDER_MODEL_SETTINGS_FILE`  
 
 ### `--model-metadata-file MODEL_METADATA_FILE`
-Specify a file with context window and costs for unknown models  
-Default: .aider.model.metadata.json  
-Environment variable: `AIDER_MODEL_METADATA_FILE`  
+指定包含未知模型的上下文窗口和成本的文件  
+默认值：.aider.model.metadata.json  
+环境变量：`AIDER_MODEL_METADATA_FILE`  
 
 ### `--alias ALIAS:MODEL`
-Add a model alias (can be used multiple times)  
-Environment variable: `AIDER_ALIAS`  
+添加模型别名（可多次使用）  
+环境变量：`AIDER_ALIAS`  
 
 ### `--reasoning-effort VALUE`
-Set the reasoning_effort API parameter (default: not set)  
-Environment variable: `AIDER_REASONING_EFFORT`  
+设置 reasoning_effort API 参数（默认：未设置）  
+环境变量：`AIDER_REASONING_EFFORT`  
 
 ### `--verify-ssl`
-Verify the SSL cert when connecting to models (default: True)  
-Default: True  
-Environment variable: `AIDER_VERIFY_SSL`  
-Aliases:
+连接模型时验证 SSL 证书（默认：True）  
+默认值：True  
+环境变量：`AIDER_VERIFY_SSL`  
+别名：
   - `--verify-ssl`
   - `--no-verify-ssl`
 
 ### `--timeout VALUE`
-Timeout in seconds for API calls (default: None)  
-Environment variable: `AIDER_TIMEOUT`  
+API 调用的超时时间（秒）（默认：None）  
+环境变量：`AIDER_TIMEOUT`  
 
 ### `--edit-format EDIT_FORMAT`
-Specify what edit format the LLM should use (default depends on model)  
-Environment variable: `AIDER_EDIT_FORMAT`  
-Aliases:
+指定 LLM 应使用的编辑格式（默认取决于模型）  
+环境变量：`AIDER_EDIT_FORMAT`  
+别名：
   - `--edit-format EDIT_FORMAT`
   - `--chat-mode EDIT_FORMAT`
 
 ### `--architect`
-Use architect edit format for the main chat  
-Environment variable: `AIDER_ARCHITECT`  
+为主聊天使用 architect 编辑格式  
+环境变量：`AIDER_ARCHITECT`  
 
 ### `--weak-model WEAK_MODEL`
-Specify the model to use for commit messages and chat history summarization (default depends on --model)  
-Environment variable: `AIDER_WEAK_MODEL`  
+指定用于提交消息和聊天历史摘要的模型（默认取决于 --model）  
+环境变量：`AIDER_WEAK_MODEL`  
 
 ### `--editor-model EDITOR_MODEL`
-Specify the model to use for editor tasks (default depends on --model)  
-Environment variable: `AIDER_EDITOR_MODEL`  
+指定用于编辑器任务的模型（默认取决于 --model）  
+环境变量：`AIDER_EDITOR_MODEL`  
 
 ### `--editor-edit-format EDITOR_EDIT_FORMAT`
-Specify the edit format for the editor model (default: depends on editor model)  
-Environment variable: `AIDER_EDITOR_EDIT_FORMAT`  
+指定编辑器模型的编辑格式（默认取决于编辑器模型）  
+环境变量：`AIDER_EDITOR_EDIT_FORMAT`  
 
 ### `--show-model-warnings`
-Only work with models that have meta-data available (default: True)  
-Default: True  
-Environment variable: `AIDER_SHOW_MODEL_WARNINGS`  
-Aliases:
+仅使用具有可用元数据的模型（默认：True）  
+默认值：True  
+环境变量：`AIDER_SHOW_MODEL_WARNINGS`  
+别名：
   - `--show-model-warnings`
   - `--no-show-model-warnings`
 
 ### `--max-chat-history-tokens VALUE`
-Soft limit on tokens for chat history, after which summarization begins. If unspecified, defaults to the model's max_chat_history_tokens.  
-Environment variable: `AIDER_MAX_CHAT_HISTORY_TOKENS`  
+聊天历史的软令牌限制，超过此限制后开始摘要。如果未指定，默认为模型的 max_chat_history_tokens。  
+环境变量：`AIDER_MAX_CHAT_HISTORY_TOKENS`  
 
 ## Cache settings:
 
 ### `--cache-prompts`
-Enable caching of prompts (default: False)  
-Default: False  
-Environment variable: `AIDER_CACHE_PROMPTS`  
-Aliases:
+启用提示缓存（默认：False）  
+默认值：False  
+环境变量：`AIDER_CACHE_PROMPTS`  
+别名：
   - `--cache-prompts`
   - `--no-cache-prompts`
 
 ### `--cache-keepalive-pings VALUE`
-Number of times to ping at 5min intervals to keep prompt cache warm (default: 0)  
-Default: 0  
-Environment variable: `AIDER_CACHE_KEEPALIVE_PINGS`  
+以5分钟间隔ping以保持提示缓存热度的次数（默认：0）  
+默认值：0  
+环境变量：`AIDER_CACHE_KEEPALIVE_PINGS`  
 
 ## Repomap settings:
 
 ### `--map-tokens VALUE`
-Suggested number of tokens to use for repo map, use 0 to disable  
-Environment variable: `AIDER_MAP_TOKENS`  
+建议用于仓库映射的令牌数，使用0禁用  
+环境变量：`AIDER_MAP_TOKENS`  
 
 ### `--map-refresh VALUE`
-Control how often the repo map is refreshed. Options: auto, always, files, manual (default: auto)  
-Default: auto  
-Environment variable: `AIDER_MAP_REFRESH`  
+控制仓库映射刷新频率。选项：auto, always, files, manual（默认：auto）  
+默认值：auto  
+环境变量：`AIDER_MAP_REFRESH`  
 
 ### `--map-multiplier-no-files VALUE`
-Multiplier for map tokens when no files are specified (default: 2)  
-Default: 2  
-Environment variable: `AIDER_MAP_MULTIPLIER_NO_FILES`  
+未指定文件时的映射令牌乘数（默认：2）  
+默认值：2  
+环境变量：`AIDER_MAP_MULTIPLIER_NO_FILES`  
 
 ## History Files:
 
 ### `--input-history-file INPUT_HISTORY_FILE`
-Specify the chat input history file (default: .aider.input.history)  
-Default: .aider.input.history  
-Environment variable: `AIDER_INPUT_HISTORY_FILE`  
+指定聊天输入历史文件（默认：.aider.input.history）  
+默认值：.aider.input.history  
+环境变量：`AIDER_INPUT_HISTORY_FILE`  
 
 ### `--chat-history-file CHAT_HISTORY_FILE`
-Specify the chat history file (default: .aider.chat.history.md)  
-Default: .aider.chat.history.md  
-Environment variable: `AIDER_CHAT_HISTORY_FILE`  
+指定聊天历史文件（默认：.aider.chat.history.md）  
+默认值：.aider.chat.history.md  
+环境变量：`AIDER_CHAT_HISTORY_FILE`  
 
 ### `--restore-chat-history`
-Restore the previous chat history messages (default: False)  
-Default: False  
-Environment variable: `AIDER_RESTORE_CHAT_HISTORY`  
-Aliases:
+恢复之前的聊天历史消息（默认：False）  
+默认值：False  
+环境变量：`AIDER_RESTORE_CHAT_HISTORY`  
+别名：
   - `--restore-chat-history`
   - `--no-restore-chat-history`
 
 ### `--llm-history-file LLM_HISTORY_FILE`
-Log the conversation with the LLM to this file (for example, .aider.llm.history)  
-Environment variable: `AIDER_LLM_HISTORY_FILE`  
+将与LLM的对话记录到此文件（例如，.aider.llm.history）  
+环境变量：`AIDER_LLM_HISTORY_FILE`  
 
 ## Output settings:
 
 ### `--dark-mode`
-Use colors suitable for a dark terminal background (default: False)  
-Default: False  
-Environment variable: `AIDER_DARK_MODE`  
+使用适合深色终端背景的颜色（默认：False）  
+默认值：False  
+环境变量：`AIDER_DARK_MODE`  
 
 ### `--light-mode`
-Use colors suitable for a light terminal background (default: False)  
-Default: False  
-Environment variable: `AIDER_LIGHT_MODE`  
+使用适合浅色终端背景的颜色（默认：False）  
+默认值：False  
+环境变量：`AIDER_LIGHT_MODE`  
 
 ### `--pretty`
-Enable/disable pretty, colorized output (default: True)  
-Default: True  
-Environment variable: `AIDER_PRETTY`  
-Aliases:
+启用/禁用美观、彩色输出（默认：True）  
+默认值：True  
+环境变量：`AIDER_PRETTY`  
+别名：
   - `--pretty`
   - `--no-pretty`
 
 ### `--stream`
-Enable/disable streaming responses (default: True)  
-Default: True  
-Environment variable: `AIDER_STREAM`  
-Aliases:
+启用/禁用流式响应（默认：True）  
+默认值：True  
+环境变量：`AIDER_STREAM`  
+别名：
   - `--stream`
   - `--no-stream`
 
 ### `--user-input-color VALUE`
-Set the color for user input (default: #00cc00)  
-Default: #00cc00  
-Environment variable: `AIDER_USER_INPUT_COLOR`  
+设置用户输入的颜色（默认：#00cc00）  
+默认值：#00cc00  
+环境变量：`AIDER_USER_INPUT_COLOR`  
 
 ### `--tool-output-color VALUE`
-Set the color for tool output (default: None)  
-Environment variable: `AIDER_TOOL_OUTPUT_COLOR`  
+设置工具输出的颜色（默认：None）  
+环境变量：`AIDER_TOOL_OUTPUT_COLOR`  
 
 ### `--tool-error-color VALUE`
-Set the color for tool error messages (default: #FF2222)  
-Default: #FF2222  
-Environment variable: `AIDER_TOOL_ERROR_COLOR`  
+设置工具错误消息的颜色（默认：#FF2222）  
+默认值：#FF2222  
+环境变量：`AIDER_TOOL_ERROR_COLOR`  
 
 ### `--tool-warning-color VALUE`
-Set the color for tool warning messages (default: #FFA500)  
-Default: #FFA500  
-Environment variable: `AIDER_TOOL_WARNING_COLOR`  
+设置工具警告消息的颜色（默认：#FFA500）  
+默认值：#FFA500  
+环境变量：`AIDER_TOOL_WARNING_COLOR`  
 
 ### `--assistant-output-color VALUE`
-Set the color for assistant output (default: #0088ff)  
-Default: #0088ff  
-Environment variable: `AIDER_ASSISTANT_OUTPUT_COLOR`  
+设置助手输出的颜色（默认：#0088ff）  
+默认值：#0088ff  
+环境变量：`AIDER_ASSISTANT_OUTPUT_COLOR`  
 
 ### `--completion-menu-color COLOR`
-Set the color for the completion menu (default: terminal's default text color)  
-Environment variable: `AIDER_COMPLETION_MENU_COLOR`  
+设置补全菜单的颜色（默认：终端的默认文本颜色）  
+环境变量：`AIDER_COMPLETION_MENU_COLOR`  
 
 ### `--completion-menu-bg-color COLOR`
-Set the background color for the completion menu (default: terminal's default background color)  
-Environment variable: `AIDER_COMPLETION_MENU_BG_COLOR`  
+设置补全菜单的背景颜色（默认：终端的默认背景颜色）  
+环境变量：`AIDER_COMPLETION_MENU_BG_COLOR`  
 
 ### `--completion-menu-current-color COLOR`
-Set the color for the current item in the completion menu (default: terminal's default background color)  
-Environment variable: `AIDER_COMPLETION_MENU_CURRENT_COLOR`  
+设置补全菜单中当前项目的颜色（默认：终端的默认背景颜色）  
+环境变量：`AIDER_COMPLETION_MENU_CURRENT_COLOR`  
 
 ### `--completion-menu-current-bg-color COLOR`
-Set the background color for the current item in the completion menu (default: terminal's default text color)  
-Environment variable: `AIDER_COMPLETION_MENU_CURRENT_BG_COLOR`  
+设置补全菜单中当前项目的背景颜色（默认：终端的默认文本颜色）  
+环境变量：`AIDER_COMPLETION_MENU_CURRENT_BG_COLOR`  
 
 ### `--code-theme VALUE`
-Set the markdown code theme (default: default, other options include monokai, solarized-dark, solarized-light, or a Pygments builtin style, see https://pygments.org/styles for available themes)  
-Default: default  
-Environment variable: `AIDER_CODE_THEME`  
+设置markdown代码主题（默认：default，其他选项包括monokai、solarized-dark、solarized-light或Pygments内置样式，查看https://pygments.org/styles了解可用主题）  
+默认值：default  
+环境变量：`AIDER_CODE_THEME`  
 
 ### `--show-diffs`
-Show diffs when committing changes (default: False)  
-Default: False  
-Environment variable: `AIDER_SHOW_DIFFS`  
+提交更改时显示差异（默认：False）  
+默认值：False  
+环境变量：`AIDER_SHOW_DIFFS`  
 
 ## Git settings:
 
 ### `--git`
-Enable/disable looking for a git repo (default: True)  
-Default: True  
-Environment variable: `AIDER_GIT`  
-Aliases:
+启用/禁用查找git仓库（默认：True）  
+默认值：True  
+环境变量：`AIDER_GIT`  
+别名：
   - `--git`
   - `--no-git`
 
 ### `--gitignore`
-Enable/disable adding .aider* to .gitignore (default: True)  
-Default: True  
-Environment variable: `AIDER_GITIGNORE`  
-Aliases:
+启用/禁用将.aider*添加到.gitignore（默认：True）  
+默认值：True  
+环境变量：`AIDER_GITIGNORE`  
+别名：
   - `--gitignore`
   - `--no-gitignore`
 
 ### `--aiderignore AIDERIGNORE`
-Specify the aider ignore file (default: .aiderignore in git root)  
-Default: .aiderignore  
-Environment variable: `AIDER_AIDERIGNORE`  
+指定aider忽略文件（默认：git根目录中的.aiderignore）  
+默认值：.aiderignore  
+环境变量：`AIDER_AIDERIGNORE`  
 
 ### `--subtree-only`
-Only consider files in the current subtree of the git repository  
-Default: False  
-Environment variable: `AIDER_SUBTREE_ONLY`  
+仅考虑git仓库当前子树中的文件  
+默认值：False  
+环境变量：`AIDER_SUBTREE_ONLY`  
 
 ### `--auto-commits`
-Enable/disable auto commit of LLM changes (default: True)  
-Default: True  
-Environment variable: `AIDER_AUTO_COMMITS`  
-Aliases:
+启用/禁用LLM更改的自动提交（默认：True）  
+默认值：True  
+环境变量：`AIDER_AUTO_COMMITS`  
+别名：
   - `--auto-commits`
   - `--no-auto-commits`
 
 ### `--dirty-commits`
-Enable/disable commits when repo is found dirty (default: True)  
-Default: True  
-Environment variable: `AIDER_DIRTY_COMMITS`  
-Aliases:
+启用/禁用在发现仓库脏时进行提交（默认：True）  
+默认值：True  
+环境变量：`AIDER_DIRTY_COMMITS`  
+别名：
   - `--dirty-commits`
   - `--no-dirty-commits`
 
 ### `--attribute-author`
-Attribute aider code changes in the git author name (default: True)  
-Default: True  
-Environment variable: `AIDER_ATTRIBUTE_AUTHOR`  
-Aliases:
+在git作者名称中标注aider代码更改（默认：True）  
+默认值：True  
+环境变量：`AIDER_ATTRIBUTE_AUTHOR`  
+别名：
   - `--attribute-author`
   - `--no-attribute-author`
 
 ### `--attribute-committer`
-Attribute aider commits in the git committer name (default: True)  
-Default: True  
-Environment variable: `AIDER_ATTRIBUTE_COMMITTER`  
-Aliases:
+在git提交者名称中标注aider提交（默认：True）  
+默认值：True  
+环境变量：`AIDER_ATTRIBUTE_COMMITTER`  
+别名：
   - `--attribute-committer`
   - `--no-attribute-committer`
 
 ### `--attribute-commit-message-author`
-Prefix commit messages with 'aider: ' if aider authored the changes (default: False)  
-Default: False  
-Environment variable: `AIDER_ATTRIBUTE_COMMIT_MESSAGE_AUTHOR`  
-Aliases:
+如果aider编写了更改，则在提交消息前加上'aider: '（默认：False）  
+默认值：False  
+环境变量：`AIDER_ATTRIBUTE_COMMIT_MESSAGE_AUTHOR`  
+别名：
   - `--attribute-commit-message-author`
   - `--no-attribute-commit-message-author`
 
 ### `--attribute-commit-message-committer`
-Prefix all commit messages with 'aider: ' (default: False)  
-Default: False  
-Environment variable: `AIDER_ATTRIBUTE_COMMIT_MESSAGE_COMMITTER`  
-Aliases:
+在所有提交消息前加上'aider: '（默认：False）  
+默认值：False  
+环境变量：`AIDER_ATTRIBUTE_COMMIT_MESSAGE_COMMITTER`  
+别名：
   - `--attribute-commit-message-committer`
   - `--no-attribute-commit-message-committer`
 
 ### `--commit`
-Commit all pending changes with a suitable commit message, then exit  
-Default: False  
-Environment variable: `AIDER_COMMIT`  
+使用合适的提交消息提交所有待处理的更改，然后退出  
+默认值：False  
+环境变量：`AIDER_COMMIT`  
 
 ### `--commit-prompt PROMPT`
-Specify a custom prompt for generating commit messages  
-Environment variable: `AIDER_COMMIT_PROMPT`  
+指定生成提交消息的自定义提示  
+环境变量：`AIDER_COMMIT_PROMPT`  
 
 ### `--dry-run`
-Perform a dry run without modifying files (default: False)  
-Default: False  
-Environment variable: `AIDER_DRY_RUN`  
-Aliases:
+执行无修改文件的演示运行（默认：False）  
+默认值：False  
+环境变量：`AIDER_DRY_RUN`  
+别名：
   - `--dry-run`
   - `--no-dry-run`
 
 ### `--skip-sanity-check-repo`
-Skip the sanity check for the git repository (default: False)  
-Default: False  
-Environment variable: `AIDER_SKIP_SANITY_CHECK_REPO`  
+跳过git仓库的健全性检查（默认：False）  
+默认值：False  
+环境变量：`AIDER_SKIP_SANITY_CHECK_REPO`  
 
 ### `--watch-files`
-Enable/disable watching files for ai coding comments (default: False)  
-Default: False  
-Environment variable: `AIDER_WATCH_FILES`  
-Aliases:
+启用/禁用监视文件中的ai编码注释（默认：False）  
+默认值：False  
+环境变量：`AIDER_WATCH_FILES`  
+别名：
   - `--watch-files`
   - `--no-watch-files`
 
 ## Fixing and committing:
 
 ### `--lint`
-Lint and fix provided files, or dirty files if none provided  
-Default: False  
-Environment variable: `AIDER_LINT`  
+对提供的文件或脏文件（如果未提供）进行lint和修复  
+默认值：False  
+环境变量：`AIDER_LINT`  
 
 ### `--lint-cmd`
-Specify lint commands to run for different languages, eg: "python: flake8 --select=..." (can be used multiple times)  
-Default: []  
-Environment variable: `AIDER_LINT_CMD`  
+为不同语言指定lint命令，例如："python: flake8 --select=..."（可多次使用）  
+默认值：[]  
+环境变量：`AIDER_LINT_CMD`  
 
 ### `--auto-lint`
-Enable/disable automatic linting after changes (default: True)  
-Default: True  
-Environment variable: `AIDER_AUTO_LINT`  
-Aliases:
+启用/禁用更改后自动lint（默认：True）  
+默认值：True  
+环境变量：`AIDER_AUTO_LINT`  
+别名：
   - `--auto-lint`
   - `--no-auto-lint`
 
 ### `--test-cmd VALUE`
-Specify command to run tests  
-Default: []  
-Environment variable: `AIDER_TEST_CMD`  
+指定运行测试的命令  
+默认值：[]  
+环境变量：`AIDER_TEST_CMD`  
 
 ### `--auto-test`
-Enable/disable automatic testing after changes (default: False)  
-Default: False  
-Environment variable: `AIDER_AUTO_TEST`  
-Aliases:
+启用/禁用更改后自动测试（默认：False）  
+默认值：False  
+环境变量：`AIDER_AUTO_TEST`  
+别名：
   - `--auto-test`
   - `--no-auto-test`
 
 ### `--test`
-Run tests, fix problems found and then exit  
-Default: False  
-Environment variable: `AIDER_TEST`  
+运行测试，修复发现的问题然后退出  
+默认值：False  
+环境变量：`AIDER_TEST`  
 
 ## Analytics:
 
 ### `--analytics`
-Enable/disable analytics for current session (default: random)  
-Environment variable: `AIDER_ANALYTICS`  
-Aliases:
+为当前会话启用/禁用分析（默认：随机）  
+环境变量：`AIDER_ANALYTICS`  
+别名：
   - `--analytics`
   - `--no-analytics`
 
 ### `--analytics-log ANALYTICS_LOG_FILE`
-Specify a file to log analytics events  
-Environment variable: `AIDER_ANALYTICS_LOG`  
+指定记录分析事件的文件  
+环境变量：`AIDER_ANALYTICS_LOG`  
 
 ### `--analytics-disable`
-Permanently disable analytics  
-Default: False  
-Environment variable: `AIDER_ANALYTICS_DISABLE`  
+永久禁用分析  
+默认值：False  
+环境变量：`AIDER_ANALYTICS_DISABLE`  
 
 ## Upgrading:
 
 ### `--just-check-update`
-Check for updates and return status in the exit code  
-Default: False  
-Environment variable: `AIDER_JUST_CHECK_UPDATE`  
+检查更新并在退出代码中返回状态  
+默认值：False  
+环境变量：`AIDER_JUST_CHECK_UPDATE`  
 
 ### `--check-update`
-Check for new aider versions on launch  
-Default: True  
-Environment variable: `AIDER_CHECK_UPDATE`  
-Aliases:
+启动时检查新的aider版本  
+默认值：True  
+环境变量：`AIDER_CHECK_UPDATE`  
+别名：
   - `--check-update`
   - `--no-check-update`
 
 ### `--show-release-notes`
-Show release notes on first run of new version (default: None, ask user)  
-Environment variable: `AIDER_SHOW_RELEASE_NOTES`  
-Aliases:
+在新版本首次运行时显示发布说明（默认：None，询问用户）  
+环境变量：`AIDER_SHOW_RELEASE_NOTES`  
+别名：
   - `--show-release-notes`
   - `--no-show-release-notes`
 
 ### `--install-main-branch`
-Install the latest version from the main branch  
-Default: False  
-Environment variable: `AIDER_INSTALL_MAIN_BRANCH`  
+从主分支安装最新版本  
+默认值：False  
+环境变量：`AIDER_INSTALL_MAIN_BRANCH`  
 
 ### `--upgrade`
-Upgrade aider to the latest version from PyPI  
-Default: False  
-Environment variable: `AIDER_UPGRADE`  
-Aliases:
+从PyPI升级aider到最新版本  
+默认值：False  
+环境变量：`AIDER_UPGRADE`  
+别名：
   - `--upgrade`
   - `--update`
 
 ### `--version`
-Show the version number and exit  
+显示版本号并退出  
 
 ## Modes:
 
 ### `--message COMMAND`
-Specify a single message to send the LLM, process reply then exit (disables chat mode)  
-Environment variable: `AIDER_MESSAGE`  
-Aliases:
+指定要发送给LLM的单个消息，处理回复然后退出（禁用聊天模式）  
+环境变量：`AIDER_MESSAGE`  
+别名：
   - `--message COMMAND`
   - `--msg COMMAND`
   - `-m COMMAND`
 
 ### `--message-file MESSAGE_FILE`
-Specify a file containing the message to send the LLM, process reply, then exit (disables chat mode)  
-Environment variable: `AIDER_MESSAGE_FILE`  
-Aliases:
+指定包含要发送给LLM的消息的文件，处理回复，然后退出（禁用聊天模式）  
+环境变量：`AIDER_MESSAGE_FILE`  
+别名：
   - `--message-file MESSAGE_FILE`
   - `-f MESSAGE_FILE`
 
 ### `--gui`
-Run aider in your browser (default: False)  
-Default: False  
-Environment variable: `AIDER_GUI`  
-Aliases:
+在浏览器中运行aider（默认：False）  
+默认值：False  
+环境变量：`AIDER_GUI`  
+别名：
   - `--gui`
   - `--no-gui`
   - `--browser`
   - `--no-browser`
 
 ### `--copy-paste`
-Enable automatic copy/paste of chat between aider and web UI (default: False)  
-Default: False  
-Environment variable: `AIDER_COPY_PASTE`  
-Aliases:
+启用aider和Web UI之间的自动复制/粘贴聊天（默认：False）  
+默认值：False  
+环境变量：`AIDER_COPY_PASTE`  
+别名：
   - `--copy-paste`
   - `--no-copy-paste`
 
 ### `--apply FILE`
-Apply the changes from the given file instead of running the chat (debug)  
-Environment variable: `AIDER_APPLY`  
+应用给定文件中的更改，而不是运行聊天（调试）  
+环境变量：`AIDER_APPLY`  
 
 ### `--apply-clipboard-edits`
-Apply clipboard contents as edits using the main model's editor format  
-Default: False  
-Environment variable: `AIDER_APPLY_CLIPBOARD_EDITS`  
+应用剪贴板内容作为使用主模型编辑器格式的编辑  
+默认值：False  
+环境变量：`AIDER_APPLY_CLIPBOARD_EDITS`  
 
 ### `--exit`
-Do all startup activities then exit before accepting user input (debug)  
-Default: False  
-Environment variable: `AIDER_EXIT`  
+执行所有启动活动，然后在接受用户输入前退出（调试）  
+默认值：False  
+环境变量：`AIDER_EXIT`  
 
 ### `--show-repo-map`
-Print the repo map and exit (debug)  
-Default: False  
-Environment variable: `AIDER_SHOW_REPO_MAP`  
+打印仓库映射并退出（调试）  
+默认值：False  
+环境变量：`AIDER_SHOW_REPO_MAP`  
 
 ### `--show-prompts`
-Print the system prompts and exit (debug)  
-Default: False  
-Environment variable: `AIDER_SHOW_PROMPTS`  
+打印系统提示并退出（调试）  
+默认值：False  
+环境变量：`AIDER_SHOW_PROMPTS`  
 
 ## Voice settings:
 
 ### `--voice-format VOICE_FORMAT`
-Audio format for voice recording (default: wav). webm and mp3 require ffmpeg  
-Default: wav  
-Environment variable: `AIDER_VOICE_FORMAT`  
+语音录制的音频格式（默认：wav）。webm和mp3需要ffmpeg  
+默认值：wav  
+环境变量：`AIDER_VOICE_FORMAT`  
 
 ### `--voice-language VOICE_LANGUAGE`
-Specify the language for voice using ISO 639-1 code (default: auto)  
-Default: en  
-Environment variable: `AIDER_VOICE_LANGUAGE`  
+使用ISO 639-1代码指定语音语言（默认：auto）  
+默认值：en  
+环境变量：`AIDER_VOICE_LANGUAGE`  
 
 ### `--voice-input-device VOICE_INPUT_DEVICE`
-Specify the input device name for voice recording  
-Environment variable: `AIDER_VOICE_INPUT_DEVICE`  
+指定语音录制的输入设备名称  
+环境变量：`AIDER_VOICE_INPUT_DEVICE`  
 
 ## Other settings:
 
 ### `--file FILE`
-specify a file to edit (can be used multiple times)  
-Environment variable: `AIDER_FILE`  
+指定要编辑的文件（可多次使用）  
+环境变量：`AIDER_FILE`  
 
 ### `--read FILE`
-specify a read-only file (can be used multiple times)  
-Environment variable: `AIDER_READ`  
+指定只读文件（可多次使用）  
+环境变量：`AIDER_READ`  
 
 ### `--vim`
-Use VI editing mode in the terminal (default: False)  
-Default: False  
-Environment variable: `AIDER_VIM`  
+在终端中使用VI编辑模式（默认：False）  
+默认值：False  
+环境变量：`AIDER_VIM`  
 
 ### `--chat-language CHAT_LANGUAGE`
-Specify the language to use in the chat (default: None, uses system settings)  
-Environment variable: `AIDER_CHAT_LANGUAGE`  
+指定在聊天中使用的语言（默认：None，使用系统设置）  
+环境变量：`AIDER_CHAT_LANGUAGE`  
 
 ### `--yes-always`
-Always say yes to every confirmation  
-Environment variable: `AIDER_YES_ALWAYS`  
+对每个确认始终回答是  
+环境变量：`AIDER_YES_ALWAYS`  
 
 ### `--verbose`
-Enable verbose output  
-Default: False  
-Environment variable: `AIDER_VERBOSE`  
-Aliases:
+启用详细输出  
+默认值：False  
+环境变量：`AIDER_VERBOSE`  
+别名：
   - `-v`
   - `--verbose`
 
 ### `--load LOAD_FILE`
-Load and execute /commands from a file on launch  
-Environment variable: `AIDER_LOAD`  
+在启动时从文件加载并执行/命令  
+环境变量：`AIDER_LOAD`  
 
 ### `--encoding VALUE`
-Specify the encoding for input and output (default: utf-8)  
-Default: utf-8  
-Environment variable: `AIDER_ENCODING`  
+指定输入和输出的编码（默认：utf-8）  
+默认值：utf-8  
+环境变量：`AIDER_ENCODING`  
 
 ### `--line-endings VALUE`
-Line endings to use when writing files (default: platform)  
-Default: platform  
-Environment variable: `AIDER_LINE_ENDINGS`  
+写入文件时使用的行尾（默认：platform）  
+默认值：platform  
+环境变量：`AIDER_LINE_ENDINGS`  
 
 ### `--config CONFIG_FILE`
-Specify the config file (default: search for .aider.conf.yml in git root, cwd or home directory)  
-Aliases:
+指定配置文件（默认：在git根目录、当前工作目录或主目录中搜索.aider.conf.yml）  
+别名：
   - `-c CONFIG_FILE`
   - `--config CONFIG_FILE`
 
 ### `--env-file ENV_FILE`
-Specify the .env file to load (default: .env in git root)  
-Default: .env  
-Environment variable: `AIDER_ENV_FILE`  
+指定要加载的.env文件（默认：git根目录中的.env）  
+默认值：.env  
+环境变量：`AIDER_ENV_FILE`  
 
 ### `--suggest-shell-commands`
-Enable/disable suggesting shell commands (default: True)  
-Default: True  
-Environment variable: `AIDER_SUGGEST_SHELL_COMMANDS`  
-Aliases:
+启用/禁用建议shell命令（默认：True）  
+默认值：True  
+环境变量：`AIDER_SUGGEST_SHELL_COMMANDS`  
+别名：
   - `--suggest-shell-commands`
   - `--no-suggest-shell-commands`
 
 ### `--fancy-input`
-Enable/disable fancy input with history and completion (default: True)  
-Default: True  
-Environment variable: `AIDER_FANCY_INPUT`  
-Aliases:
+启用/禁用带有历史记录和自动完成的花式输入（默认：True）  
+默认值：True  
+环境变量：`AIDER_FANCY_INPUT`  
+别名：
   - `--fancy-input`
   - `--no-fancy-input`
 
 ### `--multiline`
-Enable/disable multi-line input mode with Meta-Enter to submit (default: False)  
-Default: False  
-Environment variable: `AIDER_MULTILINE`  
-Aliases:
+启用/禁用多行输入模式，使用Meta-Enter提交（默认：False）  
+默认值：False  
+环境变量：`AIDER_MULTILINE`  
+别名：
   - `--multiline`
   - `--no-multiline`
 
 ### `--detect-urls`
-Enable/disable detection and offering to add URLs to chat (default: True)  
-Default: True  
-Environment variable: `AIDER_DETECT_URLS`  
-Aliases:
+启用/禁用检测并提供将URL添加到聊天的选项（默认：True）  
+默认值：True  
+环境变量：`AIDER_DETECT_URLS`  
+别名：
   - `--detect-urls`
   - `--no-detect-urls`
 
 ### `--editor VALUE`
-Specify which editor to use for the /editor command  
-Environment variable: `AIDER_EDITOR`  
+指定/editor命令使用的编辑器  
+环境变量：`AIDER_EDITOR`  
 
 ### `--install-tree-sitter-language-pack`
-Install the tree_sitter_language_pack (experimental)  
-Default: False  
-Environment variable: `AIDER_INSTALL_TREE_SITTER_LANGUAGE_PACK`  
+安装tree_sitter_language_pack（实验性）  
+默认值：False  
+环境变量：`AIDER_INSTALL_TREE_SITTER_LANGUAGE_PACK`  
 <!--[[[end]]]-->

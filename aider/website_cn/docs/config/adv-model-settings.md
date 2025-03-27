@@ -1,36 +1,31 @@
 ---
 parent: Configuration
 nav_order: 950
-description: Configuring advanced settings for LLMs.
+description: 配置LLM的高级设置。
 ---
 
-# Advanced model settings
+# 高级模型设置
 
-## Context window size and token costs
+## 上下文窗口大小和令牌成本
 
-In most cases, you can safely ignore aider's warning about unknown context
-window size and model costs.
+在大多数情况下，您可以安全地忽略aider关于未知上下文窗口大小和模型成本的警告。
 
 {: .note }
-Aider never *enforces* token limits, it only *reports* token limit errors
-from the API provider.
-You probably don't need to
-configure aider with the proper token limits
-for unusual models.
+Aider从不*强制执行*令牌限制，它只*报告*来自API提供商的令牌限制错误。
+您可能不需要为不常见的模型配置aider的正确令牌限制。
 
-But, you can register context window limits and costs for models that aren't known
-to aider. Create a `.aider.model.metadata.json` file in one of these locations:
+但是，您可以为aider不知道的模型注册上下文窗口限制和成本。在以下位置之一创建`.aider.model.metadata.json`文件：
 
-- Your home directory.
-- The root if your git repo.
-- The current directory where you launch aider.
-- Or specify a specific file with the `--model-metadata-file <filename>` switch.
+- 您的主目录。
+- 您的git仓库根目录。
+- 您启动aider的当前目录。
+- 或使用`--model-metadata-file <filename>`开关指定特定文件。
 
 
-If the files above exist, they will be loaded in that order. 
-Files loaded last will take priority.
+如果上述文件存在，它们将按该顺序加载。
+最后加载的文件将优先。
 
-The json file should be a dictionary with an entry for each model, as follows:
+json文件应该是一个字典，每个模型有一个条目，如下所示：
 
 ```
 {
@@ -47,50 +42,47 @@ The json file should be a dictionary with an entry for each model, as follows:
 ```
 
 {: .tip }
-Use a fully qualified model name with a `provider/` at the front
-in the `.aider.model.metadata.json` file.
-For example, use `deepseek/deepseek-chat`, not just `deepseek-chat`.
-That prefix should match the `litellm_provider` field.
+在`.aider.model.metadata.json`文件中使用带有前缀`provider/`的完全限定模型名称。
+例如，使用`deepseek/deepseek-chat`，而不仅仅是`deepseek-chat`。
+该前缀应与`litellm_provider`字段匹配。
 
-### Contribute model metadata
+### 贡献模型元数据
 
-Aider relies on
-[litellm's model_prices_and_context_window.json file](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) 
-for model metadata.
+Aider依赖于
+[litellm的model_prices_and_context_window.json文件](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
+获取模型元数据。
 
-Consider submitting a PR to that file to add missing models.
+考虑向该文件提交PR以添加缺失的模型。
 
-## Model settings
+## 模型设置
 
-Aider has a number of settings that control how it works with
-different models.
-These model settings are pre-configured for most popular models.
-But it can sometimes be helpful to override them or add settings for
-a model that aider doesn't know about.
+Aider有许多设置来控制它如何与不同模型一起工作。
+这些模型设置针对大多数流行模型都进行了预配置。
+但有时覆盖它们或为aider不知道的模型添加设置可能会有所帮助。
 
 
-### Configuration file locations
+### 配置文件位置
 
-You can override or add settings for any model by creating a `.aider.model.settings.yml` file in one of these locations:
+您可以通过在以下位置之一创建`.aider.model.settings.yml`文件来覆盖或添加任何模型的设置：
 
-- Your home directory.
-- The root of your git repo.
-- The current directory where you launch aider.
-- Or specify a specific file with the `--model-settings-file <filename>` switch.
+- 您的主目录。
+- 您的git仓库根目录。
+- 您启动aider的当前目录。
+- 或使用`--model-settings-file <filename>`开关指定特定文件。
 
-If the files above exist, they will be loaded in that order. 
-Files loaded last will take priority.
+如果上述文件存在，它们将按该顺序加载。
+最后加载的文件将优先。
 
-The yaml file should be a list of dictionary objects for each model.
+yaml文件应该是每个模型的字典对象列表。
 
 
-### Global extra params
+### 全局额外参数
 
-You can use the special model name `aider/extra_params` to define 
-`extra_params` that will be passed to `litellm.completion()` for all models.
-Only the `extra_params` dict is used from this special model name.
+您可以使用特殊模型名称`aider/extra_params`定义
+将传递给所有模型的`litellm.completion()`的`extra_params`。
+此特殊模型名称仅使用`extra_params`字典。
 
-For example:
+例如：
 
 ```yaml
 - name: aider/extra_params
@@ -100,12 +92,12 @@ For example:
     max_tokens: 8192
 ```
 
-These settings will be merged with any model-specific settings, with the 
-`aider/extra_params` settings taking precedence for any direct conflicts.
+这些设置将与任何特定于模型的设置合并，对于任何直接冲突，
+`aider/extra_params`设置将优先。
 
-### Controlling o1 reasoning effort
+### 控制o1推理努力
 
-You need this chunk of yaml:
+您需要这段yaml：
 
 ```
   extra_params:
@@ -113,8 +105,7 @@ You need this chunk of yaml:
       reasoning_effort: high
 ```
 
-This is a full entry for o1 with that setting, obtained by finding the default
-entry in the list below and adding the above `extra_params` entry:
+这是带有该设置的o1完整条目，通过在下面的列表中找到默认条目并添加上述`extra_params`条目获得：
 
 ```
 - name: o1
@@ -137,17 +128,17 @@ entry in the list below and adding the above `extra_params` entry:
       reasoning_effort: high
 ```
 
-### Default model settings
+### 默认模型设置
 
-Below are all the pre-configured model settings to give a sense for the settings which are supported.
+以下是所有预配置的模型设置，以了解所支持的设置。
 
-You can also look at the `ModelSettings` class in
+您还可以查看
 [models.py](https://github.com/Aider-AI/aider/blob/main/aider/models.py)
-file for more details about all of the model setting that aider supports.
+文件中的`ModelSettings`类，了解有关aider支持的所有模型设置的更多详细信息。
 
-The first entry shows all the settings, with their default values.
-For a real model,
-you just need to include whichever fields that you want to override the defaults.
+第一个条目显示了所有设置及其默认值。
+对于实际模型，
+您只需包含想要覆盖默认值的字段。
 
 <!--[[[cog
 from aider.models import get_model_settings_as_yaml

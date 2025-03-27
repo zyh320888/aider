@@ -1,26 +1,26 @@
 ---
 parent: Configuration
 nav_order: 1000
-description: Assign convenient short names to models.
+description: 为模型分配方便的简短名称。
 ---
 
-# Model Aliases
+# 模型别名
 
-Model aliases allow you to create shorthand names for models you frequently use. This is particularly useful for models with long names or when you want to standardize model usage across your team.
+模型别名允许您为经常使用的模型创建简写名称。这对于名称较长的模型或当您想在团队中标准化模型使用时特别有用。
 
-## Command Line Usage
+## 命令行用法
 
-You can define aliases when launching aider using the `--alias` option:
+您可以在启动aider时使用`--alias`选项定义别名：
 
 ```bash
 aider --alias "fast:gpt-4o-mini" --alias "smart:o3-mini"
 ```
 
-Multiple aliases can be defined by using the `--alias` option multiple times. Each alias definition should be in the format `alias:model-name`.
+通过多次使用`--alias`选项可以定义多个别名。每个别名定义应采用`alias:model-name`格式。
 
-## Configuration File
+## 配置文件
 
-You can also define aliases in your [`.aider.conf.yml` file](https://aider.chat/docs/config/aider_conf.html):
+您还可以在[`.aider.conf.yml`文件](https://aider.chat/docs/config/aider_conf.html)中定义别名：
 
 ```yaml
 alias:
@@ -29,18 +29,18 @@ alias:
   - "hacker:claude-3-sonnet-20240229"
 ```
 
-## Using Aliases
+## 使用别名
 
-Once defined, you can use the alias instead of the full model name:
+一旦定义，您可以使用别名代替完整的模型名称：
 
 ```bash
-aider --model fast  # Uses gpt-4o-mini
-aider --model smart  # Uses o3-mini
+aider --model fast  # 使用gpt-4o-mini
+aider --model smart  # 使用o3-mini
 ```
 
-## Built-in Aliases
+## 内置别名
 
-Aider includes some built-in aliases for convenience:
+Aider包含一些内置别名，方便使用：
 
 <!--[[[cog
 import cog
@@ -63,12 +63,12 @@ for alias, model in sorted(MODEL_ALIASES.items()):
 - `sonnet`: claude-3-5-sonnet-20241022
 <!--[[[end]]]-->
 
-## Priority
+## 优先级
 
-If the same alias is defined in multiple places, the priority is:
+如果在多个地方定义了相同的别名，优先级为：
 
-1. Command line aliases (highest priority)
-2. Configuration file aliases
-3. Built-in aliases (lowest priority)
+1. 命令行别名（最高优先级）
+2. 配置文件别名
+3. 内置别名（最低优先级）
 
-This allows you to override built-in aliases with your own preferences.
+这允许您用自己的偏好覆盖内置别名。
