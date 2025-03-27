@@ -1,32 +1,29 @@
 ---
-title: Sonnet seems as good as ever
-excerpt: Sonnet's score on the aider code editing benchmark has been stable since it launched.
+title: Sonnet表现一如既往地优秀
+excerpt: Sonnet在aider代码编辑基准测试中的得分自发布以来一直保持稳定。
 highlight_image: /assets/sonnet-seems-fine.jpg
 ---
 {% if page.date %}
 <p class="post-date">{{ page.date | date: "%B %d, %Y" }}</p>
 {% endif %}
 
-# Sonnet seems as good as ever
+# Sonnet表现一如既往地优秀
 
-Recently there has been a lot of speculation that Sonnet has been
-dumbed-down, nerfed or is otherwise performing worse.
-Sonnet seems as good as ever, when performing the
-[aider code editing benchmark](/docs/benchmarks.html#the-benchmark)
-via the API.
+最近有很多猜测认为Sonnet被降级、削弱或性能变差。
+通过API执行[aider代码编辑基准测试](/docs/benchmarks.html#the-benchmark)时，
+Sonnet表现一如既往地优秀。
 
-Below is a graph showing the performance of Claude 3.5 Sonnet over time.
-It shows every clean, comparable benchmark run performed since Sonnet launched.
-Benchmarks were performed for various reasons, usually
-to evaluate the effects of small changes to aider's system prompts.
+下图显示了Claude 3.5 Sonnet随时间的性能变化。
+它展示了Sonnet发布以来执行的每次干净、可比较的基准测试运行。
+进行基准测试的原因各不相同，通常是
+为了评估对aider系统提示的小改动的影响。
 
-The graph shows variance, but no indication of a noteworthy
-degradation.
-There is always some variance in benchmark results, typically +/- 2%
-between runs with identical prompts.
+图表显示了一些变异，但没有表明存在明显的
+性能下降。
+基准测试结果总是有一些变异，通常在使用相同提示的运行之间有+/- 2%
+的差异。
 
-It's worth noting that these results would not capture any changes
-made to Anthropic web chat's use of Sonnet.
+值得注意的是，这些结果不会捕捉到Anthropic网络聊天对Sonnet使用的任何变化。
 
 <div class="chart-container" style="position: relative; height:400px; width:100%">
     <canvas id="sonnetPerformanceChart"></canvas>
@@ -50,13 +47,13 @@ document.addEventListener('DOMContentLoaded', function() {
         type: 'scatter',
         data: {
             datasets: [{
-                label: 'Pass Rate 1',
+                label: '通过率 1',
                 data: chartData.map(item => ({ x: item.x, y: item.y1 })),
                 backgroundColor: 'rgb(75, 192, 192)',
                 pointRadius: 5,
                 pointHoverRadius: 7
             }, {
-                label: 'Pass Rate 2',
+                label: '通过率 2',
                 data: chartData.map(item => ({ x: item.x, y: item.y2 })),
                 backgroundColor: 'rgb(255, 99, 132)',
                 pointRadius: 5,
@@ -71,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Pass Rate (%)',
+                        text: '通过率 (%)',
                         font: {
                             size: 14
                         }
@@ -89,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     title: {
                         display: true,
-                        text: 'Date',
+                        text: '日期',
                         font: {
                             size: 14
                         }
@@ -104,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Claude 3.5 Sonnet Performance Over Time',
+                    text: 'Claude 3.5 Sonnet随时间的性能表现',
                     font: {
                         size: 18
                     }
@@ -136,10 +133,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-> This graph shows the performance of Claude 3.5 Sonnet on 
-[aider's code editing benchmark](/docs/benchmarks.html#the-benchmark)
-> over time. 'Pass Rate 1' represents the initial success rate, while 'Pass Rate 2' shows the success rate after a second attempt with a chance to fix testing errors. 
-> The 
-> [aider LLM code editing leaderboard](https://aider.chat/docs/leaderboards/)
-> ranks models based on Pass Rate 2.
+> 此图显示了Claude 3.5 Sonnet在[aider的代码编辑基准测试](/docs/benchmarks.html#the-benchmark)中
+> 随时间的性能表现。"通过率1"代表初始成功率，而"通过率2"显示第二次尝试修复测试错误后的成功率。
+> [aider LLM代码编辑排行榜](https://aider.chat/docs/leaderboards/)
+> 根据通过率2对模型进行排名。
 

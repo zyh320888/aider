@@ -1,6 +1,6 @@
 ---
-title: Separating code reasoning and editing
-excerpt: An Architect model describes how to solve the coding problem, and an Editor model translates that into file edits. This Architect/Editor approach produces SOTA benchmark results.
+title: 分离代码推理和编辑
+excerpt: Architect模型描述如何解决编码问题，而Editor模型将其转换为文件编辑。这种Architect/Editor方法产生了最先进的基准测试结果。
 highlight_image: /assets/architect.jpg
 draft: false
 nav_exclude: true
@@ -9,21 +9,20 @@ nav_exclude: true
 <p class="post-date">{{ page.date | date: "%B %d, %Y" }}</p>
 {% endif %}
 
-# Separating code reasoning and editing
+# 分离代码推理和编辑
 
-Aider now has experimental support for using two models to complete each coding task:
+Aider现在实验性地支持使用两个模型来完成每项编码任务：
 
-- An Architect model is asked to describe how to solve the coding problem.
-- An Editor model is given the Architect's solution and asked to produce specific code editing instructions to apply those changes to existing source files.
+- Architect模型负责描述如何解决编码问题。
+- Editor模型接收Architect的解决方案，并生成特定的代码编辑指令，将这些更改应用到现有源文件中。
 
-Splitting up "code reasoning" and "code editing" in this manner
-has produced SOTA results on
-[aider's code editing benchmark](/docs/benchmarks.html#the-benchmark).
-Using o1-preview as the Architect with either DeepSeek or o1-mini as the
-Editor produced the SOTA score of 85%.
-Using the Architect/Editor approach
-also significantly improved the benchmark scores of many
-models, compared to their previous "solo" baseline scores (striped bars).
+这种将"代码推理"和"代码编辑"分离的方法
+在[aider的代码编辑基准测试](/docs/benchmarks.html#the-benchmark)中产生了最先进的结果。
+使用o1-preview作为Architect，配合DeepSeek或o1-mini作为
+Editor产生了85%的最高分。
+使用Architect/Editor方法
+还显著提高了许多模型的基准测试分数，
+相比它们之前的"单独"基线分数（条纹柱）。
 
 <style>
   .shaded td {
@@ -145,7 +144,7 @@ models, compared to their previous "solo" baseline scores (striped bars).
       data: {
         labels: labels,
         datasets: [{
-          label: 'Pass Rate',
+          label: '通过率',
           data: data,
           backgroundColor: backgroundColors,
           borderColor: borderColors,
@@ -161,7 +160,7 @@ models, compared to their previous "solo" baseline scores (striped bars).
             beginAtZero: true,
             title: {
               display: true,
-              text: 'Pass Rate (%)',
+              text: '通过率 (%)',
               font: {
                 size: baseFontSize + 6
               }
@@ -175,7 +174,7 @@ models, compared to their previous "solo" baseline scores (striped bars).
           x: {
             title: {
               display: true,
-              text: 'Editor model and edit format',
+              text: 'Editor模型和编辑格式',
               font: {
                 size: baseFontSize + 6
               }
@@ -200,7 +199,7 @@ models, compared to their previous "solo" baseline scores (striped bars).
                 borderWidth: 2,
                 borderDash: [6, 6],
                 label: {
-                  content: 'Previous SOTA',
+                  content: '先前最高水平',
                   enabled: true,
                   position: 'start',
                   xAdjust: 10,
@@ -215,7 +214,7 @@ models, compared to their previous "solo" baseline scores (striped bars).
             display: true,
             title: {
               display: true,
-              text: 'Architect model',
+              text: 'Architect模型',
               font: {
                 size: baseFontSize + 2,
                 weight: 'bold'
@@ -286,110 +285,102 @@ models, compared to their previous "solo" baseline scores (striped bars).
   }
 </script>
 
-## Motivation
+## 动机
 
-This approach was motivated by the release of OpenAI's o1 models.
-They are strong at reasoning, but often fail to output properly formatted
-code editing instructions.
-It helps to instead let them describe the solution
-however they prefer and then pass that output to a more traditional LLM.
-This second Editor LLM can then interpret the solution description and
-produce the code editing instructions needed to update
-the existing source code.
+这种方法的动机源于OpenAI的o1模型的发布。
+这些模型在推理方面表现强大，但常常无法输出格式正确的
+代码编辑指令。
+让它们按照自己喜欢的方式描述解决方案，然后将输出传递给更传统的LLM会更有帮助。
+这第二个Editor LLM可以解释解决方案描述并
+生成代码编辑指令，用于更新
+现有源代码。
 
-This approach has recently become attractive for aider due to 
-rapid improvements in the speed and costs of frontier models.
-In particular, chaining older LLMs would have been quite slow and
-incompatible with aider's goal of providing an interactive,
-pair programming AI coding experience.
+由于前沿模型在速度和成本方面的快速改进，
+这种方法最近对aider变得具有吸引力。
+特别是，链接旧的LLM会非常缓慢，
+与aider提供交互式AI辅助编程体验的目标不符。
 
-## Code reasoning and code editing
+## 代码推理和代码编辑
 
-Normally aider asks the model to solve a coding problem in one prompt,
-asking the LLM to explain the solution and return 
-a well formatted series of file edits.
-All of [aider's editing formats](/docs/more/edit-formats.html)
-require the LLM to return source code edits in a specific text
-format, so that aider can process the edits and apply them to the local source files.
+通常情况下，aider要求模型在一个提示中解决编码问题，
+要求LLM解释解决方案并返回
+格式良好的文件编辑系列。
+所有[aider的编辑格式](/docs/more/edit-formats.html)
+都要求LLM以特定的文本格式返回源代码编辑，
+以便aider可以处理这些编辑并将其应用到本地源文件中。
 
-Because this all happens in a single prompt/response round trip to the LLM,
-the model has to split its attention between 
-solving the coding problem and conforming to the edit format.
+由于这一切都发生在单个提示/响应与LLM的往返中，
+模型必须在解决编码问题和遵循编辑格式之间分配注意力。
 
-The Architect/Editor approach splits this into two inference steps, possibly
-using two different LLMs:
+Architect/Editor方法将此分为两个推理步骤，可能
+使用两个不同的LLM：
 
-1. Solve the coding problem (Architect).
-2. Turn the proposed solution into a series of well formed code edits (Editor).
+1. 解决编码问题（Architect）。
+2. 将提议的解决方案转换为一系列格式良好的代码编辑（Editor）。
 
-The Architect/Editor approach allows the Architect to focus on solving the coding problem
-and *describe the solution however comes naturally to it*.
-Similarly, the Editor can focus all of its attention on properly formatting the edits
-without needing to reason much about how to solve the coding problem.
+Architect/Editor方法允许Architect专注于解决编码问题，
+并*以最自然的方式描述解决方案*。
+同样，Editor可以将所有注意力集中在正确格式化编辑上，
+而不需要太多考虑如何解决编码问题。
 
-We can assign the Architect and Editor roles to LLMs which are well suited to their needs.
-Strong reasoning model like o1-preview make excellent Architects, while
-the Editor role can be assigned to an appropriate model based on cost, speed
-and code editing skill.
+我们可以根据需求为LLM分配Architect和Editor角色。
+像o1-preview这样的强大推理模型是优秀的Architect，而
+Editor角色可以根据成本、速度和代码编辑技能
+分配给适当的模型。
 
-## Results
+## 结果
 
-The graph above and the table below show the
-[aider's code editing benchmark](/docs/benchmarks.html#the-benchmark)
-score for various combinations of Architect and Editor models.
+上图和下表显示了各种Architect和Editor模型组合的
+[aider代码编辑基准测试](/docs/benchmarks.html#the-benchmark)
+分数。
 
+一些值得注意的观察结果：
 
-Some noteworthy observations:
+- 将o1-preview作为Architect与DeepSeek或o1-mini作为Editor配对，创造了远高于之前最佳分数的最高水平。这一结果使用"whole"编辑格式获得，要求Editor输出每个编辑源文件的完整更新副本。这两个步骤都相当缓慢，因此可能不适合与aider进行交互式使用。
+- 将OpenAI的o1-preview与Anthropic的Sonnet作为Editor配对产生了第二好的结果。这对于能够使用两家提供商的用户来说是一个完全可行的配置。
+- 在Architect/Editor配置中将许多模型与自身配对可以提供显著好处。当用作Architect/Editor对时，Sonnet、GPT-4o和GPT-4o-mini的得分都更高。
+- Deepseek作为Editor模型出奇地有效。它似乎非常擅长将提议的编码解决方案转换为源文件的新版本。使用高效的"diff"编辑格式，Deepseek帮助了所有Architect模型，除了Sonnet。
 
-- Pairing o1-preview as Architect with either Deepseek or o1-mini as Editor sets a SOTA significantly above the previous best score. This result is obtained with the "whole" editing format, requiring the Editor to output a full update copy of each edited source file. Both of these steps are therefore quite slow, so probably not practical for interactive use with aider.
-- Pairing OpenAI's o1-preview with Anthropic's Sonnet as the Editor produces the second best result. This is an entirely practical configuration for users able to work with both providers.
-- Pairing many models with themselves in the Architect/Editor configuration can provide
-significant benefits. 
-Sonnet, GPT-4o and GPT-4o-mini all scored higher when used as an Architect/Editor pair.
-- Deepseek is surprisingly effective as an Editor model. It seems remarkably capable at turning proposed coding solutions into new, updated versions of the source files. Using the efficient "diff" editing format, Deepseek helps all the Architect models except for Sonnet.
+## 试一试！
 
-## Try it!
-
-The development version of aider 
-has built in defaults to support Architect/Editor coding with
-o1-preview, o1-mini, GPT-4o and Claude 3.5 Sonnet.
-Run aider with `--architect` or get started quickly like this:
+aider的开发版本
+内置默认支持使用o1-preview、o1-mini、GPT-4o和Claude 3.5 Sonnet进行Architect/Editor编码。
+使用`--architect`运行aider，或者像这样快速开始：
 
 ```
 pip install -U aider-chat
 
-# Change directory into a git repo
+# 切换到git仓库目录
 cd /to/your/git/repo
 
-# Work with Claude 3.5 Sonnet as the Architect and Editor
+# 使用Claude 3.5 Sonnet作为Architect和Editor
 export ANTHROPIC_API_KEY=your-key-goes-here
 aider --sonnet --architect
 
-# Work with OpenAI models, using gpt-4o as the Editor
+# 使用OpenAI模型，使用gpt-4o作为Editor
 export OPENAI_API_KEY=your-key-goes-here
 aider --4o --architect
 aider --o1-mini --architect
 aider --o1-preview --architect
 ```
 
-## More info
+## 更多信息
 
-Aider has a number of "chat modes", and "architect" is available as a new chat mode.
-The `--architect` switch is a shortcut for `--chat-mode architect`.
-For more details, see documentation on 
-[aider's chat modes](/docs/usage/modes.html).
+Aider有多种"聊天模式"，"architect"作为新的聊天模式可用。
+`--architect`开关是`--chat-mode architect`的快捷方式。
+更多详细信息，请参阅
+[aider的聊天模式](/docs/usage/modes.html)文档。
 
 
-## Full results
+## 完整结果
 
-Below are the benchmark results using various models as the Architect, paired with
-various models as the Editor.
-Each section includes a "baseline" result,
-where the model works
-by itself in aider's normal "code" editing mode
-(not as part of an Architect/Editor configuration).
-This "solo" baseline represents the performance previously available when using
-this model with aider.
+以下是使用各种模型作为Architect，与
+各种模型作为Editor配对的基准测试结果。
+每个部分都包括一个"基线"结果，
+即模型在aider的正常"code"编辑模式下单独工作
+（不作为Architect/Editor配置的一部分）。
+这个"单独"基线代表了使用该模型与aider时
+之前可用的性能。
 
 <div class="table-container">
   <table class="responsive-table">
@@ -397,8 +388,8 @@ this model with aider.
       <tr>
         <th>Architect</th>
         <th>Editor</th>
-        <th>Edit Format</th>
-        <th>Pass Rate</th>
+        <th>编辑格式</th>
+        <th>通过率</th>
       </tr>
     </thead>
     <tbody>
@@ -407,7 +398,7 @@ this model with aider.
         {% for item in group.items %}
           <tr class="{% if group_class == 1 %}shaded{% endif %}">
             <td>{{ item.model }}</td>
-            <td>{% if item.editor_model %}{{ item.editor_model }}{% else %}<b>Baseline</b>{% endif %}</td>
+            <td>{% if item.editor_model %}{{ item.editor_model }}{% else %}<b>基线</b>{% endif %}</td>
             <td style="text-align: center;">{{ item.editor_edit_format | default: item.edit_format }}</td>
             <td style="text-align: right;">{{ item.pass_rate_2 }}%</td>
           </tr>

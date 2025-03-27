@@ -1,119 +1,113 @@
 ---
-title: Sonnet is the opposite of lazy
-excerpt: Claude 3.5 Sonnet can easily write more good code than fits in one 4k token API response.
+title: Sonnet绝非懒惰
+excerpt: Claude 3.5 Sonnet能轻松编写超出单个4k令牌API响应限制的优质代码。
 highlight_image: /assets/sonnet-not-lazy.jpg
 nav_exclude: true
 ---
 
-[![sonnet is the opposite of lazy](/assets/sonnet-not-lazy.jpg)](https://aider.chat/assets/sonnet-not-lazy.jpg)
+[![sonnet绝非懒惰](/assets/sonnet-not-lazy.jpg)](https://aider.chat/assets/sonnet-not-lazy.jpg)
 
 {% if page.date %}
 <p class="post-date">{{ page.date | date: "%B %d, %Y" }}</p>
 {% endif %}
 
-# Sonnet is the opposite of lazy
+# Sonnet绝非懒惰
 
-Claude 3.5 Sonnet represents a step change
-in AI coding.
-It is incredibly industrious, diligent and hard working.
-Unexpectedly,
-this presented a challenge:
+Claude 3.5 Sonnet代表了AI编码的一次重大飞跃。
+它极其勤奋、认真且努力工作。
+出乎意料的是，
+这带来了一个挑战：
 Sonnet
-was often writing so much code that
-it was hitting the 4k output token limit,
-truncating its coding in mid-stream.
+经常编写如此多的代码，
+以至于它会达到4k输出令牌限制，
+在中途截断其编码。
 
-Aider now works
-around this 4k limit and allows Sonnet to produce
-as much code as it wants.
-The result is surprisingly powerful.
-Sonnet's score on
-[aider's refactoring benchmark](https://aider.chat/docs/leaderboards/#code-refactoring-leaderboard)
-jumped from 55.1% up to 64.0%.
-This moved Sonnet into second place, ahead of GPT-4o and
-behind only Opus.
+Aider现在能够
+绕过这个4k限制，允许Sonnet
+生成任意数量的代码。
+结果令人惊讶地强大。
+Sonnet在
+[aider的重构基准测试](https://aider.chat/docs/leaderboards/#code-refactoring-leaderboard)
+上的得分从55.1%跃升至64.0%。
+这使Sonnet跃居第二位，超过了GPT-4o，
+仅次于Opus。
 
-Users who tested Sonnet with a preview of 
-[aider's latest release](https://aider.chat/HISTORY.html#aider-v0410)
-were thrilled:
+使用[aider最新版本](https://aider.chat/HISTORY.html#aider-v0410)
+预览版的用户感到非常兴奋：
 
-- *Works like a charm. It is a monster. It refactors files of any size like it is nothing. The continue trick with Sonnet is truly the holy grail. Aider beats [other tools] hands down. I'm going to cancel both subscriptions.* -- [Emasoft](https://github.com/Aider-AI/aider/issues/705#issuecomment-2200338971)
-- *Thanks heaps for this feature - it's a real game changer. I can be more ambitious when asking Claude for larger features.* -- [cngarrison](https://github.com/Aider-AI/aider/issues/705#issuecomment-2196026656)
-- *Fantastic...! It's such an improvement not being constrained by output token length issues. [I refactored] a single JavaScript file into seven smaller files using a single Aider request.* -- [John Galt](https://discord.com/channels/1131200896827654144/1253492379336441907/1256250487934554143)
+- *效果非常好。它是个怪物。它可以毫不费力地重构任何大小的文件。Sonnet的继续技巧真是圣杯。Aider完全击败了[其他工具]。我要取消两个订阅。* -- [Emasoft](https://github.com/Aider-AI/aider/issues/705#issuecomment-2200338971)
+- *非常感谢这个功能 - 它真的是个改变游戏规则的功能。我可以在要求Claude开发更大的功能时更有野心。* -- [cngarrison](https://github.com/Aider-AI/aider/issues/705#issuecomment-2196026656)
+- *太棒了...！不受输出令牌长度问题的限制真是一个巨大的改进。[我将]单个JavaScript文件重构成七个较小的文件，只使用了一个Aider请求。* -- [John Galt](https://discord.com/channels/1131200896827654144/1253492379336441907/1256250487934554143)
 
-## Hitting the 4k token output limit
+## 达到4k令牌输出限制
 
-All LLMs have various token limits, the most familiar being their
-context window size.
-But they also have a limit on how many tokens they can output
-in response to a single request.
-Sonnet and the majority of other
-models are limited to returning 4k tokens.
+所有LLM都有各种令牌限制，最为人熟知的是它们的
+上下文窗口大小。
+但它们也限制了对单个请求的响应中可以输出
+多少令牌。
+Sonnet和大多数其他
+模型都限制返回4k令牌。
 
-Sonnet's amazing work ethic caused it to
-regularly hit this 4k output token
-limit for a few reasons:
+Sonnet惊人的工作道德使其
+经常达到这个4k输出令牌
+限制，原因有几个：
 
-1. Sonnet is capable of outputting a very large amount of correct,
-complete new code in one response.
-2. Similarly, Sonnet can specify long sequences of edits in one go, 
-like changing a majority of lines while refactoring a large file.
-3. Sonnet tends to quote large chunks of a
-file when performing a SEARCH & REPLACE edits.
-Beyond token limits, this is very wasteful.
+1. Sonnet能够在一个响应中输出非常大量的正确、
+完整的新代码。
+2. 类似地，Sonnet可以一次性指定长序列的编辑，
+比如在重构大型文件时更改大部分行。
+3. Sonnet在执行SEARCH & REPLACE编辑时倾向于引用
+文件的大块内容。
+除了令牌限制外，这也非常浪费。
 
-## Good problems
+## 好问题
 
-Problems (1) and (2) are "good problems"
-in the sense that Sonnet is
-able to write more high quality code than any other model!
-We just don't want it to be interrupted prematurely
-by the 4k output limit.
+问题(1)和(2)是"好问题"，
+因为Sonnet能够
+编写比任何其他模型更多的高质量代码！
+我们只是不希望它因为4k输出限制
+而过早中断。
 
-Aider now allows Sonnet to return code in multiple 4k token
-responses.
-Aider seamlessly combines them so that Sonnet can return arbitrarily
-long responses.
-This gets all the upsides of Sonnet's prolific coding skills,
-without being constrained by the 4k output token limit.
+Aider现在允许Sonnet以多个4k令牌
+响应返回代码。
+Aider无缝地将它们组合在一起，使Sonnet可以返回任意
+长的响应。
+这获得了Sonnet多产编码技能的所有优点，
+而不受4k输出令牌限制的约束。
 
+## 浪费令牌
 
-## Wasting tokens
+问题(3)更为复杂，因为Sonnet不仅仅是
+被提前停止——它实际上浪费了大量
+令牌、时间和金钱。
 
-Problem (3) is more complicated, as Sonnet isn't just
-being stopped early -- it's actually wasting a lot
-of tokens, time and money.
+面对源文件中相距较远的几个小变更，
+Sonnet常常倾向于对几乎整个文件执行一个巨大的SEARCH/REPLACE
+操作。
+进行几次精确的编辑会快得多，也便宜得多。
 
-Faced with a few small changes spread far apart in 
-a source file,
-Sonnet would often prefer to do one giant SEARCH/REPLACE
-operation of almost the entire file.
-It would be far faster and less expensive to instead 
-do a few surgical edits.
+Aider现在会提示Sonnet，劝阻这些冗长的
+SEARCH/REPLACE操作，
+并促进更简洁的编辑。
 
-Aider now prompts Sonnet to discourage these long-winded
-SEARCH/REPLACE operations
-and promotes much more concise edits.
+## Aider与Sonnet
 
+[aider的最新版本](https://aider.chat/HISTORY.html#aider-v0410)
+对Claude 3.5 Sonnet提供了专门支持：
 
-## Aider with Sonnet
+- Aider允许Sonnet生成任意数量的代码，
+通过自动无缝地将响应
+分散在一系列4k令牌API响应中。
+- Aider仔细地提示Sonnet在提出
+代码编辑时要简洁。
+这减少了Sonnet浪费时间、令牌和金钱返回
+大块不变代码的倾向。
+- 如果环境中设置了`ANTHROPIC_API_KEY`，Aider现在默认使用Claude 3.5 Sonnet。
 
-[The latest release of aider](https://aider.chat/HISTORY.html#aider-v0410)
-has specialized support for Claude 3.5 Sonnet:
-
-- Aider allows Sonnet to produce as much code as it wants,
-by automatically and seamlessly spreading the response
-out over a sequence of 4k token API responses.
-- Aider carefully prompts Sonnet to be concise when proposing
-code edits.
-This reduces Sonnet's tendency to waste time, tokens and money
-returning large chunks of unchanging code.
-- Aider now uses Claude 3.5 Sonnet by default if the `ANTHROPIC_API_KEY` is set in the environment.
-
-See 
-[aider's install instructions](https://aider.chat/docs/install.html)
-for more details, but
-you can get started quickly with aider and Sonnet like this:
+查看
+[aider的安装说明](https://aider.chat/docs/install.html)
+了解更多详情，但
+您可以像这样快速开始使用aider和Sonnet：
 
 ```
 $ python -m pip install -U aider-chat
