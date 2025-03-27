@@ -1,5 +1,5 @@
 ---
-parent: Installation
+parent: 安装
 nav_order: 900
 ---
 

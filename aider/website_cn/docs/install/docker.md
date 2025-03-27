@@ -1,49 +1,40 @@
 ---
-parent: Installation
+parent: 安装
 nav_order: 100
 ---
 
-# Aider with docker
+# 使用Docker的Aider
 
-Aider is available as 2 docker images:
+Aider提供了2个docker镜像：
 
-- `paulgauthier/aider` installs the aider core, a smaller image that's good to get started quickly.
-- `paulgauthier/aider-full` installs aider will all the optional extras.
+- `paulgauthier/aider` 安装aider核心版，这是一个较小的镜像，适合快速开始使用。
+- `paulgauthier/aider-full` 安装带有所有可选附加功能的aider完整版。
 
-The full image has support for features like interactive help, the
-browser GUI and support for using Playwright to scrape web pages.  The
-core image can still use these features, but they will need to be
-installed the first time you access them. Since containers are
-ephemeral, the extras will need to be reinstalled the next time you
-launch the aider core container.
+完整版镜像支持交互式帮助、浏览器GUI和使用Playwright抓取网页等功能。
+核心版镜像也可以使用这些功能，但需要在首次访问时进行安装。
+由于容器是临时的，下次启动aider核心版容器时，这些附加功能需要重新安装。
 
-### Aider core 
+### Aider核心版
 
 ```
 docker pull paulgauthier/aider
-docker run -it --user $(id -u):$(id -g) --volume $(pwd):/app paulgauthier/aider --openai-api-key $OPENAI_API_KEY [...other aider args...]
+docker run -it --user $(id -u):$(id -g) --volume $(pwd):/app paulgauthier/aider --openai-api-key $OPENAI_API_KEY [...其他aider参数...]
 ```
 
-### Full version
+### 完整版
 
 ```
 docker pull paulgauthier/aider-full
-docker run -it --user $(id -u):$(id -g) --volume $(pwd):/app paulgauthier/aider-full --openai-api-key $OPENAI_API_KEY [...other aider args...]
+docker run -it --user $(id -u):$(id -g) --volume $(pwd):/app paulgauthier/aider-full --openai-api-key $OPENAI_API_KEY [...其他aider参数...]
 ```
 
-## How to use it
+## 如何使用
 
-You should run the above commands from the root of your git repo,
-since the `--volume` arg maps your current directory into the
-docker container.
-Given that, you need to be in the root of your git repo for aider to be able to
-see the repo and all its files.
+你应该在git仓库的根目录下运行上述命令，因为`--volume`参数将你当前的目录映射到docker容器中。
+因此，你需要在git仓库的根目录下运行，这样aider才能看到仓库及其所有文件。
 
-You should be sure your that
-git repo config contains your user name and email, since the
-docker container won't have your global git config.
-Run these commands while in your git repo, before
-you do the `docker run` command:
+你应该确保你的git仓库配置包含你的用户名和邮箱，因为docker容器不会有你的全局git配置。
+在执行`docker run`命令之前，在你的git仓库中运行以下命令：
 
 ```
 git config user.email "you@example.com"
@@ -51,7 +42,7 @@ git config user.name "Your Name"
 ```
 
 
-## Limitations
+## 限制
 
-- When you use the in-chat `/run` command, it will be running shell commands *inside the docker container*. So those commands won't be running in your local environment, which may make it tricky to `/run` tests, etc for your project.
-- The `/voice` command won't work unless you can figure out how to give the docker container access to your host audio device. The container has libportaudio2 installed, so it should work if you can do that.
+- 当你使用聊天中的`/run`命令时，它将在docker容器内部运行shell命令。所以这些命令不会在你的本地环境中运行，这可能会使为你的项目`/run`测试等操作变得复杂。
+- 除非你能想办法让docker容器访问你的主机音频设备，否则`/voice`命令将无法工作。容器已安装libportaudio2，所以如果你能实现这一点，它应该可以工作。

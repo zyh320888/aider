@@ -1,22 +1,22 @@
 ---
 title: GitHub Codespaces
-parent: Installation
+parent: 安装
 nav_order: 900
 ---
 
 # GitHub Codespaces
 
-You can use aider in GitHub Codespaces via the built-in Terminal pane.
-See below for an example,
-but you can just follow the
-[main install instructions](/docs/install.html)
-inside your codespace terminal.
+你可以在GitHub Codespaces中通过内置的终端面板使用aider。
+请参阅下面的示例，
+但你也可以直接在codespace终端中按照
+[主要安装说明](/docs/install.html)
+进行操作。
 
 
 <div class="video-container">
   <video controls poster="/assets/codespaces.jpg">
     <source src="/assets/codespaces.mp4" type="video/mp4">
-    <a href="/assets/codespaces.mp4">Install aider in GitHub Codespaces</a>
+    <a href="/assets/codespaces.mp4">在GitHub Codespaces中安装aider</a>
   </video>
 </div>
 
