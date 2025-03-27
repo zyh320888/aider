@@ -1,32 +1,30 @@
 ---
-parent: Example chat transcripts
+parent: 聊天记录示例
 ---
 
-# Honor the NO_COLOR environment variable
+# 遵守NO_COLOR环境变量
 
-The user pastes the specification of the NO_COLOR environment variable protocol
-from [no-color.org](https://no-color.org) into the aider chat.
+用户将[no-color.org](https://no-color.org)网站上的NO_COLOR环境变量协议规范粘贴到aider聊天中。
 
-Aider figures out which files need to be edited, and asks permission to make changes.
-It then disables all the color and pretty-printing functions if NO_COLOR is
-set, so the tool conforms to the specification.
+Aider找出需要编辑的文件，并请求许可进行更改。
+然后，如果设置了NO_COLOR，它会禁用所有颜色和美化打印功能，使工具符合规范。
 
-The user then asks for a test case, which aider adds as well.
+然后用户要求添加一个测试用例，aider也添加了这个测试用例。
 
 <div class="chat-transcript" markdown="1">
 
 > $ aider  
-> Using git repo: .git  
-> Use /help to see in-chat commands.  
+> 使用git仓库: .git  
+> 使用/help查看聊天内容命令。  
 
-#### Command-line software which adds ANSI color to its output by default should check for a NO_COLOR environment variable that, when present and not an empty string (regardless of its value), prevents the addition of ANSI color.  
+#### 默认情况下向其输出添加ANSI颜色的命令行软件应检查NO_COLOR环境变量，当该变量存在且不为空字符串（无论其值如何）时，应防止添加ANSI颜色。  
 
-To implement this feature, we need to modify the `aider/io.py` file. Please make it *read-write* so I can provide the necessary changes.
+要实现此功能，我们需要修改`aider/io.py`文件。请将其设为*可读写*，以便我提供必要的更改。
 
 > aider/io.py  
-> Add these files to the chat? y  
+> 将这些文件添加到聊天中？y  
 
-Great! Now, I will make the necessary changes to check for the `NO_COLOR` environment variable and disable ANSI color when it is present and not an empty string.
+很好！现在，我将进行必要的更改，以检查`NO_COLOR`环境变量，并在其存在且不为空字符串时禁用ANSI颜色。
 
 ```python
 aider/io.py
@@ -104,17 +102,17 @@ aider/io.py
 >>>>>>> UPDATED
 ```
 
-These changes will make the software check for the `NO_COLOR` environment variable and disable ANSI color when it is present and not an empty string.
+这些更改将使软件检查`NO_COLOR`环境变量，并在该变量存在且不为空字符串时禁用ANSI颜色。
 
-> Applied edit to aider/io.py  
-> Applied edit to aider/io.py  
-> Commit 3218242 aider: Added check for NO_COLOR environment variable to disable ANSI color.  
+> 已应用编辑到aider/io.py  
+> 已应用编辑到aider/io.py  
+> 提交3218242 aider: 添加了对NO_COLOR环境变量的检查以禁用ANSI颜色。  
 
 </div>
 <div class="chat-transcript" markdown="1">
-#### add a test
+#### 添加一个测试
 
-To add a test for the `NO_COLOR` environment variable, we will create a new test function in the `tests/test_io.py` file. Since this file does not exist, we will create it first.
+为了添加`NO_COLOR`环境变量的测试，我们将在`tests/test_io.py`文件中创建一个新的测试函数。由于这个文件不存在，我们将首先创建它。
 
 ```python
 tests/test_io.py
@@ -136,12 +134,12 @@ if __name__ == "__main__":
 >>>>>>> UPDATED
 ```
 
-This test function checks if the `pretty` attribute of the `InputOutput` class is set to `False` when the `NO_COLOR` environment variable is set.
+这个测试函数检查当设置`NO_COLOR`环境变量时，`InputOutput`类的`pretty`属性是否设置为`False`。
 
-> Allow creation of new file tests/test_io.py? y  
-> Add tests/test_io.py to git? y  
-> Applied edit to tests/test_io.py  
-> Commit 52a9df5 aider: Added a test function to check if the `pretty` attribute of the `InputOutput` class is set to `False` when the `NO_COLOR` environment variable is set.  
+> 允许创建新文件tests/test_io.py？y  
+> 将tests/test_io.py添加到git？y  
+> 已应用编辑到tests/test_io.py  
+> 提交52a9df5 aider: 添加了一个测试函数，用于检查当设置`NO_COLOR`环境变量时，`InputOutput`类的`pretty`属性是否设置为`False`。  
 
 </div>
 <div class="chat-transcript" markdown="1">
@@ -161,7 +159,7 @@ This test function checks if the `pretty` attribute of the `InputOutput` class i
 >   
 > ============================== 25 passed in 1.41s ==============================
 >  
-> Add the output to the chat? y
+> 将输出添加到聊天中？y
 
 
 </div>

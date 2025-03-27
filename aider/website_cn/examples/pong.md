@@ -1,32 +1,32 @@
 ---
-parent: Example chat transcripts
+parent: 聊天记录示例
 ---
 
-# Build pong with aider and pygame.
+# 使用aider和pygame构建乒乓球游戏
 
-In this chat transcript, the user asks to make a pong game using pygame.
-After setting up a basic game, the user asks for some customization of the colors and game mechanics.
+在这个聊天记录中，用户要求制作一个使用pygame的乒乓球游戏。
+在设置基本游戏后，用户要求对颜色和游戏机制进行一些自定义。
 
 <div class="chat-transcript" markdown="1">
 
 > $ aider  
 
-#### can you make a simple game of pong with pygame?  
+#### 你能用pygame制作一个简单的乒乓球游戏吗？  
 
-Sure, I can help you create a simple Pong game using Pygame. First, let's break down the steps needed to create the game:
+当然，我可以帮你创建一个使用Pygame的简单乒乓球游戏。首先，让我们分解创建游戏所需的步骤：
 
-1. Install Pygame library.
-2. Initialize Pygame and create a game window.
-3. Create Paddle and Ball classes.
-4. Initialize the paddles and the ball.
-5. Create the game loop.
-6. Handle user input for paddle movement.
-7. Update the ball position and check for collisions.
-8. Draw the paddles and ball on the screen.
-9. Check for scoring and update the score.
-10. Display the score on the screen.
+1. 安装Pygame库。
+2. 初始化Pygame并创建游戏窗口。
+3. 创建挡板和球类。
+4. 初始化挡板和球。
+5. 创建游戏循环。
+6. 处理用户输入以移动挡板。
+7. 更新球的位置并检查碰撞。
+8. 在屏幕上绘制挡板和球。
+9. 检查得分并更新分数。
+10. 在屏幕上显示分数。
 
-Now, let's start with the code. I'll provide you with the code changes in an *EDIT BLOCK*. Since we are creating a new file, I'll name it `pong_game.py`.
+现在，让我们开始编写代码。我将在*编辑块*中提供代码更改。由于我们要创建一个新文件，我将其命名为`pong_game.py`。
 
 ```python
 pong_game.py
@@ -64,18 +64,18 @@ sys.exit()
 >>>>>>> UPDATED
 ```
 
-This is the basic structure of the game. Now, let's add the Paddle and Ball classes, handle user input, update the ball position, draw the objects, and handle scoring. I'll provide the code changes in the next message.
+这是游戏的基本结构。现在，让我们添加挡板和球类，处理用户输入，更新球的位置，绘制对象，并处理得分。我将在下一条消息中提供代码更改。
 
-> Allow creation of new file pong_game.py? y  
-> Add pong_game.py to git? y  
-> Applied edit to pong_game.py  
-> Commit 14799cb aider: Added basic Pygame initialization and game loop structure to `pong_game.py`.  
+> 允许创建新文件pong_game.py？y  
+> 将pong_game.py添加到git？y  
+> 已应用编辑到pong_game.py  
+> 提交14799cb aider: 在`pong_game.py`中添加了基本的Pygame初始化和游戏循环结构。  
 
 </div>
 <div class="chat-transcript" markdown="1">
-#### go ahead  
+#### 继续  
 
-Now, let's add the Paddle and Ball classes, handle user input, update the ball position, draw the objects, and handle scoring. I'll provide the code changes in an *EDIT BLOCK*.
+现在，让我们添加挡板和球类，处理用户输入，更新球的位置，绘制对象，并处理得分。我将在*编辑块*中提供代码更改。
 
 ```python
 pong_game.py
@@ -158,7 +158,7 @@ class Ball(pygame.sprite.Sprite):
 >>>>>>> UPDATED
 ```
 
-Now, let's initialize the paddles and the ball, handle user input, update the ball position, draw the objects, and handle scoring.
+现在，让我们初始化挡板和球，处理用户输入，更新球的位置，绘制对象，并处理得分。
 
 ```python
 pong_game.py
@@ -217,17 +217,17 @@ while running:
 >>>>>>> UPDATED
 ```
 
-Now, you should have a simple Pong game using Pygame. You can further improve the game by adding a scoring system and displaying the score on the screen.
+现在，你应该有一个使用Pygame的简单乒乓球游戏了。你可以通过添加计分系统和在屏幕上显示分数来进一步改进游戏。
 
-> Applied edit to pong_game.py  
-> Applied edit to pong_game.py  
-> Commit b20bcee aider: Added Paddle and Ball classes, handled user input, updated ball position, drew objects, and handled scoring.  
+> 已应用编辑到pong_game.py  
+> 已应用编辑到pong_game.py  
+> 提交b20bcee aider: 添加了挡板和球类，处理用户输入，更新球位置，绘制对象，并处理得分。  
 
 </div>
 <div class="chat-transcript" markdown="1">
-#### nice, it works. but the ball moves way too fast.  
+#### 不错，游戏运行了。但是球的移动速度太快了。  
 
-I'm glad it works! Let's slow down the ball by reducing its speed. We can do this by changing the values of `self.dx` and `self.dy` in the `Ball` class.
+我很高兴它能运行！让我们通过减少球的速度来让它慢下来。我们可以通过更改`Ball`类中`self.dx`和`self.dy`的值来实现这一点。
 
 ```python
 pong_game.py
@@ -240,16 +240,16 @@ pong_game.py
 >>>>>>> UPDATED
 ```
 
-This change will reduce the ball's speed by half. You can adjust the values further if you want the ball to move even slower.
+这个更改将使球的速度减半。如果你希望球移动得更慢，可以进一步调整这些值。
 
-> Applied edit to pong_game.py  
-> Commit f4ceed4 aider: Reduced ball speed by half.  
+> 已应用编辑到pong_game.py  
+> 提交f4ceed4 aider: 球速减半。  
 
 </div>
 <div class="chat-transcript" markdown="1">
-#### can you make the paddles a bit bigger? and make one paddle red and one blue?  
+#### 能让挡板大一点吗？并且让一个挡板变成红色，一个变成蓝色？  
 
-Sure, let's make the paddles bigger and change their colors. We can do this by modifying the `Paddle` class in the `pong_game.py` file.
+当然，让我们让挡板变大并改变它们的颜色。我们可以通过修改`pong_game.py`文件中的`Paddle`类来实现这一点。
 
 ```python
 pong_game.py
@@ -267,7 +267,7 @@ pong_game.py
 >>>>>>> UPDATED
 ```
 
-Now, let's change the color of the left paddle to red.
+现在，让我们将左挡板的颜色改为红色。
 
 ```python
 pong_game.py
@@ -280,17 +280,17 @@ left_paddle.image.fill(left_paddle.color)
 >>>>>>> UPDATED
 ```
 
-With these changes, the paddles will be larger, and the left paddle will be red while the right paddle will be blue.
+通过这些更改，挡板将变得更大，左挡板将是红色，右挡板将是蓝色。
 
-> Applied edit to pong_game.py  
-> Applied edit to pong_game.py  
-> Commit 2c645c9 aider: Changed paddle size and color, and set left paddle to red.  
+> 已应用编辑到pong_game.py  
+> 已应用编辑到pong_game.py  
+> 提交2c645c9 aider: 改变了挡板的大小和颜色，并将左挡板设为红色。  
 
 </div>
 <div class="chat-transcript" markdown="1">
-#### each time the ball bounces off the paddle, can you make it go 10% faster?  
+#### 每次球从挡板反弹时，能让它的速度增加10%吗？  
 
-Sure, let's increase the ball's speed by 10% each time it bounces off a paddle. We can do this by modifying the `collide_with` method in the `Ball` class.
+当然，让我们在球每次从挡板反弹时将其速度增加10%。我们可以通过修改`Ball`类中的`collide_with`方法来实现这一点。
 
 ```python
 pong_game.py
@@ -306,10 +306,10 @@ pong_game.py
 >>>>>>> UPDATED
 ```
 
-With this change, the ball's speed will increase by 10% in both the x and y directions each time it bounces off a paddle.
+通过这个更改，球每次从挡板反弹时，在x和y方向上的速度都将增加10%。
 
-> Applied edit to pong_game.py  
-> Commit 693faf4 aider: Increased ball speed by 10% in both x and y directions each time it bounces off a paddle.  
+> 已应用编辑到pong_game.py  
+> 提交693faf4 aider: 每次球从挡板反弹时，在x和y方向上的速度都增加10%。  
 
 
 </div>

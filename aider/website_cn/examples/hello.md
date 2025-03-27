@@ -1,21 +1,21 @@
 ---
-parent: Example chat transcripts
+parent: 聊天记录示例
 ---
 
 # Hello aider!
 
-Here is the simplest possible "hello world" example of using aider:
+这是使用aider的最简单的"hello world"示例：
 
 <br/>
 <br/>
 <br/>
 <div class="chat-transcript" markdown="1">
 
-#### change hello to goodbye
+#### 将hello改为goodbye
 
-To change the output from "hello" to "goodbye", we need to modify the `hello.py` file.
+要将输出从"hello"改为"goodbye"，我们需要修改`hello.py`文件。
 
-Here is the change:
+以下是更改：
 
 ```python
 hello.py
@@ -26,8 +26,8 @@ print("goodbye")
 >>>>>>> UPDATED
 ```
 
-> Applied edit to hello.py  
-> Commit 672ae42 aider: Changed output from "hello" to "goodbye" in hello.py.
+> 已应用编辑到hello.py  
+> 提交672ae42 aider: 在hello.py中将输出从"hello"更改为"goodbye"。
 
 </div>
 <br/>

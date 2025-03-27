@@ -1,55 +1,44 @@
 ---
-parent: Example chat transcripts
+parent: 聊天记录示例
 nav_order: 4
 ---
 
-# Create a "black box" test case
+# 创建"黑盒"测试用例
 
-This transcript shows aider creating a black box test case,
-**without being given
-access to the source code of the function being tested or any of the
-other code in the repo.**
+这个记录展示了aider创建黑盒测试用例的过程，**在没有访问被测试函数源代码或仓库中任何其他代码的情况下**。
 
-Instead, aider is operating entirely off a
-[high level map of the repository based on ctags](https://aider.chat/docs/ctags.html),
-which provides details on all the symbols and function signatures in the repo.
-Using only the meta-data in the map, the LLM is able to figure out how to call the method to be tested, as well as how to instantiate multiple class objects that are required to prepare for the test.
+相反，aider完全依靠[基于ctags的仓库高级地图](https://aider.chat/docs/ctags.html)来操作，该地图提供了仓库中所有符号和函数签名的详细信息。仅使用地图中的元数据，LLM能够弄清楚如何调用要测试的方法，以及如何实例化测试准备所需的多个类对象。
 
-In detail, aider is able to use the repo map to:
+具体来说，aider能够利用仓库地图来：
 
-  - Find the function signature of the `cmd_add()` function which the user wants a test case for.
-  - Determine that it is a method of the `Command` class, so the test case will need to instantiate an instance to conduct the test.
-  - Identify that creating a `Command` instance requires passing in `InputOutput` and `Coder` instances.
-  - Figure out the arguments required to instantiate the `InputOutput` instance.
-  - Decide that the `Coder` class looks complex enough to use a `MagickMock`.
+  - 找到用户想要测试的`cmd_add()`函数的函数签名。
+  - 确定它是`Command`类的一个方法，因此测试用例需要实例化一个实例来进行测试。
+  - 识别创建`Command`实例需要传入`InputOutput`和`Coder`实例。
+  - 确定实例化`InputOutput`实例所需的参数。
+  - 决定`Coder`类看起来足够复杂，可以使用`MagickMock`。
 
-The `cmd_add()` method is defined without type annotations, so aider makes a
-reasonable but incorrect guess that it accepts a `list` of files. The
-user invokes the `/run` command to run the new unit test, which throws an
-error based on this misunderstanding.
+`cmd_add()`方法的定义没有类型注解，因此aider做出了合理但不正确的猜测，认为它接受文件的`list`。用户调用`/run`命令来运行新的单元测试，这基于这种误解抛出了一个错误。
 
-The LLM reviews the error message and fixes the call to `cmd_add()` to
-correctly pass a `str` with a space-separated list of filenames
-instead.  The test then passes on the next `/run`.
+LLM审查了错误消息，并修复了对`cmd_add()`的调用，正确地传递了一个包含以空格分隔的文件名列表的`str`。测试随后在下一次`/run`中通过。
 
 <div class="chat-transcript" markdown="1">
 
 > $ aider tests/test_commands.py  
-> Creating empty file tests/test_commands.py  
-> Added tests/test_commands.py to the chat  
-> Files not tracked in .git:  
+> 创建空文件tests/test_commands.py  
+> 已将tests/test_commands.py添加到聊天中  
+> 文件未在.git中跟踪：  
 > - tests/test_commands.py  
 >  
-> Add them? y  
-> Added tests/test_commands.py to the git repo  
-> Commit b9cea2c Added new files to the git repo: tests/test_commands.py  
-> Using git repo: .git  
+> 添加它们？y  
+> 已将tests/test_commands.py添加到git仓库  
+> 提交b9cea2c 已将新文件添加到git仓库：tests/test_commands.py  
+> 使用git仓库：.git  
 
-#### add a test for cmd_add that passes in 'foo.txt' and 'bar.txt' and ensures they have both been created after the test. run the test in a tmp dir.  
+#### 添加一个测试cmd_add的测试，传入'foo.txt'和'bar.txt'，并确保测试后它们都已创建。在临时目录中运行测试。  
 
-I will add a new test method called `test_cmd_add` in the `tests/test_commands.py` file. This test will create a temporary directory, change the current working directory to the temporary directory, and then call the `cmd_add` method with 'foo.txt' and 'bar.txt' as arguments. After that, it will check if both files have been created in the temporary directory.
+我将在`tests/test_commands.py`文件中添加一个名为`test_cmd_add`的新测试方法。这个测试将创建一个临时目录，将当前工作目录更改为该临时目录，然后以'foo.txt'和'bar.txt'作为参数调用`cmd_add`方法。之后，它将检查这两个文件是否已在临时目录中创建。
 
-Here's the code change:
+这是代码更改：
 
 ```python
 tests/test_commands.py
@@ -82,10 +71,10 @@ class TestCommands(TestCase):
 >>>>>>> UPDATED
 ```
 
-This test will ensure that the `cmd_add` method creates the specified files in the current working directory.
+这个测试将确保`cmd_add`方法在当前工作目录中创建指定的文件。
 
-> Applied edit to tests/test_commands.py  
-> Commit e2d5212 aider: Added a test method `test_cmd_add` that creates a temporary directory, calls the `cmd_add` method with 'foo.txt' and 'bar.txt', and checks if both files have been created in the temporary directory.  
+> 已应用编辑到tests/test_commands.py  
+> 提交e2d5212 aider: 添加了一个测试方法`test_cmd_add`，它创建一个临时目录，使用'foo.txt'和'bar.txt'调用`cmd_add`方法，并检查这两个文件是否已在临时目录中创建。  
 
 </div>
 <div class="chat-transcript" markdown="1">
@@ -137,11 +126,11 @@ This test will ensure that the `cmd_add` method creates the specified files in t
 > ============================== 1 failed in 0.34s ===============================  
 > ```  
 >
-> Add the output to the chat? [y/n] (y): y  
+> 将输出添加到聊天中？[y/n] (y): y  
 
-It seems that the `cmd_add` method in `aider/commands.py` is expecting a string as input, but in the test, we are passing a list. I will update the test to pass a string instead of a list.
+看起来`aider/commands.py`中的`cmd_add`方法需要一个字符串作为输入，但在测试中，我们传递的是一个列表。我将更新测试以传递字符串而不是列表。
 
-Here's the code change:
+这是代码更改：
 
 ```python
 tests/test_commands.py
@@ -154,14 +143,14 @@ tests/test_commands.py
 >>>>>>> UPDATED
 ```
 
-Now, run the test again with the updated test method:
+现在，使用更新后的测试方法再次运行测试：
 
 ```
 pytest tests/test_commands.py
 ```
 
-> Applied edit to tests/test_commands.py  
-> Commit d1551b4 aider: Updated test to pass a string instead of a list when calling `cmd_add` method.  
+> 已应用编辑到tests/test_commands.py  
+> 提交d1551b4 aider: 更新测试，在调用`cmd_add`方法时传递字符串而不是列表。  
 
 </div>
 <div class="chat-transcript" markdown="1">

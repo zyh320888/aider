@@ -1,17 +1,17 @@
 ---
-parent: Example chat transcripts
+parent: 聊天记录示例
 ---
 
-# Editing an asciinema cast file with aider
+# 使用aider编辑asciinema投射文件
 
-The user needs to make some tedious edits to the escape sequences in an `asciinema` screencast file.
+用户需要对`asciinema`屏幕录制文件中的转义序列进行一些繁琐的编辑。
 
 <div class="chat-transcript" markdown="1">
 
 > $ aider hello.cast  
-> Added hello.cast to the chat  
+> 已将hello.cast添加到聊天中  
 
-#### when the "hello.py> " prompt is displayed, it's including some escape codes to add a few blank lines below the prompt and then bringing the cursor back up. remove all that. just show the prompt followed by a space and leave the cursor showing right after that.  
+#### 当"hello.py> "提示符显示时，它包含了一些转义代码，用于在提示符下方添加几个空行，然后将光标带回上方。删除所有这些内容。只显示提示符后跟一个空格，并在之后留下光标显示。  
 
 ```python
 hello.cast
@@ -22,8 +22,8 @@ hello.cast
 >>>>>>> UPDATED
 ```
 
-> Applied edit to hello.cast  
-> Commit a3fa4d2 aider: Removed escape codes to display prompt and cursor correctly.  
+> 已应用编辑到hello.cast  
+> 提交a3fa4d2 aider: 删除转义代码以正确显示提示符和光标。  
 
 
 </div>

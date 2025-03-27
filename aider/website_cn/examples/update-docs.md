@@ -1,17 +1,17 @@
 ---
-parent: Example chat transcripts
+parent: 聊天记录示例
 ---
-# Automatically update docs with aider
+# 使用aider自动更新文档
 
-In this chat transcript, the user asks to automatically update the Usage docs based on the latest version of the main() function in the code.
+在这个聊天记录中，用户要求根据代码中main()函数的最新版本自动更新使用文档。
 
 <div class="chat-transcript" markdown="1">
 
 > $ aider ./README.md aider/main.py  
-> Added README.md to the chat  
-> Added aider/main.py to the chat  
+> 已将README.md添加到聊天中  
+> 已将aider/main.py添加到聊天中  
 
-#### the cmd line args in main() have been updated. update the readme to accurately describe them.  
+#### main()中的命令行参数已更新。更新readme以准确描述它们。  
 
 ```markdown
 README.md
@@ -35,7 +35,7 @@ README.md
 >>>>>>> UPDATED
 ```
 
-> Applied edit to README.md  
-> Commit 024f45e aider: Updated command line arguments in main() and updated README.md to accurately describe them.  
+> 已应用编辑到README.md  
+> 提交024f45e aider: 更新了main()中的命令行参数并更新README.md以准确描述它们。  
 
 </div>

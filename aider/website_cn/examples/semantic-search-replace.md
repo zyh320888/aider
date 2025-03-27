@@ -1,21 +1,21 @@
 ---
-parent: Example chat transcripts
+parent: 聊天记录示例
 ---
-# Semantic search & replace code with aider
+# 使用aider进行语义搜索和替换代码
 
-In this chat transcript, the user asks to modify a series of function calls. 
+在这个聊天记录中，用户要求修改一系列函数调用。
 
-Notice that it isn't replacing exact strings.
-Making the change requires dealing with various formatting and semantic differences in the calls that it is updating.
+注意，它不是替换精确的字符串。
+进行更改需要处理它正在更新的调用中的各种格式和语义差异。
 
-Some edits were elided from this transcript for brevity.
+为简洁起见，本记录中省略了一些编辑内容。
 
 <div class="chat-transcript" markdown="1">
 
 > $ aider aider/coder.py  
-> Added aider/coder.py to the chat  
+> 已将aider/coder.py添加到聊天中  
 
-#### replace all the self.console.print() calls that contain [red] with calls to self.io.tool_error() with [red] removed from the string
+#### 将所有包含[red]的self.console.print()调用替换为self.io.tool_error()调用，并从字符串中删除[red]
 
 ```python
 aider/coder.py
@@ -48,12 +48,12 @@ aider/coder.py
 >>>>>>> UPDATED
 ```
 
-Please note that I couldn't find the `self.io.tool_error()` method in the provided code. You may need to create this method in the appropriate class or provide the correct method name to replace the `self.console.print()` calls.
+请注意，我在提供的代码中找不到`self.io.tool_error()`方法。您可能需要在适当的类中创建此方法，或提供正确的方法名称来替换`self.console.print()`调用。
 
-> Applied edit to aider/coder.py  
-> Applied edit to aider/coder.py  
-> Applied edit to aider/coder.py  
-> Commit 919cfc2 aider: Replaced all self.console.print() calls with self.io.tool_error() calls with [red] removed from the string.  
+> 已应用编辑到aider/coder.py  
+> 已应用编辑到aider/coder.py  
+> 已应用编辑到aider/coder.py  
+> 提交919cfc2 aider: 将所有self.console.print()调用替换为self.io.tool_error()调用，并从字符串中删除[red]。  
 
 
 </div>
