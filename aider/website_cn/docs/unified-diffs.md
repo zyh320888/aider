@@ -1,6 +1,6 @@
 ---
-title: Unified diffs make GPT-4 Turbo 3X less lazy
-excerpt: GPT-4 Turbo has a problem with lazy coding, which can be signiciantly improved by asking for code changes formatted as unified diffs.
+title: 统一差异使GPT-4 Turbo的懒惰编码减少3倍
+excerpt: GPT-4 Turbo存在懒惰编码问题，通过要求以统一差异格式提供代码变更可显著改善这一问题。
 highlight_image: /assets/benchmarks-udiff.jpg
 nav_exclude: true
 ---
@@ -9,100 +9,97 @@ nav_exclude: true
 </p>
 {% endif %}
 
-# Unified diffs make GPT-4 Turbo 3X less lazy
+# 统一差异使GPT-4 Turbo的懒惰编码减少3倍
 
-![robot flowchart](/assets/benchmarks-udiff.svg)
+![机器人流程图](/assets/benchmarks-udiff.svg)
 
-Aider now asks GPT-4 Turbo to use
-[unified diffs](#choose-a-familiar-editing-format)
-to edit your code.
-This dramatically improves GPT-4 Turbo's performance on a
-challenging
-new benchmark 
-and significantly reduces its bad habit of "lazy" coding,
-where it writes
-code with comments
-like "...add logic here...".
+Aider现在要求GPT-4 Turbo使用
+[统一差异格式](#选择一种熟悉的编辑格式)
+来编辑代码。
+这极大地提高了GPT-4 Turbo在具有挑战性的
+新基准测试中的表现，
+并显著减少了其"懒惰"编码的坏习惯，
+即编写带有
+"...在此添加逻辑..."
+等注释的代码。
 
-Aider's new "laziness" benchmark suite 
-is designed to both provoke and quantify lazy coding.
-It consists of
-89 python refactoring tasks
-which tend to make GPT-4 Turbo write lazy comments like
-"...include original method body...".
+Aider的新"懒惰"基准测试套件
+旨在引发并量化懒惰编码行为。
+它包含
+89个Python重构任务，
+这些任务容易使GPT-4 Turbo写出类似
+"...包含原方法主体..."这样的懒惰注释。
 
-This new laziness benchmark produced the following results with `gpt-4-1106-preview`:
+这个新的懒惰基准测试在`gpt-4-1106-preview`模型上产生了以下结果：
 
-- **GPT-4 Turbo only scored 20% as a baseline** using aider's existing "SEARCH/REPLACE block" edit format. It outputs "lazy comments" on 12 of the tasks.
-- **Aider's new unified diff edit format raised the score to 61%**. Using this format reduced laziness by 3X, with GPT-4 Turbo only using lazy comments on 4 of the tasks.
-- **It's worse to add a prompt that says the user is blind, has no hands, will tip $2000 and fears truncated code trauma.** Widely circulated "emotional appeal" folk remedies 
-produced worse benchmark scores
-for both the baseline SEARCH/REPLACE and new unified diff editing formats.
+- **GPT-4 Turbo使用Aider现有的"SEARCH/REPLACE块"编辑格式仅得分20%**。它在12个任务中输出"懒惰注释"。
+- **Aider的新统一差异编辑格式将得分提高到61%**。使用这种格式将懒惰行为减少了3倍，GPT-4 Turbo仅在4个任务中使用懒惰注释。
+- **添加说明用户是盲人、没有手、会给2000美元小费并害怕代码截断创伤的提示反而更糟**。广泛流传的"情感诉求"民间偏方
+在基准测试中得分更低，
+无论是基线SEARCH/REPLACE还是新的统一差异编辑格式都是如此。
 
-The older `gpt-4-0613` also did better on the laziness benchmark using unified diffs:
+较旧的`gpt-4-0613`模型使用统一差异时在懒惰基准测试中表现也更好：
 
-- **The June GPT-4's baseline was 26%** using aider's existing "SEARCH/REPLACE block" edit format.
-- **Aider's new unified diff edit format raised June GPT-4's score to 59%**. 
-- The benchmark was designed to use large files, and
-28% of them are too large to fit in June GPT-4's 8k context window.
-This puts a hard ceiling of 72% on how well the June model could possibly score.
+- **6月版GPT-4使用Aider现有的"SEARCH/REPLACE块"编辑格式的基线得分为26%**。
+- **Aider的新统一差异编辑格式将6月版GPT-4的得分提高到59%**。
+- 该基准测试设计使用大型文件，
+其中28%的文件太大，无法装入6月版GPT-4的8k上下文窗口。
+这使得该模型的最高可能得分上限为72%。
 
-With unified diffs, GPT acts more like it's writing textual data intended to be read by a program,
-not talking to a person.
-Diffs are
-usually
-consumed by the
+使用统一差异格式时，GPT的行为更像是在编写供程序读取的文本数据，
+而不是与人对话。
+差异通常由
 [patch](https://www.gnu.org/software/diffutils/manual/html_node/Merging-with-patch.html)
-program, which is fairly rigid.
-This seems to encourage rigor, making
-GPT less likely to
-leave informal editing instructions in comments
-or be lazy about writing all the needed code.
+程序处理，该程序相当严格。
+这似乎鼓励更严谨的行为，使
+GPT不太可能
+在注释中留下非正式的编辑指令，
+或对编写所需代码抱有懒惰态度。
 
-Aider's new unified diff editing format
-outperforms other solutions I evaluated by a wide margin.
-I explored many other approaches including:
-prompts about being tireless and diligent,
-OpenAI's function/tool calling capabilities,
-numerous variations on aider's existing editing formats,
-line number based formats
-and other diff-like formats.
-The results shared here reflect
-an extensive investigation and benchmark evaluations of many approaches.
+Aider的新统一差异编辑格式
+远远优于我评估的其他解决方案。
+我探索了许多其他方法，包括：
+关于勤奋不懈的提示，
+OpenAI的函数/工具调用功能，
+Aider现有编辑格式的多种变体，
+基于行号的格式
+以及其他类似差异的格式。
+这里分享的结果反映了
+对多种方法的广泛调查和基准评估。
 
-The rest of this article will describe
-aider's new editing format and refactoring benchmark.
-It will highlight some key design decisions,
-and evaluate their significance using ablation experiments.
+本文余下部分将描述
+Aider的新编辑格式和重构基准测试。
+它将强调一些关键设计决策，
+并通过消融实验评估它们的重要性。
 
 
-## Unified diff editing format
+## 统一差异编辑格式
 
-The design and implementation of aider's new unified diff editing format
-helped clarify some general principles
-for GPT-4 code editing:
+Aider新统一差异编辑格式的设计和实现
+帮助明确了一些
+GPT-4代码编辑的一般原则：
 
-- FAMILIAR - Choose an edit format that GPT is already familiar with.
-- SIMPLE - Choose a simple format that avoids escaping, syntactic overhead and brittle specifiers like line numbers or line counts.
-- HIGH LEVEL - Encourage GPT to structure edits as new versions of substantive code blocks (functions, methods, etc), not as a series of surgical/minimal changes to individual lines of code.
-- FLEXIBLE - Strive to be maximally flexible when interpreting GPT's edit instructions.
+- 熟悉性 - 选择GPT已经熟悉的编辑格式。
+- 简单性 - 选择简单的格式，避免转义、语法开销和脆弱的指示符，如行号或行数。
+- 高层次 - 鼓励GPT将编辑构建为实质性代码块（函数、方法等）的新版本，而不是对单个代码行的一系列外科手术式/最小化更改。
+- 灵活性 - 在解释GPT的编辑指令时尽可能保持最大的灵活性。
 
-A helpful shortcut here is to have empathy for GPT, and imagine you
-are the one being asked to specify code edits.
-Would you want to hand type a properly escaped json data structure
-to invoke surgical insert, delete, replace operations on specific code line numbers?
-Do you want to use a brittle format, where any mistake
-causes an error that discards all your work?
+一个有用的捷径是对GPT产生共情，想象你
+就是被要求指定代码编辑的人。
+你是否愿意手动输入一个正确转义的json数据结构
+来调用对特定代码行号的插入、删除、替换操作？
+你是否想使用一种脆弱的格式，其中任何错误
+都会导致丢弃你所有的工作？
 
-GPT is quantitatively better at code editing when you reduce the
-burden of formatting edits by using a familiar, simple, high level
-and flexible editing format.
+当你使用熟悉、简单、高层次
+且灵活的编辑格式减少格式化编辑的负担时，
+GPT在代码编辑方面的表现在量化上会更好。
 
-### Choose a familiar editing format
+### 选择一种熟悉的编辑格式
 
-Unified diffs are perhaps the most common way to show
-code edits, because it's the 
-default output format of `git diff`:
+统一差异可能是展示
+代码编辑最常见的方式，因为它是
+`git diff`的默认输出格式：
 
 ```diff
 --- a/greeting.py
@@ -115,51 +112,50 @@ default output format of `git diff`:
      return
 ```
 
-Choosing such a popular format means that GPT has
-seen *many* examples in its training data.
-It's been trained to generate
-text that conforms to the unified diff syntax.
+选择如此流行的格式意味着GPT已经
+在其训练数据中见过*许多*示例。
+它已经被训练来生成
+符合统一差异语法的文本。
 
-### Use a simple editing format
+### 使用简单的编辑格式
 
-Aider's [previous benchmark results](https://aider.chat/docs/benchmarks.html) made
-it clear that simple editing formats
-work best.
-Even though OpenAI provides extensive support for
-structured formats like json and function calls,
-GPT is worse at editing code if you use them.
-I repeated these and other similar benchmarks against GPT-4 Turbo,
-and again reached these same conclusions.
+Aider的[之前基准测试结果](https://aider.chat/docs/benchmarks.html)清楚地表明
+简单的编辑格式
+效果最好。
+即使OpenAI提供了对
+结构化格式如json和函数调用的广泛支持，
+如果使用这些格式，GPT在编辑代码方面表现更差。
+我对GPT-4 Turbo重复了这些和其他类似的基准测试，
+再次得出了相同的结论。
 
-Informally, this is probably because stuffing *source code* into JSON is complicated
-and error prone.
-Wrapping the python code
+非正式地说，这可能是因为将*源代码*塞入JSON很复杂
+且容易出错。
+将Python代码
 `print("On Windows use \"C:\\\"")`
-as valid json is pretty painful and error prone.
-Due to escaping issues GPT's code is often syntactically incorrect when it's
-unpacked from JSON,
-or the JSON decode just fails entirely.
+包装为有效json相当痛苦且容易出错。
+由于转义问题，GPT的代码在从JSON中
+解包时通常在语法上不正确，
+或者JSON解码完全失败。
 
-On the other hand, the core of the unified diff format is very simple.
-You include a hunk of the file that needs to be changed,
-with every line prefixed by a character
-to indicate unchanged, new or deleted lines.
-A unified diff looks pretty much like the code it is modifying.
+另一方面，统一差异格式的核心非常简单。
+你包含需要更改的文件区块，
+每行前面都有一个字符
+表示未更改、新增或删除的行。
+统一差异看起来几乎就像它要修改的代码。
 
-The one complicated piece is the line numbers found at the start
-of each hunk. They look something like this: `@@ -2,4 +3,5 @@`.
-GPT is terrible at working with source code line numbers.
-This is a general observation about *any* use of line
-numbers in editing formats,
-backed up by many quantitative benchmark experiments.
+唯一复杂的部分是在每个区块开始处的行号。它们看起来像这样：`@@ -2,4 +3,5 @@`。
+GPT在处理源代码行号方面很糟糕。
+这是关于在编辑格式中使用行号的
+*任何*情况的一般观察结果，
+有多个量化基准实验支持。
 
-You've probably ignored the line numbers in every diff you've seen,
-because the diffs usually still make sense without them.
-Aider tells GPT not to include line numbers,
-and just interprets each hunk from the unified diffs
-as a search and replace operation:
+你可能已经忽略了你见过的每个差异中的行号，
+因为差异通常没有它们也能理解。
+Aider告诉GPT不要包含行号，
+而只是将统一差异中的每个区块
+解释为搜索和替换操作：
 
-This diff:
+这个差异：
 
 ```diff
 @@ ... @@
@@ -170,8 +166,8 @@ This diff:
      return
 ```
 
-Means we need to search the file for the
-*space* and *minus* `-` lines:
+表示我们需要在文件中搜索
+*空格*和*减号* `-` 行：
 
 ```python
 def main(args):
@@ -180,7 +176,7 @@ def main(args):
     return
 ```
 
-And replace them with the *space* and *plus* `+` lines:
+并将它们替换为*空格*和*加号* `+` 行：
 
 ```python
 def main(args):
@@ -189,14 +185,14 @@ def main(args):
     return
 ```
 
-Simple, right?
+很简单，对吧？
 
-### Encourage high level edits
+### 鼓励高层次编辑
 
-The example unified diffs we've seen so far have all been single line changes,
-which makes them pretty easy to read and understand.
-Consider this slightly more complex change, which renames the variable `n` to
-`number`:
+到目前为止我们看到的示例统一差异都是单行更改，
+这使它们相当容易阅读和理解。
+考虑这个稍微复杂一点的更改，它将变量 `n` 重命名为
+`number`：
 
 ```diff
 @@ ... @@
@@ -210,10 +206,9 @@ Consider this slightly more complex change, which renames the variable `n` to
 +        return number * factorial(number-1)
 ```
 
-The following "high level diff" of the same
-change is not as succinct as the minimal diff above,
-but it is much easier to see two different coherent versions of the
-`factorial()` function.
+以下同一更改的"高层次差异"
+不如上面的最小差异简洁，
+但更容易看到`factorial()`函数的两个不同连贯版本。
 
 ```diff
 @@ ... @@
@@ -229,36 +224,35 @@ but it is much easier to see two different coherent versions of the
 +        return number * factorial(number-1)
 ```
 
-Aider's system prompt encourages
-GPT to produce these high level diffs.
-This makes GPT better at producing correct diffs, which can be successfully
-applied to the original file.
+Aider的系统提示鼓励
+GPT生成这些高层次差异。
+这使GPT能更好地生成正确的差异，可以成功
+应用于原始文件。
 
-**Experiments without "high level diff" prompting
-produce a 30-50% increase in editing errors,**
-where diffs fail to apply or apply incorrectly and
-produce invalid code.
-When a patch fails, aider needs to ask GPT for a corrected version of the diff.
-This takes time, costs tokens and sometimes fails to produce a successful edit
-even after multiple retries.
+**没有"高层次差异"提示的实验
+会导致编辑错误增加30-50%**，
+差异无法应用或应用不正确并
+生成无效代码。
+当补丁失败时，Aider需要向GPT请求差异的更正版本。
+这需要时间，消耗token，有时即使经过多次重试
+也无法产生成功的编辑。
 
-There are probably a couple of reasons why high level diffs
-help:
+高层次差异有帮助可能有几个原因：
 
-- It's easier to produce diffs that both correctly match the original code and correctly produce the intended new code. There is less risk of GPT getting confused, compared to generating a series of surgical edits that interleave lines of old and new code.
-- High level hunks often contain more lines than a surgical hunk, so they are less likely to accidentally match unrelated parts of the code. This is helpful because GPT can't reliably give us line numbers to specify exactly where in the file to make changes.
+- 生成既能正确匹配原始代码又能正确生成预期新代码的差异更容易。与生成交错旧代码和新代码行的一系列外科手术式编辑相比，GPT混淆的风险较小。
+- 高层次区块通常包含比外科手术式区块更多的行，因此它们不太可能意外匹配代码中不相关的部分。这很有帮助，因为GPT无法可靠地给我们行号来指定文件中确切的更改位置。
 
-### Be flexible when applying edits
+### 灵活应用编辑
 
-GPT frequently makes imperfect diffs that won't apply cleanly.
-They exhibit a variety of problems:
+GPT经常制作不完美的差异，无法干净地应用。
+它们表现出各种问题：
 
-- GPT forgets things like comments, docstrings, blank lines, etc. Or it skips over some code that it doesn't intend to change.
-- GPT forgets the leading *plus* `+` character to mark novel lines that it wants to add to the file. It incorrectly includes them with a leading *space* as if they were already there.
-- GPT outdents all of the code, removing all the leading white space which is shared across the lines. So a chunk of deeply indented code is shown in a diff with only the leading white space that changes between the lines in the chunk.
-- GPT jumps ahead to show edits to a different part of the file without starting a new hunk with a `@@ ... @@` divider.
+- GPT忘记了注释、文档字符串、空行等。或者它跳过了一些不打算更改的代码。
+- GPT忘记在它想添加到文件的新行前加上*加号* `+` 字符。它错误地在前面加上*空格*，好像它们已经存在一样。
+- GPT将所有代码都去除缩进，删除了所有行共有的前导空格。因此一块深度缩进的代码在差异中只显示区块中行与行之间变化的前导空格。
+- GPT在没有以 `@@ ... @@` 分隔符开始新区块的情况下跳转到显示文件不同部分的编辑。
 
-As an example of the first issue, consider this source code:
+作为第一个问题的例子，考虑这段源代码：
 
 ```python
 import sys
@@ -271,11 +265,10 @@ def main(args):
 main(sys.argv[1:])
 ```
 
-**The diff below is missing the "show a greeting" comment line**,
-and represents a common type of mistake GPT might make.
-When we search for the *minus* `-` lines, we won't find them
-in the original file
-because of the missing comment.
+**下面的差异缺少"show a greeting"注释行**，
+代表GPT可能会犯的一种常见错误类型。
+当我们搜索*减号* `-` 行时，由于缺少注释，
+我们在原始文件中找不到它们。
 
 
 ```diff
@@ -289,98 +282,92 @@ because of the missing comment.
 ```
 
 
-Aider tries to be very flexible when applying diffs,
-in order to handle defects.
-If a hunk doesn't apply cleanly, aider uses a number of strategies:
+Aider在应用差异时尝试非常灵活，
+以处理缺陷。
+如果一个区块不能干净地应用，Aider使用多种策略：
 
-- Normalize the hunk, by taking the *minus* `-` and *space* lines as one version of the hunk and the *space* and *plus* `+` lines as a second version and doing an actual unified diff on them.
-- Try and discover new lines that GPT is trying to add but which it forgot to mark with *plus* `+` markers. This is done by diffing the *minus* `-` and *space* lines back against the original file.
-- Try and apply the hunk using "relative leading white space", so we can match and patch correctly even if the hunk has been uniformly indented or outdented.
-- Break a large hunk apart into an overlapping sequence of smaller hunks, which each contain only one contiguous run of *plus* `+` and *minus* `-` lines. Try and apply each of these sub-hunks independently.
-- Vary the size and offset of the "context window" of *space*  lines from the hunk that are used to localize the edit to a specific part of the file.
-- Combine the above mechanisms to progressively become more permissive about how to apply the hunk.
+- 规范化区块，将*减号* `-` 和*空格*行作为区块的一个版本，将*空格*和*加号* `+` 行作为第二个版本，对它们进行实际的统一差异比较。
+- 尝试发现GPT试图添加但忘记用*加号* `+` 标记的新行。这通过将*减号* `-` 和*空格*行与原始文件进行差异比较来完成。
+- 尝试使用"相对前导空格"应用区块，这样即使区块被统一缩进或去除缩进，也能正确匹配和修补。
+- 将大区块分解为一系列重叠的小区块，每个小区块只包含*加号* `+` 和*减号* `-` 行的一个连续运行。尝试独立地应用这些子区块。
+- 改变区块中用于将编辑定位到文件特定部分的*空格*行的"上下文窗口"的大小和偏移量。
+- 结合上述机制，逐步变得更宽容地应用区块。
 
-These flexible patching strategies are critical, and 
-removing them
-radically increases the number of hunks which fail to apply.
-**Experiments where flexible patching is disabled show a 9X increase in editing errors** on aider's original Exercism benchmark.
+这些灵活的修补策略至关重要，
+移除它们
+会大大增加无法应用的区块数量。
+**禁用灵活修补的实验显示在Aider原始Exercism基准测试中编辑错误增加了9倍**。
 
-## Refactoring benchmark
+## 重构基准测试
 
-Aider has long used a
-[benchmark suite based on 133 Exercism python exercises](https://aider.chat/2023/07/02/benchmarks.html).
-But these are mostly small coding problems,
-usually requiring only a few dozen lines of code.
-GPT-4 Turbo is typically only lazy on 2-3 of these exercises:
-the ones with the most code and which involve refactoring.
+Aider长期使用
+[基于133个Exercism Python练习的基准测试套件](https://aider.chat/2023/07/02/benchmarks.html)。
+但这些主要是小型编码问题，
+通常只需要几十行代码。
+GPT-4 Turbo通常只在这些练习中的2-3个表现懒惰：
+那些代码最多且涉及重构的练习。
 
-Based on this observation, I set out to build a benchmark based on refactoring
-a non-trivial amount of code found in fairly large files.
-To do this, I used python's `ast` module to analyze
-[9 popular open source python repositories](https://github.com/Aider-AI/refactor-benchmark)
-to identify challenging refactoring tasks.
-The goal was to find:
+基于这一观察，我着手构建一个基于重构
+相当大的文件中非平凡代码量的基准测试。
+为此，我使用Python的`ast`模块分析
+[9个流行的开源Python代码库](https://github.com/Aider-AI/refactor-benchmark)
+来确定具有挑战性的重构任务。
+目标是找到：
 
-- Source files that contain classes with non-trivial methods, having 100-250+ AST nodes in their implementation.
-- Focus on methods that are part of a larger class, which has at least twice as much code as the method itself.
-- Select methods that don't use their `self` parameter, so they can be trivially refactored out of the class.
+- 包含具有非平凡方法的类的源文件，这些方法在实现中有100-250+个AST节点。
+- 专注于更大类的一部分方法，这些类的代码量至少是方法本身的两倍。
+- 选择不使用`self`参数的方法，以便它们可以轻松地从类中重构出来。
 
-We can then turn each of these source files into a task for the benchmark,
-where we ask GPT to do something like:
+然后，我们可以将每个源文件转化为基准测试的任务，
+我们要求GPT做类似这样的事情：
 
-> Refactor the `_set_csrf_cookie` method in the `CsrfViewMiddleware` class to be a stand alone, top level function.
-> Name the new function `_set_csrf_cookie`, exactly the same name as the existing method.
-> Update any existing `self._set_csrf_cookie` calls to work with the new `_set_csrf_cookie` function.
+> 将`CsrfViewMiddleware`类中的`_set_csrf_cookie`方法重构为独立的顶级函数。
+> 将新函数命名为`_set_csrf_cookie`，与现有方法名称完全相同。
+> 更新任何现有的`self._set_csrf_cookie`调用以使用新的`_set_csrf_cookie`函数。
 
-A [simple python AST scanning script](https://github.com/Aider-AI/aider/blob/main/benchmark/refactor_tools.py)
-found 89 suitable files
-and packaged them up as benchmark tasks.
-Each task has a test
-that checks if the refactor
-was performed roughly correctly:
+一个[简单的Python AST扫描脚本](https://github.com/Aider-AI/aider/blob/main/benchmark/refactor_tools.py)
+找到了89个合适的文件
+并将它们打包为基准测试任务。
+每个任务都有一个测试
+来检查重构是否大致正确执行：
 
-- The updated source file must parse as valid python, to detect misapplied edits which produce invalid code.
-- The target method must now exist as a top-level function in the file.
-- This new top-level function must contain approximately the same number of AST nodes as the original class method. This ensures that GPT didn't elide code and replace it with comments.
-- The original class must still be present in the file, and it must be smaller by about the number of AST nodes in the method which was removed. This helps confirm that the method was removed from the class, without other significant modifications.
+- 更新后的源文件必须解析为有效的Python，以检测产生无效代码的错误应用编辑。
+- 目标方法现在必须作为顶级函数存在于文件中。
+- 这个新的顶级函数必须包含与原始类方法大致相同数量的AST节点。这确保GPT没有省略代码并用注释替换。
+- 原始类必须仍然存在于文件中，并且它必须比移除方法前小大约相当于该方法的AST节点数。这有助于确认方法已从类中移除，没有其他重大修改。
 
-To be clear, this is not a rigorous test that the refactor was performed correctly.
-But it does serve as a basic sanity check that the refactor was essentially done as a cut & paste, without eliding any code as comments.
-And it correlates well with other laziness metrics
-gathered during benchmarking like the
-introduction of new comments that contain "...".
+明确地说，这不是对重构是否正确执行的严格测试。
+但它确实作为基本的健全性检查，确保重构基本上是作为剪切和粘贴完成的，没有将任何代码省略为注释。
+它与基准测试期间收集的其他懒惰指标（如引入包含"..."的新注释）良好相关。
 
-The result is a pragmatic
-[benchmark suite that provokes, detects and quantifies GPT coding laziness](https://github.com/Aider-AI/refactor-benchmark).
+结果是一个实用的
+[基准测试套件，它引发、检测和量化GPT编码懒惰](https://github.com/Aider-AI/refactor-benchmark)。
 
 
 
-## Conclusions and future work
+## 结论和未来工作
 
-Based on the refactor benchmark results,
-aider's new unified diff format seems
-to dramatically increase GPT-4 Turbo's skill at more complex coding tasks.
-It also seems very effective at reducing the lazy coding
-which has been widely noted as a problem with GPT-4 Turbo.
+基于重构基准测试结果，
+Aider的新统一差异格式似乎
+极大地提高了GPT-4 Turbo在更复杂编码任务中的技能。
+它在减少GPT-4 Turbo普遍被认为存在问题的懒惰编码方面也非常有效。
 
-Unified diffs was one of the very first edit formats I tried
-when originally building aider.
-I think a lot of other AI coding assistant projects have also
-tried going down this path.
-It seems like any naive or direct use of structured diff formats
-is pretty much doomed to failure.
-But the techniques described here and
-incorporated into aider provide
-a highly effective way to harness GPT's knowledge of unified diffs.
+统一差异是我最初构建Aider时
+尝试的第一批编辑格式之一。
+我想许多其他AI编码助手项目也
+尝试过这条路径。
+看起来任何天真或直接使用结构化差异格式的尝试
+几乎注定要失败。
+但这里描述的技术和
+融入Aider的技术提供了
+利用GPT对统一差异知识的高效方法。
 
-There could be significant benefits to
-fine tuning models on
-aider's simple, high level style of unified diffs.
-Dropping line numbers from the hunk headers and focusing on diffs of
-semantically coherent chunks of code
-seems to be an important part of successful GPT code editing
-(besides the relentless focus on flexibly applying edits).
-Most LLMs will have already seen plenty of unified diffs
-in their normal training data, and so should be
-amenable to fining tuning towards this
-particular diff style.
+对Aider简单、高层次的统一差异风格进行
+微调模型可能会带来显著好处。
+从区块标题中删除行号并专注于
+语义连贯的代码块的差异
+似乎是成功的GPT代码编辑的重要组成部分
+（除了对灵活应用编辑的不懈关注）。
+大多数LLM在正常训练数据中已经见过大量统一差异，
+因此应该能够适应向这种
+特定差异风格的微调。

@@ -1,32 +1,32 @@
 ---
-title: Installation
+title: 安装
 has_children: true
 nav_order: 20
-description: How to install and get started pair programming with aider.
+description: 如何安装并开始与aider进行结对编程。
 ---
 
-# Installation
+# 安装
 {: .no_toc }
 
 
-## Get started quickly with aider-install
+## 使用aider-install快速入门
 
 {% include get-started.md %}
 
-This will install aider in its own separate python environment.
-If needed, 
-aider-install will also install a separate version of python 3.12 to use with aider.
+这将在独立的Python环境中安装aider。
+如有需要，
+aider-install还会安装单独的Python 3.12版本供aider使用。
 
-Once aider is installed,
-there are also some [optional install steps](/docs/install/optional.html).
+安装aider后，
+还有一些[可选的安装步骤](/docs/install/optional.html)。
 
-See the [usage instructions](https://aider.chat/docs/usage.html) to start coding with aider.
+查看[使用说明](https://aider.chat/docs/usage.html)开始使用aider进行编码。
 
-## One-liners
+## 一键安装命令
 
-These one-liners will install aider, along with python 3.12 if needed.
-They are based on the 
-[uv installers](https://docs.astral.sh/uv/getting-started/installation/).
+以下一行命令可以安装aider，如果需要还会安装Python 3.12。
+它们基于
+[uv安装程序](https://docs.astral.sh/uv/getting-started/installation/)。
 
 #### Windows
 
@@ -34,66 +34,63 @@ They are based on the
 powershell -ExecutionPolicy ByPass -c "irm https://aider.chat/install.ps1 | iex"
 ```
 
-#### Mac & Linux
+#### Mac和Linux
 
-Use curl to download the script and execute it with sh:
+使用curl下载脚本并用sh执行：
 
 ```bash
 curl -LsSf https://aider.chat/install.sh | sh
 ```
 
-If your system doesn't have curl, you can use wget:
+如果您的系统没有curl，可以使用wget：
 
 ```bash
 wget -qO- https://aider.chat/install.sh | sh
 ```
 
 
-## Install with uv
+## 使用uv安装
 
-You can install aider with uv:
+您可以使用uv安装aider：
 
 ```bash
-python -m pip install uv  # If you need to install uv
+python -m pip install uv  # 如果您需要安装uv
 uv tool install --force --python python3.12 aider-chat@latest
 ```
 
-This will install uv using your existing python version 3.8-3.13,
-and use it to install aider.
-If needed, 
-uv will automatically install a separate python 3.12 to use with aider.
+这将使用您现有的Python版本(3.8-3.13)安装uv，
+然后使用它来安装aider。
+如有需要，
+uv会自动安装单独的Python 3.12供aider使用。
 
-Also see the
-[docs on other methods for installing uv itself](https://docs.astral.sh/uv/getting-started/installation/).
+另请参阅
+[安装uv本身的其他方法文档](https://docs.astral.sh/uv/getting-started/installation/)。
 
-## Install with pipx
+## 使用pipx安装
 
-You can install aider with pipx:
+您可以使用pipx安装aider：
 
 ```bash
-python -m pip install pipx  # If you need to install pipx
+python -m pip install pipx  # 如果您需要安装pipx
 pipx install aider-chat
 ```
 
-You can use pipx to install aider with python versions 3.9-3.12.
+您可以使用pipx通过Python 3.9-3.12版本安装aider。
 
-Also see the
-[docs on other methods for installing pipx itself](https://pipx.pypa.io/stable/installation/).
+另请参阅
+[安装pipx本身的其他方法文档](https://pipx.pypa.io/stable/installation/)。
 
-## Other install methods
+## 其他安装方法
 
-You can install aider with the methods described below, but one of the above
-methods is usually safer.
+您可以使用以下方法安装aider，但通常上述方法之一更安全。
 
-#### Install with pip
+#### 使用pip安装
 
-If you install with pip, you should consider
-using a 
-[virtual environment](https://docs.python.org/3/library/venv.html)
-to keep aider's dependencies separated.
+如果您使用pip安装，应考虑使用
+[虚拟环境](https://docs.python.org/3/library/venv.html)
+来分离aider的依赖项。
 
-
-You can use pip to install aider with python versions 3.9-3.12.
+您可以使用pip通过Python 3.9-3.12版本安装aider。
 
 ```bash
 python -m pip install -U --upgrade-strategy only-if-needed aider-chat
@@ -101,15 +98,14 @@ python -m pip install -U --upgrade-strategy only-if-needed aider-chat
 
 {% include python-m-aider.md %}
 
-#### Installing with package managers
+#### 使用包管理器安装
 
-It's best to install aider using one of methods
-recommended above.
-While aider is available in a number of system package managers,
-they often install aider with incorrect dependencies.
+最好使用上面推荐的方法之一安装aider。
+虽然aider在许多系统包管理器中可用，
+但它们经常安装带有不正确依赖项的aider。
 
-## Next steps...
+## 后续步骤...
 
-There are some [optional install steps](/docs/install/optional.html) you could consider.
-See the [usage instructions](https://aider.chat/docs/usage.html) to start coding with aider.
+您可以考虑一些[可选的安装步骤](/docs/install/optional.html)。
+查看[使用说明](https://aider.chat/docs/usage.html)开始使用aider进行编码。
 
