@@ -76,6 +76,21 @@ Aider有许多设置来控制它如何与不同模型一起工作。
 yaml文件应该是每个模型的字典对象列表。
 
 
+### 向litellm.completion传递额外参数
+
+模型设置的`extra_params`属性用于在向给定模型发送数据时，
+向`litellm.completion()`调用传递任意额外参数。
+
+例如：
+
+```yaml
+- name: some-provider/my-special-model
+  extra_params:
+    extra_headers:
+      Custom-Header: value
+    max_tokens: 8192
+```
+
 ### 全局额外参数
 
 您可以使用特殊模型名称`aider/extra_params`定义
@@ -153,6 +168,7 @@ cog.out("```\n")
   use_repo_map: false
   send_undo_reply: false
   lazy: false
+  overeager: false
   reminder: user
   examples_as_sys_msg: false
   extra_params: null
@@ -163,8 +179,10 @@ cog.out("```\n")
   streaming: true
   editor_model_name: null
   editor_edit_format: null
+  reasoning_tag: null
   remove_reasoning: null
   system_prompt_prefix: null
+  accepts_settings: null
 
 - name: anthropic/claude-3-5-haiku-20241022
   edit_format: diff
