@@ -66,6 +66,18 @@ class ChatRequest(BaseModel):
     session_id: str = "default"
 
 
+# 添加对话历史模型，用于恢复历史记录
+class ChatHistoryItem(BaseModel):
+    role: str
+    message: str
+    timestamp: Optional[str] = None
+
+
+class ChatHistoryRequest(BaseModel):
+    session_id: str = "default"
+    history: List[ChatHistoryItem]
+
+
 class ChatResponse(BaseModel):
     response: str
     edits: Optional[Dict[str, Any]] = None
@@ -101,6 +113,13 @@ class WorkspaceDirRequest(BaseModel):
     session_id: str = "default"
 
 
+# 添加一体化会话初始化请求模型
+class SessionInitRequest(BaseModel):
+    session_id: str
+    workspace_dir: str
+    history: List[ChatHistoryItem] = []
+
+
 app = FastAPI(title="Aider API", description="与Aider对话并编辑代码的API")
 
 # 添加CORS中间件以允许跨域请求
@@ -125,8 +144,8 @@ async def root():
     }
 
 
-def get_coder(session_id: str = "default", workspace_dir: str = None):
-    """获取或创建一个Coder实例"""
+def get_coder(session_id: str = "default", workspace_dir: str = None, history: List[ChatHistoryItem] = None):
+    """获取或创建一个Coder实例，可选择从历史记录恢复对话上下文"""
     logger.info(f"获取Coder实例 - session_id: {session_id}, workspace_dir: {workspace_dir}")
     if session_id not in coder_instances:
         current_dir = workspace_dir or os.getcwd()
@@ -177,8 +196,23 @@ def get_coder(session_id: str = "default", workspace_dir: str = None):
             coder.stream = True
             coder.pretty = False
             
-            # 注意：不需要手动初始化git仓库，Coder初始化时会自动处理
-            # 在cli_main中已经处理了git相关的初始化
+            # 如果提供了历史记录，恢复对话上下文
+            if history:
+                logger.info(f"恢复对话历史记录，共 {len(history)} 条消息")
+                for item in history:
+                    if item.role == "user":
+                        # 添加用户消息到历史记录
+                        coder.done_messages.append({
+                            "role": "user", 
+                            "content": item.message
+                        })
+                    elif item.role == "assistant":
+                        # 添加助手消息到历史记录
+                        coder.done_messages.append({
+                            "role": "assistant",
+                            "content": item.message
+                        })
+                logger.info(f"已恢复对话历史记录")
             
             coder_instances[session_id] = coder
             logger.info(f"已创建并缓存Coder实例: {session_id}")
@@ -498,6 +532,99 @@ async def set_workspace_dir(request: WorkspaceDirRequest):
         }
     except Exception as e:
         logger.error(f"设置工作目录失败: {str(e)}")
+        return {
+            "status": "error",
+            "error": str(e)
+        }
+
+
+# 恢复会话历史记录接口
+@app.post("/chat/history/restore")
+async def restore_chat_history(request: ChatHistoryRequest):
+    """恢复对话历史到Aider会话"""
+    try:
+        # 删除现有会话实例（如果存在）
+        if request.session_id in coder_instances:
+            logger.info(f"删除现有会话实例以恢复历史: {request.session_id}")
+            del coder_instances[request.session_id]
+        
+        # 获取或创建Coder实例，并传入历史记录
+        coder = get_coder(request.session_id, history=request.history)
+        
+        return {
+            "status": "success",
+            "message": f"已恢复对话历史，共 {len(request.history)} 条消息",
+            "session_id": request.session_id
+        }
+    except Exception as e:
+        logger.error(f"恢复对话历史失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# 添加自动生成标题的API
+@app.post("/chat/topics/generate_title")
+async def generate_topic_title(request: ChatRequest):
+    """使用LLM自动生成对话主题标题"""
+    try:
+        # 获取Coder实例
+        coder = get_coder(request.session_id)
+        
+        # 构造请求生成标题的提示
+        title_prompt = f"基于以下消息生成一个简短、具体的聊天主题标题（不超过20个字符）：\n\n{request.message}\n\n只需回复标题，不需要其他解释。"
+        
+        # 使用Coder实例运行请求
+        title = coder.run(title_prompt).strip()
+        
+        # 如果生成的标题太长，进行截断
+        if len(title) > 20:
+            title = title[:20] + "..."
+            
+        return {"title": title}
+    except Exception as e:
+        logger.error(f"生成主题标题失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# 一体化会话初始化API
+@app.post("/init_session")
+async def init_session(request: SessionInitRequest):
+    """初始化Aider会话：设置工作目录和历史记录"""
+    try:
+        logger.info(f"初始化会话 - session_id: {request.session_id}, dir: {request.workspace_dir}, "
+                  f"历史记录数: {len(request.history)}")
+        
+        # 检查目录是否存在
+        if not os.path.exists(request.workspace_dir):
+            logger.warning(f"目录不存在: {request.workspace_dir}")
+            return {
+                "status": "error",
+                "error": f"目录 {request.workspace_dir} 不存在"
+            }
+        
+        # 检查目录权限
+        if not os.access(request.workspace_dir, os.R_OK | os.W_OK):
+            logger.warning(f"目录权限不足: {request.workspace_dir}")
+            return {
+                "status": "error",
+                "error": f"目录 {request.workspace_dir} 权限不足"
+            }
+        
+        # 如果会话已存在，删除旧的Coder实例
+        if request.session_id in coder_instances:
+            logger.info(f"删除旧的Coder实例: {request.session_id}")
+            del coder_instances[request.session_id]
+        
+        # 创建新的Coder实例，一次性设置工作目录和历史记录
+        coder = get_coder(request.session_id, request.workspace_dir, request.history)
+        logger.info(f"已创建并初始化Coder实例: {request.session_id}")
+        
+        return {
+            "status": "success",
+            "message": f"会话已初始化，工作目录: {request.workspace_dir}, 历史记录: {len(request.history)} 条",
+            "session_id": request.session_id
+        }
+    except Exception as e:
+        logger.error(f"初始化会话失败: {str(e)}")
         return {
             "status": "error",
             "error": str(e)
