@@ -17,7 +17,7 @@ description: 关于aider的常见问题解答。
 
 最佳做法是考虑完成当前任务需要修改哪些文件，只添加这些文件到聊天中。
 
-当人们想要添加"所有文件"时，通常认为这能为大语言模型提供代码库的整体上下文。Aider会自动通过分析整个代码库来构建紧凑的[仓库地图](https://aider.chat/2023/10/22/repomap.html)。
+当人们想要添加"所有文件"时，通常认为这能为大语言模型提供代码库的整体上下文。Aider会自动通过分析整个代码库来构建紧凑的[仓库地图](https://aider.chat/docs/repomap.html)。
 
 添加大量与当前任务无关的文件会分散大语言模型的注意力，导致代码生成质量下降甚至文件编辑错误。同时也会增加token消耗成本。
 
@@ -72,16 +72,22 @@ Repo-map: disabled
 ## 如何在上下文中包含git历史？
 
 在新会话中包含近期git历史：
-1. 使用`/run git diff`命令查看差异：
+1. 使用`/run`命令结合`git diff`查看近期更改：
    ``` 
    /run git diff HEAD~1
    ```
-2. 查看多个提交：
+   这将在聊天历史中包含最后一次提交的差异。
+
+2. 查看多个提交的差异，增加波浪号后的数字：
    ``` 
    /run git diff HEAD~3
    ```
+   这将显示最近三次提交的变更。
 
-查看PR分支差异：
+请记住，聊天历史已经包含了当前会话中的最近更改，因此这个技巧在开始新的aider会话并希望提供关于最近工作上下文时最有用。
+
+您还可以使用aider审查PR分支：
+
 ``` 
 /run git diff one-branch..another-branch
 
@@ -91,7 +97,7 @@ Repo-map: disabled
 /ask 这个修改与FooBar类的协作是否存在问题？
 ```
 
-你也可以在aider外准备diff输出并提供给aider阅读：
+当然，您也可以在aider外部准备diff输出，并作为文件提供给aider阅读：
 
 ```
 $ git diff -C10 v1..v2 > v1-v2-changes.diff
@@ -105,7 +111,7 @@ v1-v2-changes.diff
 ```
 
 {: .tip }
-`/git`命令的输出不会包含在聊天上下文中
+`/git`命令的输出不会包含在聊天上下文中，因此不适用于此目的。
 
 ## 如何从源码本地运行aider？
 
@@ -126,19 +132,30 @@ python -m pip install -e .
 python -m aider
 ```
 
-
 ## 能否修改aider使用的系统提示？
 
 最便捷的方式是使用[约定文件](https://aider.chat/docs/usage/conventions.html)添加自定义指令。
 
 aider采用模块化设计支持不同的系统提示和编辑格式。查看`aider/coders`子目录可以看到基础提示和多种具体实现。如果想实验系统提示，可以参考[代码编辑基准测试文档](https://aider.chat/docs/benchmarks.html)。
 
+虽然如何添加新的编辑器子系统文档不够完善，但您可以修改现有实现或将其用作模板来添加新的实现。
+
+您可以尝试查看和修改以下文件：
+
 当前支持的编辑器格式：
 - wholefile格式（GPT-3.5默认）：`--edit-format whole`
+  - wholefile_coder.py
+  - wholefile_prompts.py
 - editblock格式（GPT-4o默认）：`--edit-format diff` 
+  - editblock_coder.py
+  - editblock_prompts.py
 - universal diff格式（GPT-4 Turbo默认）：`--edit-format udiff`
+  - udiff_coder.py
+  - udiff_prompts.py
 
 实验时可使用`--verbose --no-pretty`参数查看原始通信数据。
+
+您也可以参考[安装aider开发版本的说明](https://aider.chat/docs/install/optional.html#install-the-development-version-of-aider)。
 
 ## 开发aider时使用哪些LLM？
 
@@ -207,23 +224,22 @@ aider会尝试提示模型使用系统配置的语言，但LLM并不总是可靠
    https://aider.chat/share/?mdurl=
    ```
 
-最终URL会像这样，展示聊天历史：
+这将生成类似以下的URL，显示的聊天历史与终端中看到的相同：
 ```
 https://aider.chat/share/?mdurl=https://gist.github.com/Aider-AI/2087ab8b64034a078c0a209440ac8be0
 ```
 
-## aider运行时能否手动编辑文件？
+## 我可以在aider运行时自己编辑文件吗？
 
-可以。aider在您每次发送消息时都会从文件系统读取最新版本的文件。
+可以。Aider在您发送每条消息时都会从文件系统读取文件的最新副本。
 
-但在等待aider回复时，最好不要编辑已添加到聊天的文件，以避免编辑冲突。
+在等待aider回复完成时，不建议编辑已添加到聊天的文件，因为您的编辑和aider的编辑可能会冲突。
 
 ## 什么是Aider AI LLC？
 
-Aider AI LLC是aider AI编程工具背后的公司。
-Aider是[开源的，可在GitHub获取](https://github.com/Aider-AI/aider)，
-使用[Apache 2.0许可证](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt)。
-
+Aider AI LLC是aider AI编码工具背后的公司。
+Aider是[开源的，可在GitHub上获取](https://github.com/Aider-AI/aider)，
+采用[Apache 2.0许可证](https://github.com/Aider-AI/aider/blob/main/LICENSE.txt)。
 
 <div style="height:80vh"></div>
 

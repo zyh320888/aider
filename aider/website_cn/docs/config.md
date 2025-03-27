@@ -1,40 +1,37 @@
 ---
 nav_order: 55
 has_children: true
-description: Information on all of aider's settings and how to use them.
+description: 关于aider所有设置及其使用方法的信息。
 ---
 
-# Configuration
+# 配置
 
-Aider has many options which can be set with
-command line switches.
-Most options can also be set in an `.aider.conf.yml` file
-which can be placed in your home directory or at the root of
-your git repo. 
-Or by setting environment variables like `AIDER_xxx`
-either in your shell or a `.env` file.
+Aider有许多选项可以通过命令行开关设置。
+大多数选项也可以在`.aider.conf.yml`文件中设置，
+该文件可以放在您的主目录或Git仓库的根目录中。
+或者通过在shell或`.env`文件中设置环境变量，如`AIDER_xxx`。
 
-Here are 4 equivalent ways of setting an option. 
+以下是设置选项的4种等效方式。
 
-With a command line switch:
+使用命令行开关：
 
 ```
 $ aider --dark-mode
 ```
 
-Using a `.aider.conf.yml` file:
+使用`.aider.conf.yml`文件：
 
 ```yaml
 dark-mode: true
 ```
 
-By setting an environment variable:
+通过设置环境变量：
 
 ```
 export AIDER_DARK_MODE=true
 ```
 
-Using an `.env` file:
+使用`.env`文件：
 
 ```
 AIDER_DARK_MODE=true

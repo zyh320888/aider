@@ -1,5 +1,5 @@
 ---
-parent: Configuration
+parent: 配置
 nav_order: 100
 description: 如何为aider的/editor命令配置自定义编辑器
 ---

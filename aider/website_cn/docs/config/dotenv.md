@@ -1,5 +1,5 @@
 ---
-parent: Configuration
+parent: 配置
 nav_order: 20
 description: 使用.env文件存储aider的LLM API密钥。
 ---

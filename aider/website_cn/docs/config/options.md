@@ -1,5 +1,5 @@
 ---
-parent: Configuration
+parent: 配置
 nav_order: 10
 description: 关于aider所有设置的详细信息。
 ---

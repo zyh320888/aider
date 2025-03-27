@@ -1,5 +1,5 @@
 ---
-parent: Configuration
+parent: 配置
 nav_order: 5
 description: 为API提供商设置API密钥。
 ---

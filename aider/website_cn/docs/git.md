@@ -36,6 +36,7 @@ Aider通过以下方式使用Git：
 - `--no-auto-commits` 停止自动提交Aider的每次更改
 - `--no-dirty-commits` 停止在编辑前提交脏文件
 - `--no-git` 完全禁用Git功能（需自行做好文件备份）
+- `--git-commit-verify` 在提交时运行pre-commit钩子。默认情况下，Aider通过使用`--no-verify`标志跳过pre-commit钩子（`--git-commit-verify=False`）。
 
 ## 提交信息
 

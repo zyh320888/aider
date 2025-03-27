@@ -1,5 +1,5 @@
 ---
-parent: Configuration
+parent: 配置
 nav_order: 950
 description: 配置LLM的高级设置。
 ---
