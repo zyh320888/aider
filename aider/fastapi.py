@@ -156,6 +156,52 @@ async def root():
         "documentation": urls.website,
     }
 
+@app.get("/session/{session_id}")
+async def check_session(session_id: str):
+    """检查会话是否存在并返回会话信息"""
+    try:
+        logger.info(f"检查会话状态 - session_id: {session_id}")
+        exists = session_id in coder_instances
+        workspace_dir = None
+        
+        if exists:
+            coder = coder_instances[session_id]
+            # 获取当前工作目录
+            try:
+                # 首先尝试从coder实例获取工作目录
+                if hasattr(coder, 'cwd'):
+                    workspace_dir = coder.cwd
+                else:
+                    # 如果没有cwd属性，尝试获取当前工作目录
+                    workspace_dir = os.getcwd()
+                
+                # 验证工作目录是否存在且可写
+                if workspace_dir and os.path.exists(workspace_dir) and os.access(workspace_dir, os.W_OK):
+                    logger.info(f"会话存在，有效工作目录: {workspace_dir}")
+                else:
+                    # 如果工作目录不存在或不可写，将其标记为None
+                    logger.warning(f"会话存在但工作目录无效: {workspace_dir}")
+                    workspace_dir = None
+            except Exception as e:
+                logger.warning(f"获取工作目录失败: {str(e)}")
+                workspace_dir = None
+        else:
+            logger.info(f"会话不存在: {session_id}")
+            
+        return {
+            "exists": exists,
+            "workspace_dir": workspace_dir,
+            "valid": exists and workspace_dir is not None
+        }
+    except Exception as e:
+        logger.error(f"检查会话状态失败: {str(e)}")
+        return {
+            "exists": False,
+            "workspace_dir": None,
+            "valid": False,
+            "error": str(e)
+        }
+
 
 def get_coder(session_id: str = "default", workspace_dir: str = None, history: List[ChatHistoryItem] = None):
     """获取或创建一个Coder实例，可选择从历史记录恢复对话上下文"""
