@@ -393,7 +393,53 @@ async def chat_stream(request: ChatRequest):
                 for filename in edit_info["files"]:
                     try:
                         logger.debug(f"读取文件: {filename}")  # 添加日志
-                        with open(filename, 'r', encoding='utf-8') as f:
+                        # 获取当前工作目录
+                        current_dir = os.getcwd()
+                        logger.info(f"当前工作目录(读取文件时): {current_dir}")
+                        
+                        # 记录路径信息
+                        is_abs_path = os.path.isabs(filename)
+                        logger.info(f"是否为绝对路径(读取文件时): {is_abs_path}")
+                        
+                        # 尝试获取文件的绝对路径和相对路径
+                        abs_path = os.path.abspath(filename)
+                        try:
+                            rel_path = os.path.relpath(filename, current_dir)
+                        except ValueError:
+                            rel_path = filename
+                            
+                        logger.info(f"文件绝对路径(读取文件时): {abs_path}")
+                        logger.info(f"相对于当前目录的路径(读取文件时): {rel_path}")
+                        
+                        # 检查各种路径组合下文件是否存在
+                        orig_exists = os.path.exists(filename)
+                        abs_exists = os.path.exists(abs_path)
+                        rel_exists = os.path.exists(rel_path)
+                        
+                        logger.info(f"原始路径文件是否存在(读取文件时): {orig_exists}")
+                        logger.info(f"绝对路径文件是否存在(读取文件时): {abs_exists}")
+                        logger.info(f"相对路径文件是否存在(读取文件时): {rel_exists}")
+                        
+                        # 尝试列出当前目录内容
+                        try:
+                            dir_contents = os.listdir(current_dir)
+                            logger.info(f"当前目录内容(前5项): {dir_contents[:5] if len(dir_contents) > 5 else dir_contents}")
+                        except Exception as dir_error:
+                            logger.warning(f"无法列出目录内容: {str(dir_error)}")
+                        
+                        # 如果不是绝对路径，则构建完整路径
+                        if not os.path.isabs(filename):
+                            full_path = os.path.join(current_dir, filename)
+                        else:
+                            full_path = filename
+                            
+                        logger.info(f"尝试读取文件的完整路径: {full_path}")
+                        
+                        # 检查完整路径文件是否存在
+                        full_exists = os.path.exists(full_path)
+                        logger.info(f"完整路径文件是否存在: {full_exists}")
+                        
+                        with open(full_path, 'r', encoding='utf-8') as f:
                             content = f.read()
                             
                         # 确定文件类型
@@ -475,10 +521,50 @@ async def get_all_files(session_id: str = "default"):
 async def add_file(request: FileRequest):
     """添加文件到聊天中"""
     try:
+        logger.info(f"尝试添加文件 - 文件名: {request.filename}, 会话ID: {request.session_id}")
         coder = get_coder(request.session_id)
+        
+        # 记录当前工作目录
+        current_dir = os.getcwd()
+        logger.info(f"当前工作目录: {current_dir}")
+        
+        # 记录路径信息
+        is_abs_path = os.path.isabs(request.filename)
+        logger.info(f"是否为绝对路径: {is_abs_path}")
+        
+        # 尝试获取文件的绝对路径和相对路径
+        abs_path = os.path.abspath(request.filename)
+        try:
+            rel_path = os.path.relpath(request.filename, current_dir)
+        except ValueError:
+            rel_path = request.filename
+            
+        logger.info(f"文件绝对路径: {abs_path}")
+        logger.info(f"相对于当前目录的路径: {rel_path}")
+        
+        # 检查原始文件是否存在
+        orig_exists = os.path.exists(request.filename)
+        logger.info(f"原始路径文件是否存在: {orig_exists}")
+        
+        # 检查绝对路径文件是否存在
+        abs_exists = os.path.exists(abs_path)
+        logger.info(f"绝对路径文件是否存在: {abs_exists}")
+        
+        # 如果需要，创建一个临时文件来测试路径解析
+        if not orig_exists and not abs_exists:
+            logger.warning(f"文件在指定路径下不存在: {request.filename}")
+        
+        # 添加文件到Aider会话
+        logger.info(f"将文件 {request.filename} 添加到会话")
         coder.add_rel_fname(request.filename)
+        
+        # 记录添加后的文件列表
+        files_in_chat = coder.get_inchat_relative_files()
+        logger.info(f"添加后的会话文件列表: {files_in_chat}")
+        
         return {"status": "success", "message": f"已将 {request.filename} 添加到聊天中"}
     except Exception as e:
+        logger.error(f"添加文件失败: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
