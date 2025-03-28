@@ -158,21 +158,11 @@ async def root():
 
 
 def get_coder(session_id: str = "default", workspace_dir: str = None, history: List[ChatHistoryItem] = None):
-    """获取或创建一个Coder实例
-    参数:
-        session_id: 会话ID，用于区分不同会话
-        workspace_dir: 工作目录路径，如果为None则使用当前目录  
-        history: 可选的历史消息列表，用于恢复对话上下文
-    """
+    """获取或创建一个Coder实例，可选择从历史记录恢复对话上下文"""
     logger.info(f"获取Coder实例 - session_id: {session_id}, workspace_dir: {workspace_dir}")
     if session_id not in coder_instances:
         current_dir = workspace_dir or os.getcwd()
         logger.info(f"创建新的Coder实例，工作目录: {current_dir}")
-        # Store the workspace_dir with the coder instance
-        coder_instances[session_id] = {
-            'coder': None,  # Will be populated below
-            'workspace_dir': current_dir
-        }
         
         try:
             # 切换到工作目录
@@ -237,24 +227,14 @@ def get_coder(session_id: str = "default", workspace_dir: str = None, history: L
                         })
                 logger.info(f"已恢复对话历史记录")
             
-            # Store both the coder and workspace_dir
-            coder_instances[session_id]['coder'] = coder
-            logger.info(f"已创建并缓存Coder实例: {session_id}, 工作目录: {current_dir}")
+            coder_instances[session_id] = coder
+            logger.info(f"已创建并缓存Coder实例: {session_id}")
             
         except Exception as e:
             logger.error(f"创建Coder实例失败: {str(e)}")
             raise
     
-    # Get the cached coder instance and workspace_dir
-    cached = coder_instances[session_id]
-    coder = cached['coder']
-    workspace_dir = cached['workspace_dir']
-    
-    # Ensure we're in the correct working directory
-    os.chdir(workspace_dir)
-    logger.debug(f"已切换到工作目录: {workspace_dir}")
-    
-    return coder
+    return coder_instances[session_id]
 
 
 @app.post("/chat", response_model=ChatResponse)
