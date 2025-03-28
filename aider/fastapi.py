@@ -220,6 +220,7 @@ def get_coder(session_id: str = "default", workspace_dir: str = None, history: L
             
             # 指定中文回答
             cli_args.extend(["--chat-language","中文"])
+            logger.info(f"已设置中文回答")
 
             # 读取配置文件路径
             config_file = os.environ.get("AIDER_CONFIG_FILE")
