@@ -296,8 +296,14 @@ async def chat(request: ChatRequest):
         # 记录输入历史
         coder.io.add_to_input_history(request.message)
         
+        # 添加强制中文回复的处理
+        chat_message = request.message
+        if not chat_message.startswith("/"):
+            # 添加中文提醒前缀
+            chat_message = "请用中文回答以下问题:\n" + chat_message
+        
         # 运行对话
-        response = coder.run(request.message)
+        response = coder.run(chat_message)
         
         # 处理编辑信息
         edit_info = None
@@ -345,7 +351,15 @@ async def chat_stream(request: ChatRequest):
         async def response_generator():
             # 运行聊天并获取流式响应
             buffer = ""
-            for chunk in coder.run_stream(request.message):
+            
+            # 添加提示词强制要求使用中文回复
+            # 如果消息不是以特殊命令开头，添加中文提示
+            chat_message = request.message
+            if not chat_message.startswith("/"):
+                # 添加中文提醒前缀
+                chat_message = "请用中文回答以下问题:\n" + chat_message
+            
+            for chunk in coder.run_stream(chat_message):
                 buffer += chunk
                 # 构建流式响应片段
                 yield json.dumps({
