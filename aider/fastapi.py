@@ -216,8 +216,12 @@ def get_coder(session_id: str = "default", workspace_dir: str = None, history: L
             logger.info(f"已切换到工作目录: {current_dir}")
             
             # 设置命令行参数，从环境变量读取配置
-            cli_args = ["--yes-always"]  # 基本参数
+            cli_args = ["--yes-always"]  # 基本参数，添加中文支持
             
+            # 指定中文回答
+            # cli_args.append("--chat-language")
+            # cli_args.append("中文")
+
             # 读取配置文件路径
             config_file = os.environ.get("AIDER_CONFIG_FILE")
             if config_file:
