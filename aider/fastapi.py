@@ -32,6 +32,19 @@ from aider.main import main as cli_main
 from aider.io import InputOutput
 from aider.scrape import Scraper
 
+# 在导入模块后添加补丁，禁用版本检查中的sys.exit
+import aider.versioncheck
+original_install_upgrade = aider.versioncheck.install_upgrade
+
+# 替换原始函数，防止sys.exit()调用
+def patched_install_upgrade(io, latest_version):
+    io.tool_output(f"检测到新版本 {latest_version}，但在API模式下不会自动退出安装。")
+    io.tool_output(f"请手动运行: pip install --upgrade aider-chat")
+    return
+
+# 应用补丁
+aider.versioncheck.install_upgrade = patched_install_upgrade
+
 
 class CaptureIO(InputOutput):
     """捕获工具输出的IO类"""
