@@ -19,8 +19,8 @@ echo "安装Jekyll和依赖..."
 bundle install
 
 # 启动本地服务器
-echo "启动website_cn服务器，网站将在http://localhost:4000可访问"
-bundle exec jekyll serve --host 0.0.0.0
+echo "启动website_cn服务器，网站将在http://localhost:23952可访问"
+bundle exec jekyll serve --host 0.0.0.0 --port 23952
 
 # 如果出错，提供一些建议
 if [ $? -ne 0 ]; then
