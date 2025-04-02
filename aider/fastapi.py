@@ -69,6 +69,26 @@ class CaptureIO(InputOutput):
         return lines
 
 
+class CommandCaptureIO(CaptureIO):
+    """专门用于捕获命令执行的所有输出，不进行过滤"""
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # 重新初始化lines列表，确保不会共享父类的静态列表
+        self.lines = []
+    
+    def tool_output(self, msg, log_only=False):
+        # 记录所有输出，用于调试
+        logger.debug(f"CommandCaptureIO收到输出: {msg}")
+        super().tool_output(msg, log_only=log_only)
+    
+    def get_all_output(self):
+        # 返回所有捕获的输出
+        lines = self.lines
+        logger.debug(f"CommandCaptureIO返回所有输出: {lines}")
+        return lines
+
+
 # 全局Coder实例缓存
 coder_instances = {}
 
@@ -655,25 +675,414 @@ async def undo_commit(session_id: str = "default"):
         
         # 确保这是最新的Aider提交
         if not coder.last_aider_commit_hash:
+            logger.warning(f"会话 {session_id} 没有找到上次的提交")
             return {
                 "status": "error",
                 "error": "没有找到上次的提交"
             }
         
-        # 撤销提交
-        result = coder.repo.undo_last_commit()
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存撤销提交前的原始工作目录: {original_dir}")
         
-        if result:
+        try:
+            # 如果coder有指定的工作目录，则切换到该目录
+            if hasattr(coder, 'cwd') and coder.cwd:
+                os.chdir(coder.cwd)
+                logger.info(f"已切换到会话工作目录: {coder.cwd}")
+            
+            # 保存当前的提交哈希用于日志
+            current_hash = coder.last_aider_commit_hash
+            
+            # 清空之前捕获的输出
+            if hasattr(coder.commands.io, 'get_captured_lines'):
+                coder.commands.io.get_captured_lines()
+            
+            # 使用Aider内置的cmd_undo方法撤销提交
+            logger.info(f"调用cmd_undo撤销提交: {current_hash}")
+            try:
+                # 使用raw_cmd_undo直接执行撤销操作
+                coder.commands.raw_cmd_undo("")
+                
+                # 获取捕获的输出信息
+                output = []
+                if hasattr(coder.commands.io, 'get_captured_lines'):
+                    output = coder.commands.io.get_captured_lines()
+                
+                logger.info(f"撤销提交输出: {output}")
+                
+                # 检查输出是否包含错误消息
+                error_messages = [
+                    "Cannot undo",
+                    "Unable to ",
+                    "Error ",
+                    "not made by aider",
+                    "more than 1 parent",
+                    "has uncommitted changes",
+                    "not in the repository"
+                ]
+                
+                # first commit 单独处理，不作为错误
+                is_first_commit = False
+                for line in output:
+                    if "first commit" in line:
+                        is_first_commit = True
+                        break
+                
+                if is_first_commit:
+                    # 对first commit情况进行友好提示，视为正常情况
+                    return {
+                        "status": "first",
+                        "message": "这是仓库中的第一个提交，无法继续撤销。",
+                        "output": output
+                    }
+                
+                # 处理其他真正的错误情况
+                for line in output:
+                    for error_msg in error_messages:
+                        if error_msg in line:
+                            logger.error(f"撤销失败: {line}")
+                            return {
+                                "status": "error",
+                                "error": line
+                            }
+                
+                return {
+                    "status": "success",
+                    "message": f"已撤销最后一次提交 ({current_hash})",
+                    "output": output
+                }
+            except Exception as e:
+                logger.error(f"调用cmd_undo失败: {str(e)}")
+                return {
+                    "status": "error",
+                    "error": f"撤销提交失败: {str(e)}"
+                }
+            
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复撤销提交后的原始工作目录: {original_dir}")
+            
+    except Exception as e:
+        logger.error(f"撤销提交失败: {str(e)}")
+        return {
+            "status": "error",
+            "error": str(e)
+        }
+
+
+class RunCommandRequest(BaseModel):
+    command: str
+    session_id: str = "default"
+
+
+@app.post("/run")
+async def run_command(request: RunCommandRequest):
+    """运行shell命令（等同于/run聊天命令）"""
+    try:
+        # 获取coder实例
+        coder = get_coder(request.session_id)
+        
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存运行命令前的原始工作目录: {original_dir}")
+        
+        try:
+            # 如果coder有指定的工作目录，则切换到该目录
+            cwd = None
+            if hasattr(coder, 'cwd') and coder.cwd:
+                cwd = coder.cwd
+                logger.info(f"将在会话工作目录执行命令: {cwd}")
+            else:
+                cwd = original_dir
+                logger.info(f"将在原始工作目录执行命令: {cwd}")
+            
+            # 直接使用subprocess执行命令，不通过cmd_run方法
+            import subprocess
+            process = subprocess.Popen(
+                request.command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                shell=True,
+                text=True,
+                encoding=sys.stdout.encoding,
+                errors="replace",
+                cwd=cwd
+            )
+            
+            # 捕获输出
+            output_lines = []
+            while True:
+                line = process.stdout.readline()
+                if not line:
+                    break
+                output_lines.append(line.rstrip())
+            
+            # 等待进程完成并获取返回码
+            exit_status = process.wait()
+            combined_output = "\n".join(output_lines)
+            
+            # 记录进程执行结果
+            logger.info(f"命令执行完成，返回码: {exit_status}")
+            
+            # 清空之前捕获的输出
+            if hasattr(coder.commands.io, 'get_captured_lines'):
+                coder.commands.io.get_captured_lines()
+            
+            # 将命令输出添加到coder的IO捕获中
+            coder.commands.io.tool_output(combined_output)
+            
+            # 重新获取捕获的输出
+            io_output = []
+            if hasattr(coder.commands.io, 'get_captured_lines'):
+                io_output = coder.commands.io.get_captured_lines()
+            
             return {
                 "status": "success",
-                "message": "已撤销最后一次提交"
+                "output": io_output or output_lines,
+                "exit_status": exit_status
             }
-        else:
-            return {
-                "status": "error",
-                "error": "撤销提交失败"
-            }
+            
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复运行命令后的原始工作目录: {original_dir}")
+            
     except Exception as e:
+        logger.error(f"运行命令失败: {str(e)}")
+        return {
+            "status": "error",
+            "error": str(e)
+        }
+
+
+@app.post("/run_with_cmd")
+async def run_with_cmd(request: RunCommandRequest):
+    """使用coder.commands.cmd_run方法运行shell命令并从聊天记录中获取输出"""
+    try:
+        # 获取coder实例
+        coder = get_coder(request.session_id)
+        
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存使用cmd_run运行命令前的原始工作目录: {original_dir}")
+        
+        try:
+            # 如果coder有指定的工作目录，则切换到该目录
+            if hasattr(coder, 'cwd') and coder.cwd:
+                os.chdir(coder.cwd)
+                logger.info(f"已切换到会话工作目录: {coder.cwd}")
+            
+            # 记录当前消息数量，用于之后检测新消息
+            cur_messages_before = len(coder.cur_messages)
+            logger.info(f"命令执行前的消息数量: {cur_messages_before}")
+            
+            # 清空之前捕获的输出
+            if hasattr(coder.commands.io, 'get_captured_lines'):
+                coder.commands.io.get_captured_lines()
+            
+            # 使用asyncio.to_thread将coder.commands.cmd_run包装为异步函数
+            import asyncio
+            logger.info(f"使用asyncio.to_thread调用cmd_run执行命令: {request.command}")
+            
+            # 定义同步函数以在线程中执行
+            def run_cmd_in_thread():
+                try:
+                    # 保存原始io
+                    original_io = coder.commands.io
+                    original_yes = False
+                    if hasattr(original_io, 'yes'):
+                        original_yes = original_io.yes
+                    
+                    # 创建并使用新的CommandCaptureIO
+                    command_io = CommandCaptureIO(
+                        pretty=False,
+                        yes=True,  # 自动确认所有提示
+                        dry_run=original_io.dry_run,
+                        encoding=original_io.encoding,
+                    )
+                    coder.commands.io = command_io
+                    logger.info("已替换为CommandCaptureIO并设置yes=True以避免交互式提示")
+                    
+                    try:
+                        # 清空lines以确保干净的开始
+                        command_io.lines = []
+                        
+                        # 执行命令，故意不设置add_on_nonzero_exit，让confirm_ask生效
+                        # 由于设置了yes=True，confirm_ask会自动返回True
+                        result = coder.commands.cmd_run(request.command, False)
+                        
+                        # 获取所有输出
+                        all_lines = command_io.lines
+                        logger.info(f"CMD_RUN捕获的所有输出: {all_lines}")
+                        
+                        return result, all_lines
+                    finally:
+                        # 恢复原始io配置
+                        coder.commands.io = original_io
+                except Exception as e:
+                    logger.error(f"线程中执行cmd_run失败: {str(e)}")
+                    return None, []
+            
+            # 在线程中异步执行cmd_run
+            result, aider_output = await asyncio.to_thread(run_cmd_in_thread)
+            logger.info(f"cmd_run执行结果: {result}, Aider输出行数: {len(aider_output)}")
+            
+            # 输出执行后的消息数量
+            cur_messages_after = len(coder.cur_messages)
+            logger.info(f"命令执行后的消息数量: {cur_messages_after}, 增加了: {cur_messages_after - cur_messages_before} 条消息")
+            
+            # 从聊天记录中获取实际命令输出
+            cmd_output = None
+            if cur_messages_after > cur_messages_before:
+                # 查找新增的用户消息，这应该是包含命令输出的消息
+                for i in range(cur_messages_before, cur_messages_after):
+                    msg = coder.cur_messages[i]
+                    if msg['role'] == 'user' and f"I ran this command:\n\n{request.command}" in msg['content']:
+                        # 提取输出部分
+                        parts = msg['content'].split("And got this output:\n\n")
+                        if len(parts) > 1:
+                            cmd_output = parts[1]
+                            logger.info(f"从聊天历史中提取到命令输出 ({len(cmd_output)} 字节)")
+                            break
+            
+            # 如果无法从聊天记录中获取，返回提示信息
+            if cmd_output is None:
+                logger.warning("无法从聊天历史中获取命令输出")
+                cmd_output = "命令已执行，但无法获取详细输出。请查看aider输出了解更多信息。"
+            
+            # 获取标准捕获的输出（包含aider的提示）
+            standard_output = []
+            if hasattr(coder.commands.io, 'get_captured_lines'):
+                standard_output = coder.commands.io.get_captured_lines()
+                logger.info(f"标准捕获的输出行数: {len(standard_output)}")
+            
+            # cmd_run返回None不代表失败，强制设置成功状态
+            exit_status = 0
+            
+            return {
+                "status": "success",
+                "output": cmd_output,  # 实际命令输出或提示信息
+                "aider_output": aider_output,  # aider的提示信息作为辅助参考
+                "standard_output": standard_output,  # 标准捕获的输出
+                "exit_status": exit_status,
+                "result": result
+            }
+            
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复cmd_run运行命令后的原始工作目录: {original_dir}")
+            
+    except Exception as e:
+        logger.error(f"使用cmd_run运行命令失败: {str(e)}")
+        return {
+            "status": "error",
+            "error": str(e)
+        }
+
+
+class CommitRequest(BaseModel):
+    message: Optional[str] = None
+    session_id: str = "default"
+
+
+@app.post("/commit")
+async def commit_changes(request: CommitRequest):
+    """提交更改（等同于/commit聊天命令）"""
+    try:
+        # 获取coder实例
+        coder = get_coder(request.session_id)
+        
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存提交更改前的原始工作目录: {original_dir}")
+        
+        try:
+            # 如果coder有指定的工作目录，则切换到该目录
+            if hasattr(coder, 'cwd') and coder.cwd:
+                os.chdir(coder.cwd)
+                logger.info(f"已切换到会话工作目录: {coder.cwd}")
+                
+            # 清空之前捕获的输出
+            if hasattr(coder.commands.io, 'get_captured_lines'):
+                coder.commands.io.get_captured_lines()
+            
+            # 执行commit命令
+            result = coder.commands.cmd_commit(request.message)
+            
+            # 获取捕获的输出
+            output = []
+            if hasattr(coder.commands.io, 'get_captured_lines'):
+                output = coder.commands.io.get_captured_lines()
+            
+            # 检查是否有提交哈希值
+            commit_info = {}
+            
+            # 如果coder.last_aider_commit_hash为空，尝试通过git直接获取最近的提交哈希
+            if not coder.last_aider_commit_hash and coder.repo:
+                try:
+                    # 使用git命令获取最近提交的哈希
+                    import subprocess
+                    git_cmd = ["git", "rev-parse", "HEAD"]
+                    process = subprocess.Popen(
+                        git_cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        cwd=coder.cwd
+                    )
+                    stdout, stderr = process.communicate()
+                    
+                    if process.returncode == 0:
+                        commit_hash = stdout.strip()
+                        logger.info(f"获取到最近提交哈希: {commit_hash}")
+                        
+                        # 获取提交消息
+                        git_msg_cmd = ["git", "log", "-1", "--pretty=%B"]
+                        msg_process = subprocess.Popen(
+                            git_msg_cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            text=True,
+                            cwd=coder.cwd
+                        )
+                        msg_stdout, msg_stderr = msg_process.communicate()
+                        
+                        if msg_process.returncode == 0:
+                            commit_message = msg_stdout.strip()
+                            logger.info(f"获取到最近提交消息: {commit_message}")
+                            
+                            # 设置到coder实例中
+                            coder.last_aider_commit_hash = commit_hash
+                            coder.last_aider_commit_message = commit_message
+                except Exception as e:
+                    logger.error(f"获取git提交信息失败: {str(e)}")
+            
+            if coder.last_aider_commit_hash:
+                commit_info = {
+                    "commit_hash": coder.last_aider_commit_hash,
+                    "commit_message": coder.last_aider_commit_message
+                }
+                logger.info(f"提交信息设置成功: {commit_info}")
+            else:
+                logger.warning("未能获取到提交哈希值")
+            
+            return {
+                "status": "success",
+                "output": output,
+                "result": result,
+                "commit_info": commit_info
+            }
+            
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复提交更改后的原始工作目录: {original_dir}")
+            
+    except Exception as e:
+        logger.error(f"提交更改失败: {str(e)}")
         return {
             "status": "error",
             "error": str(e)
