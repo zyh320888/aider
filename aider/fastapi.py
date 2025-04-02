@@ -206,83 +206,101 @@ async def check_session(session_id: str):
 def get_coder(session_id: str = "default", workspace_dir: str = None, history: List[ChatHistoryItem] = None):
     """获取或创建一个Coder实例，可选择从历史记录恢复对话上下文"""
     logger.info(f"获取Coder实例 - session_id: {session_id}, workspace_dir: {workspace_dir}")
-    if session_id not in coder_instances:
-        current_dir = workspace_dir or os.getcwd()
-        logger.info(f"创建新的Coder实例，工作目录: {current_dir}")
-        
-        try:
-            # 切换到工作目录
-            os.chdir(current_dir)
-            logger.info(f"已切换到工作目录: {current_dir}")
+    
+    # 保存当前工作目录，以便在操作完成后恢复
+    original_dir = os.getcwd()
+    logger.info(f"保存原始工作目录: {original_dir}")
+    
+    try:
+        if session_id not in coder_instances:
+            current_dir = workspace_dir or os.getcwd()
+            logger.info(f"创建新的Coder实例，工作目录: {current_dir}")
             
-            # 设置命令行参数，从环境变量读取配置
-            cli_args = ["--yes-always","--no-suggest-shell-commands"]  # 基本参数
-            
-            # 指定中文回答
-            cli_args.extend(["--chat-language","中文"])
-            logger.info(f"已设置中文回答")
+            try:
+                # 临时切换到工作目录进行初始化
+                os.chdir(current_dir)
+                logger.info(f"已切换到工作目录: {current_dir}")
+                
+                # 设置命令行参数，从环境变量读取配置
+                cli_args = ["--yes-always","--no-suggest-shell-commands"]  # 基本参数
+                
+                # 指定中文回答
+                cli_args.extend(["--chat-language","中文"])
+                logger.info(f"已设置中文回答")
 
-            # 读取配置文件路径
-            config_file = os.environ.get("AIDER_CONFIG_FILE")
-            if config_file:
-                cli_args.extend(["--config", config_file])
-                logger.info(f"使用配置文件: {config_file}")
-            
-            # 读取模型元数据文件路径
-            model_metadata_file = os.environ.get("AIDER_MODEL_METADATA_FILE")
-            if model_metadata_file:
-                cli_args.extend(["--model-metadata-file", model_metadata_file])
-                logger.info(f"使用模型元数据文件: {model_metadata_file}")
-            
-            # 读取模型设置文件路径
-            model_settings_file = os.environ.get("AIDER_MODEL_SETTINGS_FILE")
-            if model_settings_file:
-                cli_args.extend(["--model-settings-file", model_settings_file])
-                logger.info(f"使用模型设置文件: {model_settings_file}")
-            
-            # 创建Coder实例并传递命令行参数
-            coder = cli_main(argv=cli_args, return_coder=True)
-            
-            if not isinstance(coder, Coder):
-                raise ValueError(f"无法创建Coder实例: {coder}")
-            
-            # 配置IO捕获
-            io = CaptureIO(
-                pretty=False,
-                dry_run=coder.io.dry_run,
-                encoding=coder.io.encoding,
-            )
-            coder.commands.io = io
-            
-            # 配置流式输出
-            coder.yield_stream = True
-            coder.stream = True
-            coder.pretty = False
-            
-            # 如果提供了历史记录，恢复对话上下文
-            if history:
-                logger.info(f"恢复对话历史记录，共 {len(history)} 条消息")
-                for item in history:
-                    if item.role == "user":
-                        # 添加用户消息到历史记录
-                        coder.done_messages.append({
-                            "role": "user", 
-                            "content": item.message
-                        })
-                    elif item.role == "assistant":
-                        # 添加助手消息到历史记录
-                        coder.done_messages.append({
-                            "role": "assistant",
-                            "content": item.message
-                        })
-                logger.info(f"已恢复对话历史记录")
-            
-            coder_instances[session_id] = coder
-            logger.info(f"已创建并缓存Coder实例: {session_id}")
-            
-        except Exception as e:
-            logger.error(f"创建Coder实例失败: {str(e)}")
-            raise
+                # 读取配置文件路径
+                config_file = os.environ.get("AIDER_CONFIG_FILE")
+                if config_file:
+                    cli_args.extend(["--config", config_file])
+                    logger.info(f"使用配置文件: {config_file}")
+                
+                # 读取模型元数据文件路径
+                model_metadata_file = os.environ.get("AIDER_MODEL_METADATA_FILE")
+                if model_metadata_file:
+                    cli_args.extend(["--model-metadata-file", model_metadata_file])
+                    logger.info(f"使用模型元数据文件: {model_metadata_file}")
+                
+                # 读取模型设置文件路径
+                model_settings_file = os.environ.get("AIDER_MODEL_SETTINGS_FILE")
+                if model_settings_file:
+                    cli_args.extend(["--model-settings-file", model_settings_file])
+                    logger.info(f"使用模型设置文件: {model_settings_file}")
+                
+                # 创建Coder实例并传递命令行参数
+                coder = cli_main(argv=cli_args, return_coder=True)
+                
+                if not isinstance(coder, Coder):
+                    raise ValueError(f"无法创建Coder实例: {coder}")
+                
+                # 配置IO捕获
+                io = CaptureIO(
+                    pretty=False,
+                    dry_run=coder.io.dry_run,
+                    encoding=coder.io.encoding,
+                )
+                coder.commands.io = io
+                
+                # 配置流式输出
+                coder.yield_stream = True
+                coder.stream = True
+                coder.pretty = False
+                
+                # 存储工作目录信息到coder实例 - 关键步骤
+                coder.cwd = current_dir
+                
+                # 如果提供了历史记录，恢复对话上下文
+                if history:
+                    logger.info(f"恢复对话历史记录，共 {len(history)} 条消息")
+                    for item in history:
+                        if item.role == "user":
+                            # 添加用户消息到历史记录
+                            coder.done_messages.append({
+                                "role": "user", 
+                                "content": item.message
+                            })
+                        elif item.role == "assistant":
+                            # 添加助手消息到历史记录
+                            coder.done_messages.append({
+                                "role": "assistant",
+                                "content": item.message
+                            })
+                    logger.info(f"已恢复对话历史记录")
+                
+                coder_instances[session_id] = coder
+                logger.info(f"已创建并缓存Coder实例: {session_id}")
+                
+            except Exception as e:
+                logger.error(f"创建Coder实例失败: {str(e)}")
+                raise
+        elif workspace_dir:
+            # 如果会话已存在但需要更新工作目录
+            logger.info(f"更新现有Coder实例的工作目录: {workspace_dir}")
+            coder_instances[session_id].cwd = workspace_dir
+    
+    finally:
+        # 确保恢复原始工作目录
+        os.chdir(original_dir)
+        logger.info(f"已恢复到原始工作目录: {original_dir}")
     
     return coder_instances[session_id]
 
@@ -293,46 +311,61 @@ async def chat(request: ChatRequest):
     try:
         coder = get_coder(request.session_id)
         
-        # 记录输入历史
-        coder.io.add_to_input_history(request.message)
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存聊天前的原始工作目录: {original_dir}")
         
-        # 添加强制中文回复的处理
-        chat_message = request.message
-        if not chat_message.startswith("/"):
-            # 添加中文提醒前缀
-            chat_message = "请用中文回答以下问题:\n" + chat_message
-        
-        # 运行对话
-        response = coder.run(chat_message)
-        
-        # 处理编辑信息
-        edit_info = None
-        if coder.aider_edited_files:
-            edit_info = {
-                "files": list(coder.aider_edited_files),
+        try:
+            # 如果coder有指定的工作目录，则切换到该目录
+            if hasattr(coder, 'cwd') and coder.cwd:
+                os.chdir(coder.cwd)
+                logger.info(f"已切换到会话工作目录: {coder.cwd}")
+            
+            # 记录输入历史
+            coder.io.add_to_input_history(request.message)
+            
+            # 添加强制中文回复的处理
+            chat_message = request.message
+            if not chat_message.startswith("/"):
+                # 添加中文提醒前缀
+                chat_message = "请用中文回答以下问题:\n" + chat_message
+            
+            # 运行对话
+            response = coder.run(chat_message)
+            
+            # 处理编辑信息
+            edit_info = None
+            if coder.aider_edited_files:
+                edit_info = {
+                    "files": list(coder.aider_edited_files),
+                }
+                
+                if coder.last_aider_commit_hash:
+                    edit_info["commit_hash"] = coder.last_aider_commit_hash
+                    edit_info["commit_message"] = coder.last_aider_commit_message
+                    
+                    # 获取diff
+                    if coder.repo:
+                        commits = f"{coder.last_aider_commit_hash}~1"
+                        diff = coder.repo.diff_commits(
+                            coder.pretty,
+                            commits,
+                            coder.last_aider_commit_hash,
+                        )
+                        edit_info["diff"] = diff
+            
+            # 构建响应
+            result = {
+                "response": response,
+                "edits": edit_info
             }
             
-            if coder.last_aider_commit_hash:
-                edit_info["commit_hash"] = coder.last_aider_commit_hash
-                edit_info["commit_message"] = coder.last_aider_commit_message
-                
-                # 获取diff
-                if coder.repo:
-                    commits = f"{coder.last_aider_commit_hash}~1"
-                    diff = coder.repo.diff_commits(
-                        coder.pretty,
-                        commits,
-                        coder.last_aider_commit_hash,
-                    )
-                    edit_info["diff"] = diff
+            return result
         
-        # 构建响应
-        result = {
-            "response": response,
-            "edits": edit_info
-        }
-        
-        return result
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复聊天后的原始工作目录: {original_dir}")
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -344,170 +377,142 @@ async def chat_stream(request: ChatRequest):
     try:
         coder = get_coder(request.session_id)
         
-        # 记录输入历史
-        coder.io.add_to_input_history(request.message)
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存流式聊天前的原始工作目录: {original_dir}")
         
-        # 创建一个生成器来产生流式响应
-        async def response_generator():
-            # 运行聊天并获取流式响应
-            buffer = ""
+        try:
+            # 如果coder有指定的工作目录，则切换到该目录
+            if hasattr(coder, 'cwd') and coder.cwd:
+                os.chdir(coder.cwd)
+                logger.info(f"已切换到会话工作目录: {coder.cwd}")
             
-            # 添加提示词强制要求使用中文回复
-            # 如果消息不是以特殊命令开头，添加中文提示
-            chat_message = request.message
-            if not chat_message.startswith("/"):
-                # 添加中文提醒前缀
-                chat_message = "请用中文回答以下问题:\n" + chat_message
+            # 记录输入历史
+            coder.io.add_to_input_history(request.message)
             
-            for chunk in coder.run_stream(chat_message):
-                buffer += chunk
-                # 构建流式响应片段
+            # 创建一个生成器来产生流式响应
+            async def response_generator():
+                # 运行聊天并获取流式响应
+                buffer = ""
+                
+                # 添加提示词强制要求使用中文回复
+                # 如果消息不是以特殊命令开头，添加中文提示
+                chat_message = request.message
+                if not chat_message.startswith("/"):
+                    # 添加中文提醒前缀
+                    chat_message = "请用中文回答以下问题:\n" + chat_message
+                
+                for chunk in coder.run_stream(chat_message):
+                    buffer += chunk
+                    # 构建流式响应片段
+                    yield json.dumps({
+                        "content": chunk,
+                        "done": False,
+                        "edits": None
+                    }) + "\n"
+                    
+                    # 为了节省带宽，可以设置更大的缓冲区，这里简单处理
+                    await asyncio.sleep(0.01)
+                
+                # 最后返回编辑信息（如果有）
+                edit_info = None
+                logger.debug(f"检查编辑文件: {coder.aider_edited_files}")  # 添加日志
+                
+                if coder.aider_edited_files:
+                    edit_info = {
+                        "files": list(coder.aider_edited_files),
+                    }
+                    logger.debug(f"编辑信息: {edit_info}")  # 添加日志
+                    
+                    if coder.last_aider_commit_hash:
+                        edit_info["commit_hash"] = coder.last_aider_commit_hash
+                        
+                        # base64 编码提交消息
+                        if coder.last_aider_commit_message:
+                            edit_info["commit_message"] = coder.last_aider_commit_message
+                        
+                        logger.debug(f"提交哈希: {coder.last_aider_commit_hash}")  # 添加日志
+                        logger.debug(f"提交消息: {coder.last_aider_commit_message}")  # 添加日志
+                        
+                        # 获取diff
+                        if coder.repo:
+                            commits = f"{coder.last_aider_commit_hash}~1"
+                            logger.debug(f"获取diff，比较提交: {commits} 和 {coder.last_aider_commit_hash}")  # 添加日志
+                            diff = coder.repo.diff_commits(
+                                coder.pretty,
+                                commits,
+                                coder.last_aider_commit_hash,
+                            )
+                            
+                            if diff:
+                                edit_info["diff"] = diff
+                            
+                            logger.debug(f"生成的diff: {diff}")  # 添加日志
+                    
+                    # 读取修改后的文件内容 - 注意这里需要使用正确的工作目录
+                    updated_files = []
+                    for filename in edit_info["files"]:
+                        try:
+                            logger.debug(f"读取文件: {filename}")  # 添加日志
+                            # 构建完整的文件路径，基于会话的工作目录
+                            full_path = os.path.join(coder.cwd, filename) if not os.path.isabs(filename) else filename
+                            logger.info(f"尝试读取文件的完整路径: {full_path}")
+                            
+                            with open(full_path, 'r', encoding='utf-8') as f:
+                                content = f.read()
+                                
+                            # 确定文件类型
+                            ext = filename.split('.')[-1].lower() if '.' in filename else ''
+                            file_type = 'text'
+                            if ext in ['html', 'htm']:
+                                file_type = 'html'
+                            elif ext == 'css':
+                                file_type = 'css'
+                            elif ext == 'js':
+                                file_type = 'javascript'
+                            elif ext == 'tsx':
+                                file_type = 'typescriptreact'
+                            elif ext == 'ts':
+                                file_type = 'typescript'
+                            elif ext == 'json':
+                                file_type = 'json'
+                            elif ext == 'md':
+                                file_type = 'markdown'
+                                
+                            # 创建文件对象
+                            updated_files.append({
+                                "name": filename,
+                                "content": content,
+                                "type": file_type,
+                                "is_main": filename.endswith('index.html') or ext == 'tsx'
+                            })
+                            logger.debug(f"成功读取文件: {filename}, 类型: {file_type}")
+                        except Exception as e:
+                            logger.error(f"读取文件失败 {filename}: {str(e)}")
+                    
+                    # 将文件内容添加到编辑信息中
+                    edit_info["updated_files"] = updated_files
+                
+                # 返回完成标记和编辑信息
                 yield json.dumps({
-                    "content": chunk,
-                    "done": False,
-                    "edits": None
-                }) + "\n"
-                
-                # 为了节省带宽，可以设置更大的缓冲区，这里简单处理
-                await asyncio.sleep(0.01)
+                    "content": "",
+                    "done": True,
+                    "edits": edit_info
+                })
             
-            # 最后返回编辑信息（如果有）
-            edit_info = None
-            logger.debug(f"检查编辑文件: {coder.aider_edited_files}")  # 添加日志
+            # 返回流式响应
+            return StreamingResponse(
+                response_generator(),
+                media_type="application/x-ndjson"
+            )
             
-            if coder.aider_edited_files:
-                edit_info = {
-                    "files": list(coder.aider_edited_files),
-                }
-                logger.debug(f"编辑信息: {edit_info}")  # 添加日志
-                
-                if coder.last_aider_commit_hash:
-                    edit_info["commit_hash"] = coder.last_aider_commit_hash
-                    
-                    # base64 编码提交消息
-                    if coder.last_aider_commit_message:
-                        edit_info["commit_message"] = coder.last_aider_commit_message
-                    
-                    logger.debug(f"提交哈希: {coder.last_aider_commit_hash}")  # 添加日志
-                    logger.debug(f"提交消息: {coder.last_aider_commit_message}")  # 添加日志
-                    
-                    # 获取diff
-                    if coder.repo:
-                        commits = f"{coder.last_aider_commit_hash}~1"
-                        logger.debug(f"获取diff，比较提交: {commits} 和 {coder.last_aider_commit_hash}")  # 添加日志
-                        diff = coder.repo.diff_commits(
-                            coder.pretty,
-                            commits,
-                            coder.last_aider_commit_hash,
-                        )
-                        
-                        if diff:
-                            edit_info["diff"] = diff
-                        
-                        logger.debug(f"生成的diff: {diff}")  # 添加日志
-                
-                # 读取修改后的文件内容
-                updated_files = []
-                for filename in edit_info["files"]:
-                    try:
-                        logger.debug(f"读取文件: {filename}")  # 添加日志
-                        # 获取当前工作目录
-                        current_dir = os.getcwd()
-                        logger.info(f"当前工作目录(读取文件时): {current_dir}")
-                        
-                        # 记录路径信息
-                        is_abs_path = os.path.isabs(filename)
-                        logger.info(f"是否为绝对路径(读取文件时): {is_abs_path}")
-                        
-                        # 尝试获取文件的绝对路径和相对路径
-                        abs_path = os.path.abspath(filename)
-                        try:
-                            rel_path = os.path.relpath(filename, current_dir)
-                        except ValueError:
-                            rel_path = filename
-                            
-                        logger.info(f"文件绝对路径(读取文件时): {abs_path}")
-                        logger.info(f"相对于当前目录的路径(读取文件时): {rel_path}")
-                        
-                        # 检查各种路径组合下文件是否存在
-                        orig_exists = os.path.exists(filename)
-                        abs_exists = os.path.exists(abs_path)
-                        rel_exists = os.path.exists(rel_path)
-                        
-                        logger.info(f"原始路径文件是否存在(读取文件时): {orig_exists}")
-                        logger.info(f"绝对路径文件是否存在(读取文件时): {abs_exists}")
-                        logger.info(f"相对路径文件是否存在(读取文件时): {rel_exists}")
-                        
-                        # 尝试列出当前目录内容
-                        try:
-                            dir_contents = os.listdir(current_dir)
-                            logger.info(f"当前目录内容(前5项): {dir_contents[:5] if len(dir_contents) > 5 else dir_contents}")
-                        except Exception as dir_error:
-                            logger.warning(f"无法列出目录内容: {str(dir_error)}")
-                        
-                        # 如果不是绝对路径，则构建完整路径
-                        if not os.path.isabs(filename):
-                            full_path = os.path.join(current_dir, filename)
-                        else:
-                            full_path = filename
-                            
-                        logger.info(f"尝试读取文件的完整路径: {full_path}")
-                        
-                        # 检查完整路径文件是否存在
-                        full_exists = os.path.exists(full_path)
-                        logger.info(f"完整路径文件是否存在: {full_exists}")
-                        
-                        with open(full_path, 'r', encoding='utf-8') as f:
-                            content = f.read()
-                            
-                        # 确定文件类型
-                        ext = filename.split('.')[-1].lower()
-                        file_type = 'text'
-                        if ext in ['html', 'htm']:
-                            file_type = 'html'
-                        elif ext == 'css':
-                            file_type = 'css'
-                        elif ext == 'js':
-                            file_type = 'javascript'
-                        elif ext == 'tsx':
-                            file_type = 'typescriptreact'
-                        elif ext == 'ts':
-                            file_type = 'typescript'
-                        elif ext == 'json':
-                            file_type = 'json'
-                        elif ext == 'md':
-                            file_type = 'markdown'
-                            
-                        # 创建文件对象
-                        updated_files.append({
-                            "name": filename,
-                            "content": content,
-                            "type": file_type,
-                            "is_main": filename.endswith('index.html') or ext == 'tsx'
-                        })
-                        logger.debug(f"成功读取文件: {filename}, 类型: {file_type}")  # 添加日志
-                    except Exception as e:
-                        logger.error(f"读取文件失败 {filename}: {str(e)}")
-                
-                # 将文件内容添加到编辑信息中
-                edit_info["updated_files"] = updated_files
-                logger.debug(f"最终编辑信息: {json.dumps(edit_info, indent=2)}")  # 添加日志
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复流式聊天后的原始工作目录: {original_dir}")
             
-            # 返回完成标记和编辑信息
-            yield json.dumps({
-                "content": "",
-                "done": True,
-                "edits": edit_info
-            })
-        
-        # 返回流式响应
-        return StreamingResponse(
-            response_generator(),
-            media_type="application/x-ndjson"
-        )
-    
     except Exception as e:
-        logger.error(f"发生错误: {str(e)}")  # 添加错误日志
+        logger.error(f"发生错误: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -517,9 +522,26 @@ async def get_files(session_id: str = "default"):
     try:
         logger.info(f"获取文件列表 - session_id: {session_id}")
         coder = get_coder(session_id)
-        files = coder.get_inchat_relative_files()
-        logger.info(f"获取到的文件列表: {files}")
-        return {"files": files}
+        
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存获取文件列表前的原始工作目录: {original_dir}")
+        
+        try:
+            # 如果coder有指定的工作目录，则切换到该目录
+            if hasattr(coder, 'cwd') and coder.cwd:
+                os.chdir(coder.cwd)
+                logger.info(f"已切换到会话工作目录: {coder.cwd}")
+            
+            files = coder.get_inchat_relative_files()
+            logger.info(f"获取到的文件列表: {files}")
+            return {"files": files}
+            
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复获取文件列表后的原始工作目录: {original_dir}")
+            
     except Exception as e:
         logger.error(f"获取文件列表失败: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -542,45 +564,61 @@ async def add_file(request: FileRequest):
         logger.info(f"尝试添加文件 - 文件名: {request.filename}, 会话ID: {request.session_id}")
         coder = get_coder(request.session_id)
         
-        # 记录当前工作目录
-        current_dir = os.getcwd()
-        logger.info(f"当前工作目录: {current_dir}")
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存添加文件前的原始工作目录: {original_dir}")
         
-        # 记录路径信息
-        is_abs_path = os.path.isabs(request.filename)
-        logger.info(f"是否为绝对路径: {is_abs_path}")
-        
-        # 尝试获取文件的绝对路径和相对路径
-        abs_path = os.path.abspath(request.filename)
         try:
-            rel_path = os.path.relpath(request.filename, current_dir)
-        except ValueError:
-            rel_path = request.filename
+            # 如果coder有指定的工作目录，则切换到该目录
+            if hasattr(coder, 'cwd') and coder.cwd:
+                os.chdir(coder.cwd)
+                logger.info(f"已切换到会话工作目录: {coder.cwd}")
             
-        logger.info(f"文件绝对路径: {abs_path}")
-        logger.info(f"相对于当前目录的路径: {rel_path}")
-        
-        # 检查原始文件是否存在
-        orig_exists = os.path.exists(request.filename)
-        logger.info(f"原始路径文件是否存在: {orig_exists}")
-        
-        # 检查绝对路径文件是否存在
-        abs_exists = os.path.exists(abs_path)
-        logger.info(f"绝对路径文件是否存在: {abs_exists}")
-        
-        # 如果需要，创建一个临时文件来测试路径解析
-        if not orig_exists and not abs_exists:
-            logger.warning(f"文件在指定路径下不存在: {request.filename}")
-        
-        # 添加文件到Aider会话
-        logger.info(f"将文件 {request.filename} 添加到会话")
-        coder.add_rel_fname(request.filename)
-        
-        # 记录添加后的文件列表
-        files_in_chat = coder.get_inchat_relative_files()
-        logger.info(f"添加后的会话文件列表: {files_in_chat}")
-        
-        return {"status": "success", "message": f"已将 {request.filename} 添加到聊天中"}
+            # 记录当前工作目录
+            current_dir = os.getcwd()
+            logger.info(f"当前工作目录: {current_dir}")
+            
+            # 记录路径信息
+            is_abs_path = os.path.isabs(request.filename)
+            logger.info(f"是否为绝对路径: {is_abs_path}")
+            
+            # 尝试获取文件的绝对路径和相对路径
+            abs_path = os.path.abspath(request.filename)
+            try:
+                rel_path = os.path.relpath(request.filename, current_dir)
+            except ValueError:
+                rel_path = request.filename
+                
+            logger.info(f"文件绝对路径: {abs_path}")
+            logger.info(f"相对于当前目录的路径: {rel_path}")
+            
+            # 检查原始文件是否存在
+            orig_exists = os.path.exists(request.filename)
+            logger.info(f"原始路径文件是否存在: {orig_exists}")
+            
+            # 检查绝对路径文件是否存在
+            abs_exists = os.path.exists(abs_path)
+            logger.info(f"绝对路径文件是否存在: {abs_exists}")
+            
+            # 如果需要，创建一个临时文件来测试路径解析
+            if not orig_exists and not abs_exists:
+                logger.warning(f"文件在指定路径下不存在: {request.filename}")
+            
+            # 添加文件到Aider会话
+            logger.info(f"将文件 {request.filename} 添加到会话")
+            coder.add_rel_fname(request.filename)
+            
+            # 记录添加后的文件列表
+            files_in_chat = coder.get_inchat_relative_files()
+            logger.info(f"添加后的会话文件列表: {files_in_chat}")
+            
+            return {"status": "success", "message": f"已将 {request.filename} 添加到聊天中"}
+            
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复添加文件后的原始工作目录: {original_dir}")
+            
     except Exception as e:
         logger.error(f"添加文件失败: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -657,95 +695,95 @@ async def get_web_content(request: WebContentRequest):
         return {"error": str(e)}
 
 
-@app.post("/set_workspace_dir")
-async def set_workspace_dir(request: WorkspaceDirRequest):
-    """设置Aider工作目录"""
-    try:
-        logger.info(f"设置工作目录 - session_id: {request.session_id}, dir: {request.workspace_dir}")
+# @app.post("/set_workspace_dir")
+# async def set_workspace_dir(request: WorkspaceDirRequest):
+#     """设置Aider工作目录"""
+#     try:
+#         logger.info(f"设置工作目录 - session_id: {request.session_id}, dir: {request.workspace_dir}")
         
-        # 检查目录是否存在
-        if not os.path.exists(request.workspace_dir):
-            logger.warning(f"目录不存在: {request.workspace_dir}")
-            return {
-                "status": "error",
-                "error": f"目录 {request.workspace_dir} 不存在"
-            }
+#         # 检查目录是否存在
+#         if not os.path.exists(request.workspace_dir):
+#             logger.warning(f"目录不存在: {request.workspace_dir}")
+#             return {
+#                 "status": "error",
+#                 "error": f"目录 {request.workspace_dir} 不存在"
+#             }
         
-        # 检查目录权限
-        if not os.access(request.workspace_dir, os.R_OK | os.W_OK):
-            logger.warning(f"目录权限不足: {request.workspace_dir}")
-            return {
-                "status": "error",
-                "error": f"目录 {request.workspace_dir} 权限不足"
-            }
+#         # 检查目录权限
+#         if not os.access(request.workspace_dir, os.R_OK | os.W_OK):
+#             logger.warning(f"目录权限不足: {request.workspace_dir}")
+#             return {
+#                 "status": "error",
+#                 "error": f"目录 {request.workspace_dir} 权限不足"
+#             }
         
-        # 如果会话已存在，删除旧的Coder实例
-        if request.session_id in coder_instances:
-            logger.info(f"删除旧的Coder实例: {request.session_id}")
-            del coder_instances[request.session_id]
+#         # 如果会话已存在，删除旧的Coder实例
+#         if request.session_id in coder_instances:
+#             logger.info(f"删除旧的Coder实例: {request.session_id}")
+#             del coder_instances[request.session_id]
         
-        # 创建新的Coder实例，传入工作目录
-        coder = get_coder(request.session_id, request.workspace_dir)
-        logger.info(f"已创建新的Coder实例: {request.session_id}")
+#         # 创建新的Coder实例，传入工作目录
+#         coder = get_coder(request.session_id, request.workspace_dir)
+#         logger.info(f"已创建新的Coder实例: {request.session_id}")
         
-        return {
-            "status": "success",
-            "message": f"已设置工作目录为 {request.workspace_dir}",
-            "workspace_dir": request.workspace_dir
-        }
-    except Exception as e:
-        logger.error(f"设置工作目录失败: {str(e)}")
-        return {
-            "status": "error",
-            "error": str(e)
-        }
+#         return {
+#             "status": "success",
+#             "message": f"已设置工作目录为 {request.workspace_dir}",
+#             "workspace_dir": request.workspace_dir
+#         }
+#     except Exception as e:
+#         logger.error(f"设置工作目录失败: {str(e)}")
+#         return {
+#             "status": "error",
+#             "error": str(e)
+#         }
 
 
-# 恢复会话历史记录接口
-@app.post("/chat/history/restore")
-async def restore_chat_history(request: ChatHistoryRequest):
-    """恢复对话历史到Aider会话"""
-    try:
-        # 删除现有会话实例（如果存在）
-        if request.session_id in coder_instances:
-            logger.info(f"删除现有会话实例以恢复历史: {request.session_id}")
-            del coder_instances[request.session_id]
+# # 恢复会话历史记录接口
+# @app.post("/chat/history/restore")
+# async def restore_chat_history(request: ChatHistoryRequest):
+#     """恢复对话历史到Aider会话"""
+#     try:
+#         # 删除现有会话实例（如果存在）
+#         if request.session_id in coder_instances:
+#             logger.info(f"删除现有会话实例以恢复历史: {request.session_id}")
+#             del coder_instances[request.session_id]
         
-        # 获取或创建Coder实例，并传入历史记录
-        coder = get_coder(request.session_id, history=request.history)
+#         # 获取或创建Coder实例，并传入历史记录
+#         coder = get_coder(request.session_id, history=request.history)
         
-        return {
-            "status": "success",
-            "message": f"已恢复对话历史，共 {len(request.history)} 条消息",
-            "session_id": request.session_id
-        }
-    except Exception as e:
-        logger.error(f"恢复对话历史失败: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+#         return {
+#             "status": "success",
+#             "message": f"已恢复对话历史，共 {len(request.history)} 条消息",
+#             "session_id": request.session_id
+#         }
+#     except Exception as e:
+#         logger.error(f"恢复对话历史失败: {str(e)}")
+#         raise HTTPException(status_code=500, detail=str(e))
 
 
-# 添加自动生成标题的API
-@app.post("/chat/topics/generate_title")
-async def generate_topic_title(request: ChatRequest):
-    """使用LLM自动生成对话主题标题"""
-    try:
-        # 获取Coder实例
-        coder = get_coder(request.session_id)
+# # 添加自动生成标题的API
+# @app.post("/chat/topics/generate_title")
+# async def generate_topic_title(request: ChatRequest):
+#     """使用LLM自动生成对话主题标题"""
+#     try:
+#         # 获取Coder实例
+#         coder = get_coder(request.session_id)
         
-        # 构造请求生成标题的提示
-        title_prompt = f"基于以下消息生成一个简短、具体的聊天主题标题（不超过20个字符）：\n\n{request.message}\n\n只需回复标题，不需要其他解释。"
+#         # 构造请求生成标题的提示
+#         title_prompt = f"基于以下消息生成一个简短、具体的聊天主题标题（不超过20个字符）：\n\n{request.message}\n\n只需回复标题，不需要其他解释。"
         
-        # 使用Coder实例运行请求
-        title = coder.run(title_prompt).strip()
+#         # 使用Coder实例运行请求
+#         title = coder.run(title_prompt).strip()
         
-        # 如果生成的标题太长，进行截断
-        if len(title) > 20:
-            title = title[:20] + "..."
+#         # 如果生成的标题太长，进行截断
+#         if len(title) > 20:
+#             title = title[:20] + "..."
             
-        return {"title": title}
-    except Exception as e:
-        logger.error(f"生成主题标题失败: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+#         return {"title": title}
+#     except Exception as e:
+#         logger.error(f"生成主题标题失败: {str(e)}")
+#         raise HTTPException(status_code=500, detail=str(e))
 
 
 # 一体化会话初始化API
@@ -772,20 +810,31 @@ async def init_session(request: SessionInitRequest):
                 "error": f"目录 {request.workspace_dir} 权限不足"
             }
         
-        # 如果会话已存在，删除旧的Coder实例
-        if request.session_id in coder_instances:
-            logger.info(f"删除旧的Coder实例: {request.session_id}")
-            del coder_instances[request.session_id]
+        # 保存当前工作目录
+        original_dir = os.getcwd()
+        logger.info(f"保存会话初始化前的原始工作目录: {original_dir}")
         
-        # 创建新的Coder实例，一次性设置工作目录和历史记录
-        coder = get_coder(request.session_id, request.workspace_dir, request.history)
-        logger.info(f"已创建并初始化Coder实例: {request.session_id}")
+        try:
+            # 如果会话已存在，删除旧的Coder实例
+            if request.session_id in coder_instances:
+                logger.info(f"删除旧的Coder实例: {request.session_id}")
+                del coder_instances[request.session_id]
+            
+            # 创建新的Coder实例，一次性设置工作目录和历史记录
+            # get_coder函数会确保在正确的目录下创建实例
+            coder = get_coder(request.session_id, request.workspace_dir, request.history)
+            logger.info(f"已创建并初始化Coder实例: {request.session_id}")
         
-        return {
-            "status": "success",
-            "message": f"会话已初始化，工作目录: {request.workspace_dir}, 历史记录: {len(request.history)} 条",
-            "session_id": request.session_id
-        }
+            return {
+                "status": "success",
+                "message": f"会话已初始化，工作目录: {request.workspace_dir}, 历史记录: {len(request.history)} 条",
+                "session_id": request.session_id
+            }
+        finally:
+            # 确保恢复原始工作目录
+            os.chdir(original_dir)
+            logger.info(f"已恢复会话初始化后的原始工作目录: {original_dir}")
+            
     except Exception as e:
         logger.error(f"初始化会话失败: {str(e)}")
         return {
