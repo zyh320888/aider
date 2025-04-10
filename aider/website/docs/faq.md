@@ -264,17 +264,12 @@ tr:hover { background-color: #f5f5f5; }
 </style>
 <table>
 <tr><th>Model Name</th><th class='right'>Total Tokens</th><th class='right'>Percent</th></tr>
-<tr><td>fireworks_ai/accounts/fireworks/models/deepseek-v3</td><td class='right'>1,564,808</td><td class='right'>36.4%</td></tr>
-<tr><td>anthropic/claude-3-7-sonnet-20250219</td><td class='right'>1,499,523</td><td class='right'>34.9%</td></tr>
-<tr><td>fireworks_ai/accounts/fireworks/models/deepseek-r1</td><td class='right'>380,307</td><td class='right'>8.8%</td></tr>
-<tr><td>deepseek/deepseek-chat</td><td class='right'>312,589</td><td class='right'>7.3%</td></tr>
-<tr><td>gpt-4o</td><td class='right'>243,123</td><td class='right'>5.7%</td></tr>
-<tr><td>gemini/gemini-2.5-pro-exp-03-25</td><td class='right'>150,031</td><td class='right'>3.5%</td></tr>
-<tr><td>claude-3-5-haiku-20241022</td><td class='right'>81,038</td><td class='right'>1.9%</td></tr>
-<tr><td>o3-mini</td><td class='right'>48,351</td><td class='right'>1.1%</td></tr>
-<tr><td>openrouter/google/gemini-2.5-pro-exp-03-25:free</td><td class='right'>11,449</td><td class='right'>0.3%</td></tr>
-<tr><td>gemini/REDACTED</td><td class='right'>5,772</td><td class='right'>0.1%</td></tr>
-<tr><td>openrouter/REDACTED</td><td class='right'>3,830</td><td class='right'>0.1%</td></tr>
+<tr><td>gemini/gemini-2.5-pro-exp-03-25</td><td class='right'>701,602</td><td class='right'>85.1%</td></tr>
+<tr><td>gemini/gemini-2.5-pro-preview-03-25</td><td class='right'>71,324</td><td class='right'>8.6%</td></tr>
+<tr><td>openrouter/openrouter/quasar-alpha</td><td class='right'>36,847</td><td class='right'>4.5%</td></tr>
+<tr><td>openrouter/deepseek/deepseek-chat-v3-0324:free</td><td class='right'>11,324</td><td class='right'>1.4%</td></tr>
+<tr><td>openrouter/REDACTED</td><td class='right'>1,755</td><td class='right'>0.2%</td></tr>
+<tr><td>vertex_ai/REDACTED</td><td class='right'>1,739</td><td class='right'>0.2%</td></tr>
 </table>
 
 {: .note :}

@@ -832,3 +832,81 @@
   versions: 0.78.1.dev
   seconds_per_case: 47.1
   total_cost: 0.0000
+
+- dirname: 2025-03-29-05-24-55--chatgpt4o-mar28-diff
+  test_cases: 225
+  model: chatgpt-4o-latest (2025-03-29)
+  edit_format: diff
+  commit_hash: 0decbad
+  pass_rate_1: 16.4
+  pass_rate_2: 45.3
+  pass_num_1: 37
+  pass_num_2: 102
+  percent_cases_well_formed: 64.4
+  error_outputs: 85
+  num_malformed_responses: 85
+  num_with_malformed_responses: 80
+  user_asks: 174
+  lazy_comments: 0
+  syntax_errors: 0
+  indentation_errors: 0
+  exhausted_context_windows: 0
+  test_timeouts: 4
+  total_tests: 225
+  command: aider --model chatgpt-4o-latest
+  date: 2025-03-29
+  versions: 0.79.3.dev
+  seconds_per_case: 10.3
+  total_cost: 19.7416
+
+- dirname: 2025-04-04-02-57-25--qalpha-diff-exsys
+  test_cases: 225
+  model: Quasar Alpha
+  edit_format: diff
+  commit_hash: 8a34a6c-dirty
+  pass_rate_1: 21.8
+  pass_rate_2: 54.7
+  pass_num_1: 49
+  pass_num_2: 123
+  percent_cases_well_formed: 98.2
+  error_outputs: 4
+  num_malformed_responses: 4
+  num_with_malformed_responses: 4
+  user_asks: 187
+  lazy_comments: 0
+  syntax_errors: 0
+  indentation_errors: 0
+  exhausted_context_windows: 0
+  test_timeouts: 4
+  total_tests: 225
+  command: aider --model openrouter/openrouter/quasar-alpha
+  date: 2025-04-04
+  versions: 0.80.5.dev
+  seconds_per_case: 14.8
+  total_cost: 0.0000
+
+- dirname: 2025-04-06-08-39-52--llama-4-maverick-17b-128e-instruct-polyglot-whole
+  test_cases: 225
+  model: Llama 4 Maverick
+  edit_format: whole
+  commit_hash: 9445a31
+  pass_rate_1: 4.4
+  pass_rate_2: 15.6
+  pass_num_1: 10
+  pass_num_2: 35
+  percent_cases_well_formed: 99.1
+  error_outputs: 12
+  num_malformed_responses: 2
+  num_with_malformed_responses: 2
+  user_asks: 248
+  lazy_comments: 0
+  syntax_errors: 0
+  indentation_errors: 0
+  exhausted_context_windows: 0
+  test_timeouts: 4
+  total_tests: 225
+  command: aider --model nvidia_nim/meta/llama-4-maverick-17b-128e-instruct
+  date: 2025-04-06
+  versions: 0.81.2.dev
+  seconds_per_case: 20.5
+  total_cost: 0.0000
